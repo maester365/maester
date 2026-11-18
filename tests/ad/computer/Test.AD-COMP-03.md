@@ -1,4 +1,4 @@
-The `ms-ds-CreatorSid` attribute identifies which security principal created a computer account. This is valuable for:
+The LDAP `mS-DS-CreatorSID` attribute can record a computer account's creator in some account-creation paths. The cached collector exposes the raw `mS-DS-CreatorSID` field and a compatible `CreatorSid` alias. Its presence is useful for investigation, not proof of an unauthorized join. This is valuable for:
 
 - **Audit trail**: Understanding who or what created computer accounts helps trace unauthorized additions
 - **Delegation analysis**: Identifying service accounts or users with excessive computer creation rights
@@ -19,7 +19,7 @@ Computer account creation should be tightly controlled:
 
 #### How the Test Works
 
-This test counts computer objects that have the `ms-ds-CreatorSid` attribute populated. This attribute is typically set when:
+The cached LDAP computer collector retrieves raw `mS-DS-CreatorSID` and exposes the compatible `CreatorSid` alias. This check reports **Investigate** because a recorded creator is not proof of an unauthorized join. It does not report zero when the attribute was not collected. The check counts enabled computers with a visible value; a missing value is not proof no creator existed. This attribute can be set when:
 - A user or service account explicitly creates a computer account
 - The creating principal has been captured in the directory
 
@@ -27,8 +27,8 @@ Note: Not all computer accounts will have this attribute, depending on how they 
 
 #### Related Tests
 
-- `Test-MtAdComputerNonStandardGroup` - Identifies computers with unusual primary group assignments
-- `Test-MtAdComputerInDefaultContainer` - Finds computers that may have been auto-created
+- **AD-COMP-04 — Enabled computers should use standard primary groups** — `Test-MtAdComputerNonStandardGroup` — Reviews nonstandard primary-group assignments.
+- **AD-COMP-06 — Enabled computers should be moved out of the default Computers container** — `Test-MtAdComputerInDefaultContainer` — Reviews default-container placement, not creator identity.
 
 <!--- Results --->
 %TestResult%

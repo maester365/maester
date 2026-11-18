@@ -1,11 +1,8 @@
-Sites without domain controllers may indicate:
+Sites without local domain controllers meet the organization baseline.
 
-- **Authentication delays**: Clients in these sites must authenticate across the WAN to another site
-- **Single points of failure**: If the WAN link fails, clients cannot authenticate
-- **Incomplete deployment**: Sites may have been created but DCs were never deployed
-- **Resource gaps**: Branch offices may lack local domain controller presence
+Compares each site to domain controller site metadata. A site without a local DC may be intentional; use AllowedSitesWithoutDcs to record permitted site names. This check replaces AD-SITE-03.
 
-Sites without DCs should be carefully evaluated to ensure they represent intentional design decisions rather than configuration gaps.
+Sites without local DCs may rely on WAN connectivity for authentication and directory lookups; this can be an intentional hub-and-spoke topology rather than an automatically unsafe configuration.
 
 #### Control Type
 
@@ -13,21 +10,24 @@ Sites without DCs should be carefully evaluated to ensure they represent intenti
 
 #### Security Recommendation
 
-For sites without domain controllers:
-- Consider deploying RODCs (Read-Only Domain Controllers) in branch offices
-- Ensure WAN links are reliable and have adequate bandwidth
-- Document the business justification for sites without local DCs
-- Monitor authentication traffic from these sites
+1. Review the objects in **Active Directory Sites and Services** or **Active Directory Users and Computers**, as appropriate.
+2. Review the reported objects against the organization baseline, document intentional exceptions and correct unintended configuration with the directory and network owners.
+
+Assess WAN reliability and authentication demand before considering an RODC or another local DC. Monitor site and link health separately; record permitted exceptions in `AllowedSitesWithoutDcs`.
 
 #### How the Test Works
 
-This test compares the list of sites with domain controllers against all sites in the domain to identify sites that have no DC presence.
+Matches configured site DNs to DC site metadata and compares sites without local DCs with the organization's allowed-site list. The companion details inventory was consolidated into this check.
 
 #### Related Tests
 
-- `Test-MtAdSiteWithoutDcDetails` - Lists the specific sites without DCs
-- `Test-MtAdSiteTotalCount` - Counts total sites in the domain
-- `Test-MtAdDcSiteCoverageCount` - Analyzes DC distribution across sites
+- **AD-SITE-01 — Site inventory for review** — `Test-MtAdSiteTotalCount` — Inventories all sites.
+- **AD-DC-01 — Site DNs containing DC objects for review** — `Test-MtAdDcSiteCoverageCount` — Inventories DC site DNs.
+- **AD-DCD-03 — Read-only DC inventory for review** — `Test-MtAdDcReadOnlyCount` — Inventories read-only DCs.
+
+#### Related links
+
+* [Microsoft Learn: Active Directory design guidance](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/designing-the-site-topology)
 
 <!--- Results --->
 %TestResult%

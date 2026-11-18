@@ -1,16 +1,8 @@
-Published printers in Active Directory provide visibility into your organization's printing infrastructure. While printers themselves may not seem like a security concern, they present several security considerations:
+Published printer inventory.
 
-- **Information disclosure**: Printer names and locations may reveal organizational structure
-- **Access control**: Published printers may be accessible to unintended users
-- **Driver vulnerabilities**: Printer drivers can be a vector for attacks
-- **Document security**: Print jobs may contain sensitive information
-- **Network exposure**: Printers may be accessible from unauthorized network segments
+Inventory of published printQueue objects and their name, server, location and description. The count does not indicate printer access or security.
 
-Understanding your printer publishing configuration helps:
-- **Audit exposure**: Identify what printer information is publicly available
-- **Access review**: Ensure printers are only accessible to appropriate users
-- **Documentation**: Maintain accurate inventory of printing resources
-- **Compliance**: Some regulations require tracking of printing infrastructure
+Published printer names and locations can reveal infrastructure details; printing systems may also require access control, driver maintenance and sensitive-document handling. This directory inventory does not inspect drivers, print jobs, ACLs or network exposure.
 
 #### Control Type
 
@@ -18,21 +10,20 @@ Understanding your printer publishing configuration helps:
 
 #### Security Recommendation
 
-Secure your printing infrastructure:
-- **Minimize publishing**: Only publish printers that need to be discoverable
-- **Location data**: Review printer location information for sensitive details
-- **Access controls**: Restrict printer access using security groups
-- **Secure printing**: Implement pull printing or secure release solutions
-- **Regular audits**: Periodically review published printers for unauthorized additions
+1. Review the objects in **Active Directory Sites and Services** or **Active Directory Users and Computers**, as appropriate.
+2. Review the reported objects with the directory and network owners; update any outdated configuration only after checking intended topology and dependencies.
+
+Publish only printers that need to be discoverable and review location/description fields for sensitive details. Independently verify printer ACLs, driver updates and secure-release practices before making claims about printing security.
 
 #### How the Test Works
 
-This test queries Active Directory for printQueue objects to count published printers and provide details about printer publishing in the domain.
+Inventories published `printQueue` directory objects with their names, servers, locations and descriptions. It does not test whether any printer is accessible or correctly secured.
 
-#### Related Tests
 
-- `Test-MtAdOuEmptyCount` - Identify empty OUs that may contain legacy printer objects
-- `Test-MtAdGroupDistributionCount` - Review groups that may control printer access
+
+#### Related links
+
+* [Microsoft Learn: Active Directory design guidance](https://learn.microsoft.com/windows-server/administration/windows-commands/pubprn)
 
 <!--- Results --->
 %TestResult%

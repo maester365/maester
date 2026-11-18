@@ -1,26 +1,18 @@
 ﻿function Test-MtAdSpnSuffixesCount {
     <#
     .SYNOPSIS
-    Retrieves the count of SPN (Service Principal Name) suffixes configured in the forest.
-
+    Assesses the cached Active Directory snapshot without inferring missing data.
     .DESCRIPTION
-    This test retrieves the count of SPN suffixes configured in the Active Directory forest.
-    SPN suffixes are used to simplify Service Principal Name management by allowing
-    alternative suffixes to be used when registering SPNs for services.
-    This is particularly useful in complex environments with multiple service namespaces.
-
+    Uses directory metadata; incomplete or unavailable required inventory raises an error.
     .EXAMPLE
-    Test-MtAdSpnSuffixesCount
-
-    Returns $true if SPN suffix data is accessible.
-    The test result includes the count of configured SPN suffixes.
-
+    Invoke-MtTest -Id AD-FORS-03
+    Review the forest SPN suffix inventory manually.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdSpnSuffixesCount
+    https://maester.dev/docs/tests/AD-FORS-03
     #>
     [MaesterTest(
         Id = 'AD-FORS-03',
-        Title = 'SPN suffixes count should be retrievable',
+        Title = 'SPN suffix inventory for review',
         Product = 'ad',
         Feature = 'domain-and-forest',
         Area = 'infrastructure',
@@ -35,44 +27,11 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdSpnSuffixesCount"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Forest')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $forest = $adState.Forest
-    $spnSuffixes = $forest.SPNSuffixes
-    $suffixCount = ($spnSuffixes | Measure-Object).Count
-
-    # Test passes if we successfully retrieved forest data
-    $testResult = $null -ne $spnSuffixes
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Property | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| SPN Suffix Count | $suffixCount |" + "`n"
-        $result += "| Forest Name | $($forest.Name) |" + "`n"
-
-        if ($suffixCount -gt 0) {
-            $result += "| SPN Suffixes | $($spnSuffixes -join ', ') |" + "`n"
-        } else {
-            $result += "| SPN Suffixes | (none configured - using default forest domain) |" + "`n"
-        }
-
-        $testResultMarkdown = "The Active Directory forest SPN suffixes have been analyzed successfully.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory SPN suffix information. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Forest')
+    if (-not $state.Forest -or $null -eq $state.Forest.SPNSuffixes) { throw 'Forest SPN suffixes not collected.' }
+    $suffixes = @($state.Forest.SPNSuffixes)
+    $rows = @('| Configured SPN suffix |', '| --- |')
+    foreach ($suffix in $suffixes) { $rows += '| {0} |' -f (Format-MtAdSiteInventoryValue $suffix) }
+    if ($suffixes.Count -eq 0) { $rows += '| None configured |' }
+    Add-MtTestResultDetail -Result "Review registered SPN namespaces. This is not a count of SPNs or their owners.`n`n| Metric | Value |`n| --- | --- |`n| Configured SPN suffix count | $($suffixes.Count) |`n`n$($rows -join "`n")" -Investigate
 }

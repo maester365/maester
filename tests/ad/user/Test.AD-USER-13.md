@@ -1,8 +1,4 @@
-`SIDHistory` is commonly used during migrations so users can retain access to resources secured with legacy SIDs. Long-term SID history can create unnecessary complexity and unintended access paths.
-
-- **Migration artifact detection**: Identifies users that may still carry legacy identities
-- **Trust boundary review**: Helps spot cross-domain access dependencies
-- **Permission cleanup**: Supports least-privilege remediation after migrations
+Unapproved SID history can retain access granted to older identities after migrations. Migration exceptions must be documented and passed in `ApprovedAccountIds`.
 
 #### Control Type
 
@@ -10,23 +6,20 @@
 
 #### Security Recommendation
 
-- Review users with `SIDHistory` to confirm ongoing business need
-- Remove unnecessary SID history entries after resource migration is complete
-- Pay special attention to SIDs originating from external or less-trusted domains
+Confirm migration and access dependencies before clearing SID history; review documented exceptions periodically.
 
 #### How the Test Works
 
-This test counts user objects where the `SIDHistory` attribute contains one or more values.
+The test checks users with `SIDHistory` values and excludes explicitly approved account IDs. A populated history warrants review but does not by itself prove misuse.
 
 #### Related Tests
 
-- `Test-MtAdUserNonStandardPrimaryGroupCount` - Finds other migration or provisioning anomalies
-- `Test-MtAdUserAdminCountCount` - Helps prioritize review of privileged accounts
+- **AD-USER-12 — Ordinary users should use an approved primary group** — `Test-MtAdUserNonStandardPrimaryGroupCount` — Reviews primary-group configuration.
+- **AD-USER-11 — AdminCount users should be reviewed** — `Test-MtAdUserAdminCountCount` — Helps prioritize protected identities.
 
-#### Related links
-
-- [Microsoft Defender for Identity: Unsecure SID History attributes](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#unsecure-sid-history-attributes)
-- [ANSSI Active Directory checkpoints: Accounts or groups with SID history set](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_sidhistory_present)
+#### Remediation action
+1. Validate each migration dependency and resource ACL before removing [SID history](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/understand-security-identifiers).
+2. Review exceptions periodically and remove unnecessary history under a change plan.
 
 <!--- Results --->
 %TestResult%

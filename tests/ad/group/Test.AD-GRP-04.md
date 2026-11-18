@@ -29,8 +29,8 @@ This test retrieves all group objects from Active Directory and:
 
 #### Related Tests
 
-- `Test-MtAdGroupStaleCount` - Groups with managers should be reviewed regularly to prevent staleness
-- `Test-MtAdGroupInContainerCount` - Groups with managers should typically be organized in appropriate OUs
+- **AD-GRP-03 — Groups should be modified within the configured age** — `Test-MtAdGroupStaleCount` — Reviews modification-age proxy, not actual usage.
+- **AD-GRP-02 — Groups in container objects count should be retrievable** — `Test-MtAdGroupInContainerCount` — Inventories group placement, not GPO scope.
 
 <!--- Results --->
 %TestResult%

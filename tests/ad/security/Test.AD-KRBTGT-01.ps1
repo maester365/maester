@@ -48,8 +48,8 @@
     $adState = Get-MtADDomainState -Categories @('Users')
     Write-Verbose "Retrieved AD state"
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+    if ($null -eq $adState -or $null -eq $adState.Users) {
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory user inventory is unavailable; KRBTGT password age cannot be determined.'
         return $null
     }
     Write-Verbose "Filtering/counting krbtgt password last set"
@@ -58,7 +58,7 @@
     $krbtgt = $users | Where-Object { $_.SamAccountName -eq 'krbtgt' } | Select-Object -First 1
 
     if ($null -eq $krbtgt) {
-        Add-MtTestResultDetail -Result "KRBTGT account not found in Active Directory."
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'KRBTGT was not found in the visible user inventory. Verify read access and account identity before assessing password age.'
         return $null
     }
 

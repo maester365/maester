@@ -22,8 +22,8 @@ This test retrieves all DNS zones and counts those that contain resource records
 
 #### Related Tests
 
-- `Test-MtAdDnsEmptyZoneCount` - Identifies zones with no records
-- `Test-MtAdDnsZonesWithOnlySoaNs` - Finds zones with only default records
+- **AD-DNS-14 — Empty zone count should be retrievable** — `Test-MtAdDnsEmptyZoneCount` — Identifies zones with no records.
+- **AD-DNS-02 — Zones with only SOA/NS records should be retrievable** — `Test-MtAdDnsZonesWithOnlySoaNs` — Finds zones with only default records.
 
 <!--- Results --->
 %TestResult%

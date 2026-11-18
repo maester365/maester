@@ -26,8 +26,8 @@ This test retrieves all group objects from Active Directory and counts:
 
 #### Related Tests
 
-- `Test-MtAdGroupWithManagerCount` - Identifies groups with delegated management
-- `Test-MtAdGroupSidHistoryCount` - Finds groups migrated from other domains
+- **AD-GRP-04 — Groups with manager count should be retrievable** — `Test-MtAdGroupWithManagerCount` — Inventories manager attributes, not effective delegation.
+- **AD-GRP-05 — Group SID History count should be retrievable** — `Test-MtAdGroupSidHistoryCount` — Reviews migration-related identity data.
 
 <!--- Results --->
 %TestResult%

@@ -1,23 +1,31 @@
-Enrollment-capable CA certificates include validity periods and other critical properties. Expired or invalid CA certificates can break certificate issuance and domain authentication flows. In addition, unexpected certificate replacements (e.g., unknown thumbprints) can indicate PKI tampering.
+Inventories public CA certificates in Enterprise enrollment services, trusted root and intermediate CA containers.
+
+Reports the number of objects in each role and lists each public certificate's role, subject, issuer, validity dates and thumbprint. A certificate published in more than one role is reported once per role. An expired certificate is an observation, not a failed validity or rotation policy; no private keys are retrieved.
 
 #### Control Type
 
 **Operational**
 
 #### Security Recommendation
-- Monitor CA certificate expiration and rotate certificates through an approved operational process.
-- Validate certificate thumbprints/subjects/issuers against your known-good CA configuration.
-- Alert when CA certificates are within your rotation window (commonly 30/60 days, depending on your policy).
-- Ensure CRL/OCSP and publication settings remain correct after certificate updates.
+
+Review CA certificate identities and expiry against the approved PKI inventory and validate trust and revocation independently before changes.
 
 #### How the Test Works
-- Enumerates enrollment-capable CA objects in Active Directory.
-- Retrieves CA certificate details associated with those enrollment services.
-- Evaluates certificate validity (e.g., already expired, or expiring soon based on your configured thresholds) and highlights unexpected certificate identity details.
+
+The test inventories public CA certificate subject, issuer, dates, thumbprint and publication role in enrollment, trusted-root and intermediate containers. It does not enforce an expiry baseline or retrieve private keys.
 
 #### Related Tests
-- [Test-MtAdEnterpriseCaCount](./Test-MtAdEnterpriseCaCount.md): Helps confirm which CAs are expected to exist.
-- [Test-MtAdTrustedRootCaCount](./Test-MtAdTrustedRootCaCount.md): Validates the trust anchors that support issued certificates.
+
+- **AD-CFG-12 — Enterprise CA inventory** — `Test-MtAdEnterpriseCaCount` — Inventories issuing CA objects.
+- **AD-CFG-21 — NTAuth certificate inventory** — `Test-MtAdNtAuthCertificatesCount` — Inventories certificates trusted for domain authentication.
+
+#### Remediation action
+
+Compare certificate identities and dates to your approved PKI inventory. Investigate unexpected or expired entries with your PKI owner and follow the established CA renewal process before making directory changes.
+
+#### Related links
+
+* [Active Directory Certificate Services overview](https://learn.microsoft.com/windows-server/identity/ad-cs/active-directory-certificate-services-overview)
 
 <!--- Results --->
 %TestResult%

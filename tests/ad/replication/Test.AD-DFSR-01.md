@@ -29,7 +29,7 @@ This test counts DFS-R subscription objects and reports:
 
 #### Related Tests
 
-- `Test-MtAdDisabledReplicationConnectionCount` - Checks AD replication connection health
+- **AD-REPL-01 — No replication connections should be disabled** — `Test-MtAdDisabledReplicationConnectionCount` — Checks for disabled AD replication connections; it does not assess DFS-R subscriptions.
 
 <!--- Results --->
 %TestResult%

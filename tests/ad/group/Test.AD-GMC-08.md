@@ -25,12 +25,12 @@ This test iterates through all Active Directory groups, checks their membership 
 1. Have no members
 2. Do not have adminCount = 1 (not privileged groups protected by AdminSDHolder)
 
-The test categorizes groups by their status (empty privileged, empty non-privileged, with members).
+The test categorizes collected groups by their status (empty privileged, empty non-privileged, with members). This is an opt-in (`LongRunning`) full membership scan without a first-50-groups cap. Query errors do not imply that a group is empty; the protocol connection is disposed even on failure. An empty group can still be referenced by permissions or applications, so confirm dependencies before cleanup.
 
 #### Related Tests
 
-- `Test-MtAdGroupEmptyNonPrivilegedDetails` - Lists specific empty non-privileged groups
-- `Test-MtAdGroupPrivilegedWithMembersCount` - Reviews privileged groups with members
+- **AD-GMC-01 — Distinct groups with members count should be retrievable** — `Test-MtAdGroupMemberDistinctGroupCount` — Reports group membership inventory across all collected groups.
+- **AD-GMC-10 — Privileged groups with members count should be investigated** — `Test-MtAdGroupPrivilegedWithMembersCount` — Reviews protected-group membership separately.
 
 <!--- Results --->
 %TestResult%

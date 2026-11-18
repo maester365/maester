@@ -22,8 +22,8 @@ This test identifies DNS zones that contain only SOA and NS records, with no A, 
 
 #### Related Tests
 
-- `Test-MtAdDnsZoneCount` - Counts all zones with records
-- `Test-MtAdDnsEmptyZoneCount` - Finds zones with zero records
+- **AD-DNS-01 — DNS zone count should be retrievable** — `Test-MtAdDnsZoneCount` — Counts all zones with records.
+- **AD-DNS-14 — Empty zone count should be retrievable** — `Test-MtAdDnsEmptyZoneCount` — Finds zones with zero records.
 
 <!--- Results --->
 %TestResult%

@@ -1,8 +1,4 @@
-Most user accounts use `PrimaryGroupId = 513`, which corresponds to `Domain Users`. When a user has a different primary group, the configuration is often intentional but uncommon.
-
-- **Privilege review**: Non-standard primary groups can indicate elevated or specialized access models
-- **Migration residue**: Legacy migrations and scripted provisioning may leave unusual values behind
-- **Access clarity**: Atypical primary groups make account analysis more complex
+Ordinary users should use approved primary group RIDs (default 513, Domain Users). Protected identities and built-in RID 500–503 accounts are exempt. Hidden primary group membership can complicate reviews.
 
 #### Control Type
 
@@ -10,23 +6,20 @@ Most user accounts use `PrimaryGroupId = 513`, which corresponds to `Domain User
 
 #### Security Recommendation
 
-- Review users whose `PrimaryGroupId` is not `513`
-- Confirm the configuration is required and documented
-- Standardize primary groups where there is no operational reason for deviation
+Review deviations from the approved primary-group RID list with identity owners. Do not change protected or system identities as part of this ordinary-user check.
 
 #### How the Test Works
 
-This test counts user objects where `primaryGroupId` is populated and not equal to `513`.
+The test evaluates ordinary users' `primaryGroupId` against `AllowedPrimaryGroupIds` (default 513), excluding protected identities and built-in RID 500–503 users. Primary-group membership is not always visible through the group's ordinary `member` attribute.
 
 #### Related Tests
 
-- `Test-MtAdUserAdminCountCount` - Highlights protected or privileged accounts
-- `Test-MtAdUserSidHistoryCount` - Identifies migration-related account artifacts
+- **AD-USER-11 — AdminCount users should be reviewed** — `Test-MtAdUserAdminCountCount` — Reviews protected-user markers.
+- **AD-USER-13 — Users should not retain unapproved SID history** — `Test-MtAdUserSidHistoryCount` — Reviews migration-related identity attributes.
 
-#### Related links
-
-- [Microsoft Defender for Identity: Accounts with non-default Primary Group ID](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#accounts-with-non-default-primary-group-id)
-- [ANSSI Active Directory checkpoints: Accounts with modified PrimaryGroupID](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_primary_group_id_nochange)
+#### Remediation action
+1. Validate required group membership, then restore an approved primary group through [AD administration](https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/adac/active-directory-administrative-center).
+2. Add documented legitimate RID exceptions to `AllowedPrimaryGroupIds`.
 
 <!--- Results --->
 %TestResult%

@@ -1,7 +1,7 @@
 User account SPNs with non-FQDN hosts can cause:
 
 - **Authentication failures**: Kerberos may fail to resolve short names
-- **Cross-domain issues**: Non-FQDNs don't work across domain trusts
+- **Cross-domain issues**: Short names may be ambiguous across domain trusts
 - **Service disruptions**: Applications may fail to authenticate
 - **Configuration drift**: Indicates inconsistent SPN management
 
@@ -21,12 +21,12 @@ Review and fix non-FQDN user SPNs:
 
 #### How the Test Works
 
-This test parses all user SPNs and checks if the host portion contains a dot (indicating FQDN format). SPNs without dots in the host portion are flagged as non-FQDN.
+This test parses user SPNs and checks whether the host portion contains a dot as a simple FQDN-format proxy. Short names are not necessarily invalid and require workload-specific review.
 
 #### Related Tests
 
-- `Test-MtAdComputerSpnNonFqdnHosts` - Checks computer SPNs for non-FQDN hosts
-- `Test-MtAdUserSpnTotalCount` - Overall user SPN analysis
+- **AD-SPN-05 — Computer SPN non-FQDN hosts should be investigated** — `Test-MtAdComputerSpnNonFqdnHosts` — Reviews computer SPN hosts.
+- **AD-SPN-06 — User SPN total count should be investigated** — `Test-MtAdUserSpnTotalCount` — Inventories user SPNs.
 
 <!--- Results --->
 %TestResult%

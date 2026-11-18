@@ -1,9 +1,4 @@
-- The structure of Organizational Units at the domain root level reveals important information about your Active Directory organization and management approach.
-- Directory hierarchy: A large number of root-level OUs may indicate a flat structure that lacks organizational depth
-- Management complexity: Many root-level OUs can make the directory harder to navigate and manage
-- Delegation planning: Understanding root-level OUs helps with planning administrative delegation boundaries
-- Organizational alignment: The OU structure should reflect your organization's logical structure
-- A well-designed OU hierarchy typically has fewer root-level OUs with meaningful nested structures beneath them, rather than many OUs all at the root level.
+Root-level OU inventory. The domain's OU hierarchy shapes administrative delegation and GPO targeting. A high root-level count can prompt design review, but no fixed number or nesting depth is universally correct.
 
 #### Control Type
 
@@ -11,23 +6,23 @@
 
 #### Security Recommendation
 
-- Consider implementing a hierarchical OU structure that:
-  - Minimizes the number of OUs at the domain root (typically 5-10 major containers)
-  - Groups related OUs under parent containers (e.g., by geography, department, or function)
-  - Makes the directory easier to navigate and manage
-  - Supports your Group Policy and delegation strategy
+1. Review the objects in **Active Directory Sites and Services** or **Active Directory Users and Computers**, as appropriate.
+2. Review the reported objects with the directory and network owners; update any outdated configuration only after checking intended topology and dependencies.
+
+Document the purpose of root-level OUs and review whether their hierarchy supports current delegation and policy design. Do not reorganize OUs merely to meet an arbitrary count.
 
 #### How the Test Works
 
-- This test retrieves all Organizational Units from Active Directory and:
-  - Identifies the domain's distinguished name
-  - Counts OUs that are direct children of the domain root
-  - Lists all root-level OUs with their distinguished names
+Finds OUs directly below the connected domain's root DN and lists their distinguished names. It is an inventory, not an enforcement check for a particular OU layout.
 
 #### Related Tests
 
-- `Test-MtAdOuOverlappingNameCount` - Identifies OUs with duplicate names
-- `Test-MtAdOuEmptyCount` - Finds OUs that contain no objects
+- **AD-OU-01 — OU names are unique across the hierarchy** — `Test-MtAdOuOverlappingNameCount` — Reviews overlapping OU names.
+- **AD-OU-04 — OUs with no selected visible direct children inventory** — `Test-MtAdOuEmptyCount` — Inventories OUs without selected visible children.
+
+#### Related links
+
+* [Microsoft Learn: Reviewing OU Design Concepts](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/reviewing-ou-design-concepts)
 
 <!--- Results --->
 %TestResult%

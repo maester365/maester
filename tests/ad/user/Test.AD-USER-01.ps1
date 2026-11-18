@@ -1,77 +1,46 @@
 ﻿function Test-MtAdUserDisabledCount {
-    <#
-    .SYNOPSIS
-    Counts the number of disabled user objects in Active Directory.
-
-    .DESCRIPTION
-    This test analyzes Active Directory user objects and counts how many accounts are
-    currently disabled. Disabled accounts are often expected during offboarding or
-    service account lifecycle management, but tracking them helps validate directory
-    hygiene and identify stale objects that should be removed.
-
+    <# .SYNOPSIS
+    Checks whether disabled ordinary users have exceeded the retention period.
     .EXAMPLE
-    Test-MtAdUserDisabledCount
-
+    Invoke-MtTest -Id AD-USER-01
+    Assess disabled ordinary users against the retention period.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdUserDisabledCount
+    https://maester.dev/docs/tests/AD-USER-01
     #>
     [MaesterTest(
         Id = 'AD-USER-01',
-        Title = 'Disabled user count should be retrievable',
+        Title = 'Disabled users should be removed after the retention period',
         Product = 'ad',
         Feature = 'users',
         Area = 'identity-lifecycle',
         ResourceType = 'User',
-        Severity = 'Info',
-        Mitre = 'None',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.002',
+        Control = 'nist-800-53-r5:AC-2(3)',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Maximum days since the last local modification of a disabled user before review.
+        [ValidateRange(1, 3650)]
+        [int] $RetentionDays = 180
+    )
 
-    Write-Verbose "Starting Test-MtAdUserDisabledCount"
-    $adState = Get-MtADDomainState -Categories @('Users')
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
-        return $null
-    }
-    Write-Verbose "Filtering/counting user disabled count"
-
-    $users = @($adState.Users)
-    $disabledUsers = @($users | Where-Object { $_.Enabled -eq $false })
-    $disabledCount = $disabledUsers.Count
-    $enabledCount = @($users | Where-Object { $_.Enabled -eq $true }).Count
-    $totalCount = $users.Count
-
-    $testResult = $null -ne $adState.Users
-
-    if ($testResult) {
-        $percentage = if ($totalCount -gt 0) {
-            [Math]::Round(($disabledCount / $totalCount) * 100, 2)
-        } else {
-            0
-        }
-
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Users | $totalCount |" + "`n"
-        $result += "| Enabled Users | $enabledCount |" + "`n"
-        $result += "| Disabled Users | $disabledCount |" + "`n"
-        $result += "| Disabled Percentage | $percentage% |" + "`n" + "`n"
-    Write-Verbose "Counts computed"
-
-        $testResultMarkdown = "Active Directory user objects have been analyzed. $disabledCount out of $totalCount users ($percentage%) are disabled.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory user objects. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    Write-Verbose "Completed Test-MtAdUserDisabledCount"
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Users')
+    if ($null -eq $state.Users) { throw 'AD user data was not returned.' }
+    if (@($state.Users | Where-Object { $null -eq $_.Enabled }).Count -gt 0) { throw 'User enabled state is missing; disabled-account scope cannot be established.' }
+    $old = @($state.Users | Where-Object {
+        if ($_.Enabled -ne $false -or -not (Test-MtAdUserOrdinaryIdentity $_)) { return $false }
+        if ($null -eq $_.Modified) { throw "Modification time missing for $($_.SamAccountName)." }
+        [datetime]$_.Modified -lt (Get-Date).AddDays(-$RetentionDays)
+    })
+    $table = Format-MtAdUserSecurityTable -Rows $old -Columns @('SamAccountName', 'Modified', 'DistinguishedName')
+    if ($old.Count) { Add-MtTestResultDetail -Result "Found $($old.Count) disabled ordinary users last modified more than $RetentionDays days ago; review retention and remove when approved. Modification time is not a disable date and may change for other reasons. Local whenChanged is not replicated.`n`n$table" }
+    else { Add-MtTestResultDetail -Result "Well done. No disabled ordinary user exceeds the $RetentionDays-day modification-age review threshold. This does not prove when each account was disabled." }
+    return ($old.Count -eq 0)
 }

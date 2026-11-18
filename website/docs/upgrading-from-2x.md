@@ -11,6 +11,126 @@ Maester 3.0 gives Maester its own test engine. The built-in tests are no longer 
 folder: they ship inside the module and run from there. Most runs need no change at all, but the way tests are
 installed, selected, configured and written has moved on. This page lists every change that can affect you.
 
+## Active Directory check consolidation
+
+Overlapping AD count/detail checks now produce one combined result. Historical inclusion **and exclusion** tags map to the surviving check. This preserves exclusion mapping but can broaden what an old exclusion suppresses: `-ExcludeTag AD-GPOREP-19` now excludes Critical **AD-GPOREP-17**, including both the `cpassword` and default-password checks. Audit existing exclusions and retain them only when excluding the entire merged control is intended. The native replacements are recorded in `build/golden/native-test-replacements.psd1`; this does not automatically migrate ID-based `TestSettings` rows.
+
+Existing exported AD collectors also distinguish collection failure from an empty inventory. The `GPOs` or `GPOReports` fields returned by `Get-MtADGpoState` can be `$null` when collection fails; an empty array is not an equivalent error signal. Custom tests must check for `$null` before calculating a clean result. Device inventory excludes managed service account classes; managed-account delegation remains covered by AD-DCOMP-01 and AD-DCOMP-03 through the separate ServiceAccounts collection.
+
+AD-CFG-22 treats zero **visible** KDS keys as Investigate unless complete key-inventory access has been independently confirmed with `KeyInventoryReadAccessConfirmed`. Do not create keys solely because a restricted identity returned an empty inventory.
+
+### Replaced AD check IDs
+
+The 90 removed IDs map to the surviving checks below. The mapping follows `build/golden/native-test-replacements.psd1`.
+Review the surviving check before moving an ID-based configuration: its scope or result classification can differ from the removed check.
+
+| Removed check ID | Surviving check ID |
+| --- | --- |
+| `AD-CFG-01` | `AD-FOR-03` |
+| `AD-CFG-04` | `AD-FEAT-01` |
+| `AD-CFG-05` | `AD-FOR-04` |
+| `AD-CFG-14` | `AD-CFG-13` |
+| `AD-CFG-16` | `AD-CFG-15` |
+| `AD-CFG-17` | `AD-CFG-15` |
+| `AD-CFG-18` | `AD-CFG-15` |
+| `AD-CFG-19` | `AD-CFG-15` |
+| `AD-CFG-24` | `AD-CFG-23` |
+| `AD-COMP-02` | `AD-DCOMP-06` |
+| `AD-COMP-09` | `AD-DCOMP-01` |
+| `AD-COMP-10` | `AD-DCOMP-03` |
+| `AD-DACL-04` | `AD-DACL-03` |
+| `AD-DACL-06` | `AD-DACL-05` |
+| `AD-DACL-08` | `AD-DACL-07` |
+| `AD-DACL-10` | `AD-DACL-09` |
+| `AD-DACL-12` | `AD-DACL-11` |
+| `AD-DACL-13` | `AD-DACL-11` |
+| `AD-DACL-16` | `AD-DACL-15` |
+| `AD-DACL-18` | `AD-DACL-17` |
+| `AD-DC-06` | `AD-DC-05` |
+| `AD-DC-08` | `AD-DC-07` |
+| `AD-DCD-02` | `AD-DCD-01` |
+| `AD-DCOMP-02` | `AD-DCOMP-01` |
+| `AD-DCOMP-05` | `AD-DCOMP-04` |
+| `AD-DCOMP-09` | `AD-DCOMP-08` |
+| `AD-DOM-06` | `AD-DOM-05` |
+| `AD-DOM-08` | `AD-DOM-07` |
+| `AD-FEAT-02` | `AD-FEAT-01` |
+| `AD-FGPP-02` | `AD-FGPP-01` |
+| `AD-FGPP-03` | `AD-FGPP-01` |
+| `AD-FGPP-04` | `AD-FGPP-01` |
+| `AD-FORS-02` | `AD-FORS-01` |
+| `AD-GMC-03` | `AD-GMC-02` |
+| `AD-GMC-05` | `AD-GMC-04` |
+| `AD-GMC-07` | `AD-GMC-06` |
+| `AD-GMC-09` | `AD-GMC-08` |
+| `AD-GMC-11` | `AD-GMC-10` |
+| `AD-GPO-03` | `AD-GPO-02` |
+| `AD-GPO-05` | `AD-GPO-04` |
+| `AD-GPOL-06` | `AD-GPOL-03` |
+| `AD-GPOREP-02` | `AD-GPOREP-01` |
+| `AD-GPOREP-04` | `AD-GPOREP-03` |
+| `AD-GPOREP-08` | `AD-GPOREP-07` |
+| `AD-GPOREP-11` | `AD-GPOREP-10` |
+| `AD-GPOREP-13` | `AD-GPOREP-12` |
+| `AD-GPOREP-16` | `AD-GPOREP-15` |
+| `AD-GPOREP-18` | `AD-GPOREP-17` |
+| `AD-GPOREP-19` | `AD-GPOREP-17` |
+| `AD-GPOREP-20` | `AD-GPOREP-17` |
+| `AD-GRP-07` | `AD-GRP-06` |
+| `AD-GRP-09` | `AD-GRP-08` |
+| `AD-GRP-10` | `AD-GRP-08` |
+| `AD-OU-05` | `AD-OU-04` |
+| `AD-PWDPOL-02` | `AD-PWDPOL-01` |
+| `AD-PWDPOL-03` | `AD-PWDPOL-01` |
+| `AD-PWDPOL-04` | `AD-PWDPOL-01` |
+| `AD-PWDPOL-05` | `AD-PWDPOL-01` |
+| `AD-PWDPOL-06` | `AD-PWDPOL-01` |
+| `AD-PWDPOL-07` | `AD-PWDPOL-01` |
+| `AD-ROOTDSE-02` | `AD-ROOTDSE-01` |
+| `AD-SCH-02` | `AD-SCH-01` |
+| `AD-SCH-04` | `AD-SCH-03` |
+| `AD-SITE-03` | `AD-SITE-02` |
+| `AD-SITE-05` | `AD-SITE-04` |
+| `AD-SPN-02` | `AD-SPN-01` |
+| `AD-SPN-04` | `AD-SPN-03` |
+| `AD-SPN-08` | `AD-SPN-07` |
+| `AD-SPN-10` | `AD-SPN-09` |
+| `AD-SPN-13` | `AD-SPN-12` |
+| `AD-SUB-01` | `AD-SITE-04` |
+| `AD-SUB-02` | `AD-SITE-04` |
+| `AD-SUB-05` | `AD-SUB-04` |
+| `AD-SUB-07` | `AD-SUB-06` |
+| `AD-SUB-09` | `AD-SUB-08` |
+| `AD-SUB-10` | `AD-SUB-08` |
+| `AD-SUB-11` | `AD-SITE-04` |
+| `AD-TRUST-04` | `AD-TRUST-03` |
+| `AD-TRUST-05` | `AD-TRUST-01` |
+| `AD-TRUST-07` | `AD-TRUST-06` |
+| `AD-USER-14` | `AD-SPN-06` |
+| `AD-USER-17` | `AD-USER-16` |
+| `AD-USER-18` | `AD-USER-16` |
+| `AD-USER-21` | `AD-USER-20` |
+| `AD-USER-23` | `AD-USER-22` |
+| `AD-USER-24` | `AD-USER-22` |
+| `AD-USER-25` | `AD-USER-22` |
+| `AD-USER-27` | `AD-USER-26` |
+| `AD-USER-28` | `AD-USER-05` |
+| `AD-USER-29` | `AD-USER-05` |
+
+### Second AD review batch
+
+The additional convention review restores native `.EXAMPLE`/`.LINK` help and preserves accurate explanatory sections and visual status indicators. COMP-01 remains a lifecycle inventory and reports unknown enabled states separately. DCD-04 now defaults to inventory; configure `AssessmentMode = 'AllGlobalCatalogs'` for an all-DCs-as-GCs policy or `MinimumForestCatalog` for the prior minimum availability baseline. FOR-03's configurable 180-day advisory is informational and retains the correct 60-day unset-attribute behavior.
+
+Live validation corrected snapshot-shape and RID-decoding regressions: ordered-dictionary inventories are now accepted, empty retrieved collections remain distinct from failed collection, and RID low-word extraction no longer casts a signed hexadecimal mask. AD-DC-07 and AD-FOR-01 exclude other-domain DCs from their connected-domain support assessment. AD-FOR-01 does not establish forest-wide upgrade eligibility; every domain must be validated before changing the forest level.
+
+The review follow-up restores accurate guide sections and complete related-test identities. AD-SCH-05 covers both Windows and legacy Microsoft LAPS schema pairs without claiming deployment or rotation. AD-FOR-04 has Low severity and Low implementation cost, with enabled scopes and forest context retained in its result. Complete member scans AD-GMC-01/02/04/06/08 are now LongRunning; use `-IncludeLongRunning` or select the exact test ID when that inventory is required. Missing required data produces a per-test Error while reports continue to generate.
+
+Password checks now consolidate under AD-PWDPOL-01 (default domain policy) and AD-FGPP-01 (individual PSOs and visible usage). The configurable `CurrentNist` profile defaults to 15 characters and no forced periodic expiration; `LegacyRotation` is an organization-selected alternative, not earlier NIST guidance. The checks observe composition and explicitly require a verified blocklist before any decision to remove complexity rules. Visibility confirmation is separate from the selected profile.
+
+USER lifecycle checks now use explicit criteria, retention/idle periods, manager exclusions and approved absolute path roots. Empty approved-path lists approve no absolute paths; relative NETLOGON scripts remain manual review. Protected disabled system identities are not cleanup findings. SITE-04 absorbs SUB-01, SUB-02 and SUB-11 while retaining both directions of the association assessment. USER-05 moves to the delegation folder and includes former USER-28/29. The engine still has one `Feature`; cross-feature coverage is explained in details and linked guides instead of adding an unsupported secondary feature.
+
+Shared exported collector results gained raw domain/forest functional-level values, stable FSMO owner DNs, normalized policy booleans/interval semantics, user resultant-policy and protected-account metadata, and DC OS/build evidence. DCs in other domains may have unknown computer metadata on a restricted connection; their collection errors remain per record. Previously hard-coded LDAP/LDAPS port values are now null with a not-measured annotation. Custom tests must not treat these null fields as healthy values.
+
 ## Requirements
 
 - **PowerShell 7.4 or later** (the `Core` edition) on Linux, macOS, or Windows. The module no longer loads in Windows PowerShell 5.1.

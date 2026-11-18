@@ -8,10 +8,11 @@
     -Tag CA, -Tag CIS, -ExcludeTag MS.AAD.3.5 and every other 2.x tag keep selecting the same tests, the
     module ships a table that maps each 2.x tag to the IDs of the built-in tests that carried it.
 
-    The table is derived from two frozen files and nothing else, so the output never changes with tests/:
+    The table is derived from two frozen files and explicit native test replacements:
 
       powershell/tests/fixtures/golden/tags-and-blocks.json    the tags of every built-in test in 2.x
-      powershell/tests/fixtures/golden/tags-3.0-preview.json   tags the 3.0 previews added (for example AI)
+       powershell/tests/fixtures/golden/tags-3.0-preview.json   tags the 3.0 previews added (for example AI)
+       build/golden/native-test-replacements.psd1             intentional renames and consolidations
 
     Rules:
       - A tag is matched case-insensitively; the table keeps the first spelling of the snapshot.
@@ -22,7 +23,8 @@
         obvious one ($Replacements below, and -Severity for Severity:<value>). The engine names it in the
         warning it writes when a run selects through the tag.
 
-    Tests added after 3.0 are not in the table. The file is generated once and is not edited by hand;
+    Tests added after 3.0 are not in the table unless they explicitly replace a historical check.
+    The file is regenerated when native replacements change and is never edited by hand;
     powershell/tests/functions/golden/Golden.Tests.ps1 checks that it is what this script produces.
 
     .EXAMPLE
@@ -49,10 +51,8 @@ $ErrorActionPreference = 'Stop'
 $RepoRoot = (Resolve-Path -Path $RepoRoot).Path
 $fixtures = Join-Path $RepoRoot 'powershell/tests/fixtures/golden'
 
-# 2.x IDs that have another ID in 3.0.
-$RenamedIds = @{
-    'MT1060' = 'MT.1060' # The drift family: four Its per folder in 2.x, one native family in 3.0.
-}
+# Explicit replacements, never a dynamic filter that could hide an accidental test deletion.
+$RenamedIds = Import-PowerShellDataFile -LiteralPath (Join-Path $RepoRoot 'build/golden/native-test-replacements.psd1')
 
 # The typed selector that takes the place of a tag. Only tags with an obvious one are listed.
 $Replacements = [ordered]@{

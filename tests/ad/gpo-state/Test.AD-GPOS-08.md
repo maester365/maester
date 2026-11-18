@@ -16,7 +16,7 @@
 - Retrieves GPO state, extracts Owner fields, computes distinct non-empty owners, and reports the count.
 
 #### Related Tests
-- `Test-MtAdGpoOwnerDetails` - summarizes owners per GPOs.
+- **AD-GPOS-09 — GPO owner details should be investigated** — `Test-MtAdGpoOwnerDetails` — Summarizes owners per GPO.
 
 #### Related links
 - [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 

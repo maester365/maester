@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-TRUST-01',
-        Title = 'Trust total count should be investigated',
+        Title = 'Trust count and configuration should be investigated',
         Product = 'ad',
         Feature = 'trusts',
         Area = 'external-access',
@@ -41,22 +41,33 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+        throw 'Active Directory trust inventory was not returned.'
     }
 
     $trusts = $adState.Trusts
+    if ($null -eq $trusts) { throw 'Active Directory trusts were not returned.' }
 
     # Count total trusts
     $totalCount = ($trusts | Measure-Object).Count
 
     # Test passes if we successfully retrieved trust data
-    $testResult = $true
+    $testResult = $null -ne $adState.Trusts
 
     # Generate markdown results
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
     $result += "| Total Trusts | $totalCount |" + "`n" + "`n"
+    if ($totalCount -gt 0) {
+        $result += "| Target | Direction | Type | Within forest | Quarantined | Selective authentication |`n"
+        $result += "| --- | --- | --- | --- | --- | --- |`n"
+        foreach ($trust in $trusts) {
+            $bits = $trust.TrustAttributes
+            $withinForest = if ($null -eq $bits) { 'Unknown' } elseif (([int]$bits -band 0x20) -ne 0) { 'Yes' } else { 'No' }
+            $quarantined = if ($null -eq $bits) { 'Unknown' } elseif (([int]$bits -band 0x4) -ne 0) { 'Yes' } else { 'No' }
+            $selective = if ($null -eq $bits) { 'Unknown' } elseif (([int]$bits -band 0x10) -ne 0) { 'Yes' } else { 'No' }
+            $result += "| $($trust.TrustPartner) | $($trust.Direction) | $($trust.TrustTypeName) | $withinForest | $quarantined | $selective |`n"
+        }
+    }
 
     if ($totalCount -eq 0) {
         $testResultMarkdown = "No Active Directory trusts are configured in this domain. This is typical for single-domain environments.`n`n%TestResult%"

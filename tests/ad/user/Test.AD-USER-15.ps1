@@ -1,80 +1,39 @@
 ﻿function Test-MtAdUserManagerSetCount {
-    <#
-    .SYNOPSIS
-    Counts users with the manager attribute set in Active Directory.
-
-    .DESCRIPTION
-    This test identifies user objects where the Manager attribute is populated.
-    While this is not inherently a security issue, manager relationships are often
-    used in approval workflows, access reviews, and delegated business processes.
-    Understanding coverage helps assess the reliability of identity governance data.
-
+    <# .SYNOPSIS
+    Checks for enabled ordinary users missing a manager for access review.
     .EXAMPLE
-    Test-MtAdUserManagerSetCount
-
-    Returns $true if user data is accessible, $false otherwise.
-    The test result includes the count of users with a manager assigned.
-
+    Invoke-MtTest -Id AD-USER-15
+    Assess enabled ordinary users for missing manager assignments.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdUserManagerSetCount
+    https://maester.dev/docs/tests/AD-USER-15
     #>
     [MaesterTest(
         Id = 'AD-USER-15',
-        Title = 'User manager count should be retrievable',
+        Title = 'Enabled ordinary users should have a manager',
         Product = 'ad',
         Feature = 'users',
         Area = 'identity-lifecycle',
         ResourceType = 'User',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
+        Control = 'nist-800-53-r5:AC-2',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Ordinary account IDs (sAMAccountName or distinguished name) without a manager by design.
+        [string[]] $ExcludedUsers = @()
+    )
 
-    Write-Verbose "Starting Test-MtAdUserManagerSetCount"
-    $adState = Get-MtADDomainState -Categories @('Users')
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
-        return $null
-    }
-    Write-Verbose "Filtering/counting user manager set count"
-
-    $users = $adState.Users
-    $usersWithManager = $users | Where-Object {
-        -not [string]::IsNullOrWhiteSpace($_.Manager)
-    }
-
-    $managerCount = ($usersWithManager | Measure-Object).Count
-    $totalCount = ($users | Measure-Object).Count
-    $testResult = $totalCount -gt 0
-
-    if ($testResult) {
-        $percentage = if ($totalCount -gt 0) {
-            [Math]::Round(($managerCount / $totalCount) * 100, 2)
-        } else {
-            0
-        }
-
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Users | $totalCount |" + "`n"
-        $result += "| Users with Manager Set | $managerCount |" + "`n"
-        $result += "| Manager Coverage | $percentage% |" + "`n" + "`n"
-    Write-Verbose "Counts computed"
-
-        $testResultMarkdown = "Active Directory users have been analyzed. $managerCount out of $totalCount users ($percentage%) have the Manager attribute populated.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory users. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    Write-Verbose "Completed Test-MtAdUserManagerSetCount"
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Users')
+    if ($null -eq $state.Users) { throw 'AD user data was not returned.' }
+    $found = @($state.Users | Where-Object { $_.Enabled -eq $true -and (Test-MtAdUserOrdinaryIdentity $_) -and [string]::IsNullOrWhiteSpace($_.Manager) -and $ExcludedUsers -notcontains $_.SamAccountName -and $ExcludedUsers -notcontains $_.DistinguishedName })
+    if ($found.Count) { Add-MtTestResultDetail -Result "Found $($found.Count) enabled ordinary users without a manager. Assign owners or document exclusions for access reviews.`n`n$(Format-MtAdUserSecurityTable $found @('SamAccountName', 'DistinguishedName'))" }
+    else { Add-MtTestResultDetail -Result 'Well done. Enabled ordinary users have managers or approved exclusions.' }
+    return ($found.Count -eq 0)
 }

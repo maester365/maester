@@ -43,9 +43,8 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
     Write-Verbose "Retrieved AD state"
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Computers) {
+        throw 'Computer inventory is required to review DNS host names.'
     }
     Write-Verbose "Filtering/counting computer dns host name count"
 
@@ -59,7 +58,7 @@
     $withoutDnsCount = ($computersWithoutDns | Measure-Object).Count
     $totalComputers = ($computers | Measure-Object).Count
 
-    $testResult = $true
+    $testResult = $null -ne $adState.Computers
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
@@ -78,7 +77,9 @@
         $result += "| --- | --- |" + "`n"
 
         foreach ($comp in $computersWithoutDns | Select-Object -First 10) {
-            $result += "| $($comp.Name) | $($comp.operatingSystem) |" + "`n"
+            $name = [string]$comp.Name -replace '\|', '\|' -replace '[\r\n]', ' '
+            $os = [string]$comp.OperatingSystem -replace '\|', '\|' -replace '[\r\n]', ' '
+            $result += "| $name | $os |`n"
         }
 
         if ($withoutDnsCount -gt 10) {

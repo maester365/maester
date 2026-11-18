@@ -4,10 +4,11 @@
     Counts non-domain controller computers with constrained delegation configured.
 
     .DESCRIPTION
-    Constrained delegation (also known as "protocol transition" or "S4U2Proxy")
-    allows a service to impersonate a user to specific services only. While safer
-    than unconstrained delegation, it should still be carefully reviewed and minimized.
-    This test identifies non-DC computers with constrained delegation enabled.
+    Inventories classic Kerberos constrained delegation target SPNs, the
+    TrustedToAuthForDelegation protocol-transition flag, and presence of an RBCD
+    security descriptor on non-DC computers and sMSA, gMSA and dMSA objects. RBCD presence does not
+    identify allowed principals or establish effective access. These categories
+    can overlap and do not include delegation configured on user accounts.
 
     Security Considerations:
     - Constrained delegation is safer than unconstrained but still carries risk
@@ -18,14 +19,14 @@
     .EXAMPLE
     Test-MtAdComputerNonDcConstrainedDelegationCount
 
-    Returns $true if computer data is accessible.
+    Reports an Investigate inventory when the required computer fields are available.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdComputerNonDcConstrainedDelegationCount
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-03',
-        Title = 'Non-DC computers with constrained delegation count should be investigated',
+        Title = 'Non-DC computer and managed account constrained delegation should be investigated',
         Product = 'ad',
         Feature = 'computers',
         Area = 'authentication',
@@ -33,7 +34,7 @@
         Severity = 'Info',
         Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty'),
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:msDS-ManagedServiceAccount:ReadProperty', 'ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount:ReadProperty', 'ActiveDirectory:Ldap:msDS-DelegatedManagedServiceAccount:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
@@ -41,62 +42,76 @@
     param()
 
     Write-Verbose "Starting Test-MtAdComputerNonDcConstrainedDelegationCount"
-    $adState = Get-MtADDomainState -Categories @('Computers', 'DomainControllers')
+    $adState = Get-MtADDomainState -Categories @('Computers', 'DomainControllers', 'ServiceAccounts')
     Write-Verbose "Retrieved AD state"
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Computers -or $null -eq $adState.DomainControllers -or $null -eq $adState.ServiceAccounts) {
+        throw 'Computer and domain controller inventories are required to review constrained delegation.'
     }
     Write-Verbose "Filtering/counting computer non dc constrained delegation count"
 
     $computers = $adState.Computers
     $domainControllers = $adState.DomainControllers
+    if (@($computers).Count -eq 0 -or @($domainControllers).Count -eq 0) {
+        throw 'Computer and domain controller inventories must not be empty when reviewing constrained delegation.'
+    }
 
-    # Get list of DC names
-    $dcNames = $domainControllers | ForEach-Object { $_.Name }
+    # Device inventory stays separate from managed accounts; both are assessed for delegation.
+    $nonDcComputers = @($computers | Where-Object {
+            -not (Test-MtAdDomainControllerAccount -Account $_ -DomainControllers $domainControllers)
+        })
+    $managedAccounts = @($adState.ServiceAccounts)
+    $nonDcAccounts = @($nonDcComputers) + @($managedAccounts)
+    if (@($nonDcAccounts | Where-Object {
+                -not $_.PSObject.Properties['AllowedToDelegateTo'] -or $null -eq $_.AllowedToDelegateTo -or
+                -not $_.PSObject.Properties['HasResourceBasedConstrainedDelegation'] -or $null -eq $_.HasResourceBasedConstrainedDelegation -or
+                -not $_.PSObject.Properties['TrustedToAuthForDelegation'] -or $null -eq $_.TrustedToAuthForDelegation
+            }).Count -gt 0) {
+        throw 'Required delegation fields are missing from the non-DC computer inventory; a zero count cannot be trusted.'
+    }
 
-    # Find non-DC computers with constrained delegation
-    $nonDcComputers = $computers | Where-Object { $dcNames -notcontains $_.Name }
-    $nonDcConstrained = $nonDcComputers | Where-Object { $_.TrustedToAuthForDelegation -eq $true }
-    $nonDcConstrainedCount = ($nonDcConstrained | Measure-Object).Count
-
-    # Also check for computers with both types of delegation
-    $nonDcBoth = $nonDcComputers | Where-Object { $_.TrustedToAuthForDelegation -eq $true -and $_.TrustedForDelegation -eq $true }
-    $nonDcBothCount = ($nonDcBoth | Measure-Object).Count
-
-    $totalNonDcComputers = ($nonDcComputers | Measure-Object).Count
-    $testResult = $true
+    $classicKcd = @($nonDcAccounts | Where-Object { @($_.AllowedToDelegateTo).Count -gt 0 })
+    $protocolTransition = @($nonDcAccounts | Where-Object { $_.TrustedToAuthForDelegation -eq $true })
+    $rbcdPresent = @($nonDcAccounts | Where-Object { $_.HasResourceBasedConstrainedDelegation -eq $true })
+    $reviewComputers = @($nonDcAccounts | Where-Object {
+            @($_.AllowedToDelegateTo).Count -gt 0 -or $_.TrustedToAuthForDelegation -eq $true -or $_.HasResourceBasedConstrainedDelegation -eq $true
+        })
+    $totalNonDcComputers = $nonDcComputers.Count
+    $totalNonDcAccounts = $nonDcAccounts.Count
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
     $result += "| Total Non-DC Computers | $totalNonDcComputers |" + "`n"
-    $result += "| Non-DC Computers with Constrained Delegation | $nonDcConstrainedCount |" + "`n"
-    $result += "| Non-DC Computers with Both Delegation Types | $nonDcBothCount |" + "`n"
-
-    if ($nonDcConstrainedCount -gt 0) {
-        $percentage = [Math]::Round(($nonDcConstrainedCount / $totalNonDcComputers) * 100, 2)
-        $result += "| Percentage with Constrained Delegation | $percentage% |" + "`n"
+    $result += "| Managed Service Accounts | $($managedAccounts.Count) |`n"
+    $result += "| Non-DC Accounts with Classic KCD Target SPNs | $($classicKcd.Count) |`n"
+    $result += "| Non-DC Accounts with Protocol Transition Flag | $($protocolTransition.Count) |`n"
+    $result += "| Non-DC Accounts with RBCD Descriptor Present | $($rbcdPresent.Count) |`n"
+    $result += "| Distinct Non-DC Accounts with One or More Indicators | $($reviewComputers.Count) |`n"
+    if ($totalNonDcAccounts -gt 0) {
+        $percentage = [Math]::Round(($reviewComputers.Count / $totalNonDcAccounts) * 100, 2)
+        $result += "| Percentage of Non-DC Accounts with an Indicator | $percentage% |`n"
     }
 
-    if ($nonDcConstrainedCount -gt 0) {
-        $result += "`n**Non-DC Computers with Constrained Delegation:**" + "`n" + "`n"
-        $result += "| Computer Name | Operating System |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        foreach ($comp in $nonDcConstrained | Select-Object -First 10) {
-            $result += "| $($comp.Name) | $($comp.operatingSystem) |" + "`n"
+    if ($reviewComputers.Count -gt 0) {
+        $result += "`n**Non-DC Accounts to Review (Top 10):**`n`n"
+        $result += "| Account | Classic KCD Target SPNs | Protocol Transition Flag | RBCD Descriptor Present |`n| --- | --- | --- | --- |`n"
+        foreach ($computer in $reviewComputers | Select-Object -First 10) {
+            $name = [string]$computer.Name -replace '\|', '\|' -replace '[\r\n]', ' '
+            $spns = [string](@($computer.AllowedToDelegateTo) -join ', ') -replace '\|', '\|' -replace '[\r\n]', ' '
+            if (-not $spns) { $spns = 'None' }
+            $result += "| $name | $spns | $($computer.TrustedToAuthForDelegation) | $($computer.HasResourceBasedConstrainedDelegation) |`n"
         }
-        if ($nonDcConstrainedCount -gt 10) {
-            $result += "| ... and $($nonDcConstrainedCount - 10) more | |" + "`n"
+        if ($reviewComputers.Count -gt 10) {
+            $result += "| ... and $($reviewComputers.Count - 10) more | | | |`n"
         }
     }
     Write-Verbose "Counts computed"
 
-    $testResultMarkdown = "Non-DC computers with constrained delegation have been identified. These should be reviewed to ensure they are necessary and properly configured.`n`n%TestResult%"
+    $testResultMarkdown = "Review non-DC computer and managed service account classic KCD target SPNs, protocol transition and RBCD descriptor presence. RBCD presence does not identify allowed principals or prove effective access; categories can overlap.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerNonDcConstrainedDelegationCount"
 
-    return $testResult
+    return $true
 }

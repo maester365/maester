@@ -10,13 +10,12 @@
     recovery and replication stability.
 
     .EXAMPLE
-    Test-MtAdTombstoneLifetime
+    Invoke-MtTest -Id AD-FOR-03
 
-    Returns $true if tombstone lifetime data is accessible.
-    The test result includes the current tombstone lifetime value.
+    Reports configured/effective lifetime and advisory status for investigation.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdTombstoneLifetime
+    https://maester.dev/docs/tests/AD-FOR-03
     #>
     [MaesterTest(
         Id = 'AD-FOR-03',
@@ -33,53 +32,38 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Organization-selected advisory minimum; this does not create a pass/fail threshold.
+        [ValidateRange(1, 3650)]
+        [int] $RecommendedMinimumDays = 180
+    )
 
     Write-Verbose "Starting Test-MtAdTombstoneLifetime"
 
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState -Categories @('Configuration', 'Forest')
 
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Configuration) {
+        throw 'Unable to retrieve the Directory Service configuration; tombstone lifetime cannot be determined.'
+    }
+    if ($adState.Configuration.PSObject.Properties.Name -contains 'DirectoryServiceRetrieved' -and
+        $adState.Configuration.DirectoryServiceRetrieved -ne $true) {
+        throw 'Directory Service object could not be retrieved; an absent tombstone lifetime cannot be inferred.'
     }
 
-    # Get tombstone lifetime from the collected directory configuration
-    $tombstoneLifetime = $adState.Configuration.TombstoneLifetime
-
-    # Default values: 60 days for older forests, 180 days for newer forests
-    $defaultValue = 180
-    if ($null -eq $tombstoneLifetime) {
-        $tombstoneLifetime = $defaultValue
-        $isDefault = $true
-    } else {
-        $isDefault = $false
-    }
-
-    # Test passes if we successfully retrieved tombstone lifetime
-    $testResult = $null -ne $tombstoneLifetime
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Property | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Tombstone Lifetime | $tombstoneLifetime days |" + "`n"
-        $result += "| Default Value | $defaultValue days |" + "`n"
-        $result += "| Using Default | $isDefault |" + "`n"
-        $result += "| Forest Name | $($adState.Forest.Name) |" + "`n"
-
-        $recommendation = if ($tombstoneLifetime -ge 180) { "✅ Meets recommendation (180+ days)" } else { "⚠️ Below recommendation (180 days)" }
-        $result += "| Recommendation | $recommendation |" + "`n"
-
-        $testResultMarkdown = "The Active Directory tombstone lifetime has been retrieved. Deleted objects are retained for $tombstoneLifetime days before permanent removal.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve tombstone lifetime. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $configured = $adState.Configuration.TombstoneLifetime
+    $usingDefault = $null -eq $configured -or [string]::IsNullOrWhiteSpace([string]$configured)
+    # An absent tombstoneLifetime attribute means 60 days, including in upgraded forests.
+    $effective = if ($usingDefault) { 60 } else { [int]$configured }
+    if ($effective -le 0) { throw 'The effective tombstone lifetime must be a positive number of days.' }
+    $configuredText = if ($usingDefault) { 'Not set' } else { "$configured days" }
+    $result = "| Property | Value |`n| --- | --- |`n"
+    $result += "| Configured tombstoneLifetime | $configuredText |`n"
+    $result += "| Effective tombstone lifetime | $effective days |`n"
+    $result += "| Using the unset-attribute default (60 days) | $usingDefault |`n"
+    $result += "| Forest name | $($adState.Forest.Name) |`n"
+    $result += "| Advisory minimum | $RecommendedMinimumDays days |`n"
+    $result += "| Advisory status | $(if ($effective -ge $RecommendedMinimumDays) { '✅ Meets advisory' } else { '⚠️ Below advisory' }) |`n"
+    Add-MtTestResultDetail -Result "ℹ️ Review tombstone retention against replication outage, backup age and recovery requirements. The advisory minimum is organization-selected, not a universal Microsoft requirement, and does not change this inventory into a pass/fail baseline. An unset attribute still has the effective 60-day default. Deleted-object recoverability with Recycle Bin also depends on deleted-object lifetime. Coverage crosswalk: former AD-CFG-01 is included here, with forest context linked through AD-FOR-01 and AD-FOR-04.`n`n$result" -Investigate
+    return $true
 }

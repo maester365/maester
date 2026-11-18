@@ -15,8 +15,6 @@
 #### How the Test Works
 - Fetches GPO state, filters for HasEnforcement, and reports total GPOs, number with enforcement, and the ratio.
 
-#### Related Tests
-- `Test-MtAdGpoEnforcementCount`.
 
 #### Related links
 - [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 

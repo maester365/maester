@@ -26,7 +26,7 @@ This test retrieves all Active Directory replication connections and identifies:
 
 #### Related Tests
 
-- `Test-MtAdDisabledReplicationConnectionCount` - Identifies disabled replication connections
+- **AD-REPL-01 — No replication connections should be disabled** — `Test-MtAdDisabledReplicationConnectionCount` — Identifies disabled replication connections.
 
 <!--- Results --->
 %TestResult%

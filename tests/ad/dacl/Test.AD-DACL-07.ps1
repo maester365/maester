@@ -1,7 +1,7 @@
 ﻿function Test-MtAdDaclDistinctIdentityCount {
     <#
     .SYNOPSIS
-    Counts distinct identities referenced by DACL ACEs.
+    Counts distinct identities and reports ACE distribution by identity.
 
     .DESCRIPTION
     This test retrieves cached DACL entry data from Active Directory and counts the
@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-07',
-        Title = 'Distinct DACL identity count should be investigated',
+        Title = 'DACL identity counts and ACE distribution should be investigated',
         Product = 'ad',
         Feature = 'permissions',
         Area = 'access-control',
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Platform = 'Windows',
         Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         LongRunning,
         Author = 'soulemike'
@@ -42,17 +43,18 @@
     }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-    if ($null -eq $adState.DaclEntries) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'DACL data is unavailable.'
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.DaclEntries) {
+        throw 'DACL data is unavailable.'
     }
     Write-Verbose "Filtering/counting dacl distinct identity count"
 
-    $daclEntries = @($adState.DaclEntries)
+    $daclEntries = @($adState.DaclEntries | Where-Object { $null -ne $_ })
+    if ($daclEntries.Count -eq 0) {
+        throw 'No DACL entries were collected; cannot assess identity distribution.'
+    }
+    if (@($daclEntries | Where-Object { [string]::IsNullOrWhiteSpace($_.ObjectDN) -or [string]::IsNullOrWhiteSpace($_.AccessControlType) }).Count -gt 0) {
+        throw 'DACL entries are missing object names or access control types.'
+    }
     $totalAceCount = ($daclEntries | Measure-Object).Count
     $distinctIdentityReferences = @(
         $daclEntries |
@@ -72,7 +74,7 @@
         Sort-Object -Property @{ Expression = 'Count'; Descending = $true }, @{ Expression = 'Name'; Descending = $false } |
         Select-Object -First 1
 
-    $testResult = $true
+    $testResult = $null -ne $adState.DaclEntries
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
@@ -85,6 +87,17 @@
         $largestIdentityName = $largestIdentityName -replace '\|', '\\&#124;'
         $result += "| Identity with most ACEs | $largestIdentityName |" + "`n"
         $result += "| ACEs for most represented identity | $($largestIdentityGroup.Count) |" + "`n"
+    }
+    $result += "`n| Identity Reference | ACE Count | Distinct Objects | Allow ACEs | Deny ACEs |`n| --- | --- | --- | --- | --- |`n"
+    foreach ($group in @($daclEntries | Where-Object { -not [string]::IsNullOrWhiteSpace($_.IdentityReference) } | Group-Object IdentityReference | Sort-Object -Property @{ Expression = 'Count'; Descending = $true }, Name)) {
+        $identity = ([string]$group.Name) -replace '\|', '&#124;'
+        $objects = @($group.Group | Where-Object { -not [string]::IsNullOrWhiteSpace($_.ObjectDN) } | Select-Object -ExpandProperty ObjectDN -Unique).Count
+        $allows = @($group.Group | Where-Object { $_.AccessControlType -eq 'Allow' }).Count
+        $denies = @($group.Group | Where-Object { $_.AccessControlType -eq 'Deny' }).Count
+        $result += "| $identity | $($group.Count) | $objects | $allows | $denies |`n"
+    }
+    if ($distinctIdentityCount -eq 0) {
+        $result += "| No identities found | 0 | 0 | 0 | 0 |`n"
     }
     Write-Verbose "Counts computed"
 

@@ -1,24 +1,31 @@
-Enterprise Certification Authorities (CAs) issue certificates for domain authentication and other PKI-dependent services. An unauthorized or newly introduced Enterprise CA can issue valid certificates that authenticate users/computers, enabling impersonation, man-in-the-middle attacks, and potential privilege escalation.
+Inventories Enterprise certification authorities in Active Directory, including each CA's DNS host and published template names.
+
+Review the count and identities against your approved PKI inventory. A CA or template count alone does not establish whether issuance is secure.
 
 #### Control Type
 
 **Operational**
 
 #### Security Recommendation
-- Maintain an allowlist of approved Enterprise CAs and treat CA additions as high-risk change events.
-- Ensure only designated PKI administrators can create/modify CA objects.
-- Validate CA certificate chains and revocation configuration after any CA change.
-- Monitor and alert on deviations in the number of Enterprise CAs.
+
+Maintain an approved CA inventory and review additions or publication changes with PKI administrators. Verify issuance permissions and certificate health separately; a count alone does not establish security.
 
 #### How the Test Works
-- Enumerates Enterprise CA objects in Active Directory (enrollment-capable CA configuration objects).
-- Counts how many Enterprise CAs are configured.
-- Compares the observed count against the environment baseline and flags unexpected values.
+
+The test enumerates Enterprise CA objects with DNS hosts and published template names; it reports an inventory rather than comparing the count against a universal baseline.
 
 #### Related Tests
-- [Test-MtAdEnrollmentCaCertificateDetails](./Test-MtAdEnrollmentCaCertificateDetails.md): Reviews CA certificate validity periods and integrity.
-- [Test-MtAdCertificateTemplatesCount](./Test-MtAdCertificateTemplatesCount.md): Ensures template exposure isn’t expanded beyond approved policies.
-- [Test-MtAdTrustedRootCaCount](./Test-MtAdTrustedRootCaCount.md): Verifies trusted PKI trust anchors.
+
+- **AD-CFG-13 — Certificate template publication inventory** — `Test-MtAdCertificateTemplatesCount` — Cross-references published template names.
+- **AD-CFG-15 — CA certificate inventory** — `Test-MtAdEnrollmentCaCertificateDetails` — Inventories public CA certificates.
+
+#### Remediation action
+
+Review unexpected CA entries and template publications in the Active Directory **Enrollment Services** container with your PKI owner before changing them. Do not remove a CA or template solely because of this inventory.
+
+#### Related links
+
+* [Certificate template concepts](https://learn.microsoft.com/windows-server/identity/ad-cs/certificate-template-concepts)
 
 <!--- Results --->
 %TestResult%

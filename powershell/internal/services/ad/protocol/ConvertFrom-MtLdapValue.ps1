@@ -58,6 +58,8 @@
             'minpwdage',
             'lockoutduration',
             'msds-lockoutduration',
+            'lockoutobservationwindow',
+            'msds-lockoutobservationwindow',
             'msds-maximumpasswordage',
             'msds-minimumpasswordage'
         )
@@ -107,7 +109,7 @@
             }
         }
 
-        if ($NormalizedAttributeName -in @('iscriticalsystemobject', 'enabledconnection', 'msds-passwordcomplexityenabled', 'msds-isrodc')) {
+        if ($NormalizedAttributeName -in @('iscriticalsystemobject', 'enabledconnection', 'msds-passwordcomplexityenabled', 'msds-passwordreversibleencryptionenabled', 'msds-isrodc')) {
             $convertedBoolean = $false
             if ([bool]::TryParse($InputValue, [ref]$convertedBoolean)) {
                 return $convertedBoolean
@@ -162,7 +164,7 @@
 
     if ($Value -is [byte[]]) {
         switch ($normalizedAttributeName) {
-            { $_ -in @('objectsid', 'sidhistory', 'securityidentifier') } {
+            { $_ -in @('objectsid', 'sidhistory', 'securityidentifier', 'ms-ds-creatorsid') } {
                 try {
                     return New-Object System.Security.Principal.SecurityIdentifier -ArgumentList $Value, 0
                 }
@@ -206,7 +208,7 @@
     }
 
     if ($Value -is [System.Security.Principal.SecurityIdentifier]) {
-        if ($normalizedAttributeName -in @('objectsid', 'sidhistory', 'securityidentifier')) {
+        if ($normalizedAttributeName -in @('objectsid', 'sidhistory', 'securityidentifier', 'ms-ds-creatorsid')) {
             return $Value
         }
 
@@ -225,7 +227,7 @@
         return [int]$Value
     }
 
-    if ($normalizedAttributeName -in @('maxpwdage', 'minpwdage', 'lockoutduration', 'msds-lockoutduration', 'msds-maximumpasswordage', 'msds-minimumpasswordage')) {
+    if ($normalizedAttributeName -in @('maxpwdage', 'minpwdage', 'lockoutduration', 'lockoutobservationwindow', 'msds-lockoutduration', 'msds-lockoutobservationwindow', 'msds-maximumpasswordage', 'msds-minimumpasswordage')) {
         $intervalValue = [long]$Value
         if ($intervalValue -eq [long]::MinValue) {
             return [timespan]::Zero

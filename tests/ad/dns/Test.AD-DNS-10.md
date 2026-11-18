@@ -28,7 +28,7 @@ This test retrieves SOA record details for each zone, including primary server, 
 
 #### Related Tests
 
-- `Test-MtAdDnsZonesWithOnlySoaNs` - Identifies zones with only SOA/NS records
+- **AD-DNS-02 — Zones with only SOA/NS records should be retrievable** — `Test-MtAdDnsZonesWithOnlySoaNs` — Identifies zones with only SOA/NS records.
 
 <!--- Results --->
 %TestResult%

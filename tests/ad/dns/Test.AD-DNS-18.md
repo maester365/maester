@@ -24,8 +24,8 @@ This test analyzes reverse lookup zone names to extract and count unique network
 
 #### Related Tests
 
-- `Test-MtAdDnsReverseZoneCount` - Counts reverse lookup zones
-- `Test-MtAdDnsReverseZoneNetworkDetails` - Provides detailed network information
+- **AD-DNS-16 — Reverse lookup zone count should be retrievable** — `Test-MtAdDnsReverseZoneCount` — Counts reverse lookup zones.
+- **AD-DNS-19 — Reverse zone network details should be retrievable** — `Test-MtAdDnsReverseZoneNetworkDetails` — Provides detailed network information.
 
 <!--- Results --->
 %TestResult%

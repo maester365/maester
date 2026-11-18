@@ -1,8 +1,6 @@
-RIDs (Relative Identifiers) are essential for creating unique Security Identifiers (SIDs) for every user, group, and computer in Active Directory. Each domain has a finite pool of approximately 1 billion RIDs:
+Reports the RID Manager object's 64-bit available-pool upper and lower allocation boundaries. Their difference is an inventory indicator, not a measured sum of remaining DC-local RID pools. Missing or malformed boundaries are an error, not a passing result.
 
- * **SID Exhaustion**: Running out of RIDs would prevent creation of any new security principals
- * **Business Impact**: New users, groups, or computers could not be created
- * **Recovery Complexity**: RID pool exhaustion requires complex forest recovery procedures
+RIDs form the domain-specific part of SIDs for new users, groups and computers. Exhaustion can prevent creation of new security principals; unexpected changes in available-pool boundaries merit investigation but do not by themselves quantify all usable DC-local allocations.
 
 #### Control Type
 
@@ -10,28 +8,20 @@ RIDs (Relative Identifiers) are essential for creating unique Security Identifie
 
 #### Security Recommendation
 
-Monitor RID consumption regularly:
-
- * **Normal Usage**: Most domains use only a small fraction of available RIDs over their lifetime
- * **High Consumption**: Rapid RID consumption may indicate:
-  * Excessive computer account creation/deletion cycles
-  * Automated provisioning scripts creating many accounts
-  * Security issues like computer account flooding attacks
- * **Threshold Alerting**: Set alerts when RID usage exceeds 50% (very conservative) or 75%
-
-If RID consumption is unexpectedly high:
-1. Investigate the source of high account creation
-2. Review computer join policies and scripts
-3. Consider implementing stricter controls on account creation
+Review the inventory with Active Directory administrators. Confirm missing metadata and assess actual requirements before changing configuration. Trend the RID Manager boundaries, investigate unusual account-creation or join churn, and use dedicated RID diagnostics before making exhaustion claims or changing provisioning controls.
 
 #### How the Test Works
 
-This test retrieves the RID available pool from Active Directory and calculates the remaining RIDs. The RID pool is a 64-bit value where the high 32 bits represent the total pool and the low 32 bits represent used RIDs.
+Decodes and reports the RID Manager's 64-bit available-pool value into upper and lower boundaries and their difference. It does not read the domain root as a raw RID pool or sum DC-local pools.
 
 #### Related Tests
 
-- `Test-MtAdDomainControllerCount` - Counts domain controllers (RID masters)
-- `Test-MtAdMachineAccountQuota` - Checks machine account creation limits
+- **AD-DOM-03 — Connected domain DC count for review** — `Test-MtAdDomainControllerCount` — Inventories domain controllers.
+- **AD-DOM-02 — Machine account quota is zero** — `Test-MtAdMachineAccountQuota` — Reviews machine account quota separately.
+
+#### Related links
+
+* [Active Directory Domain Services documentation](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-domain-services)
 
 <!--- Results --->
 %TestResult%

@@ -22,7 +22,7 @@ This test counts NS records that represent delegations (where the record name is
 
 #### Related Tests
 
-- `Test-MtAdDnsZoneDelegationDetails` - Provides detailed delegation information
+- **AD-DNS-09 — Zone delegation details should be retrievable** — `Test-MtAdDnsZoneDelegationDetails` — Provides detailed delegation information.
 
 <!--- Results --->
 %TestResult%

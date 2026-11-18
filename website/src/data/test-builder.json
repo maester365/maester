@@ -18360,6 +18360,11 @@
       "tests": 1
     },
     {
+      "name": "AccountIds",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
       "name": "AllDevices",
       "type": "switch",
       "tests": 2
@@ -18380,9 +18385,39 @@
       "tests": 1
     },
     {
+      "name": "AllowedPrimaryGroupIds",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "AllowedSitesWithoutDcs",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "ApprovedAccountIds",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "ApprovedPathPrefixes",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "AssessmentMode",
+      "type": "string",
+      "tests": 1
+    },
+    {
       "name": "ComplianceLogic",
       "type": "string",
       "tests": 24
+    },
+    {
+      "name": "ConfigurationProfile",
+      "type": "string",
+      "tests": 3
     },
     {
       "name": "EmergencyAccessAccounts",
@@ -18395,8 +18430,23 @@
       "tests": 1
     },
     {
+      "name": "ExcludedUsers",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
       "name": "ExpiringWithinDays",
       "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "GraceDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "KeyInventoryReadAccessConfirmed",
+      "type": "bool",
       "tests": 1
     },
     {
@@ -18408,6 +18458,16 @@
       "name": "MaximumActiveSecrets",
       "type": "int",
       "tests": 1
+    },
+    {
+      "name": "MaximumAgeDays",
+      "type": "int",
+      "tests": 4
+    },
+    {
+      "name": "MaximumAgeYears",
+      "type": "int",
+      "tests": 2
     },
     {
       "name": "MaximumDevicesPerUser",
@@ -18432,7 +18492,7 @@
     {
       "name": "MaximumInactiveDays",
       "type": "int",
-      "tests": 7
+      "tests": 6
     },
     {
       "name": "MaximumInactivityMinutes",
@@ -18462,12 +18522,17 @@
     {
       "name": "MaximumLockoutThreshold",
       "type": "int",
-      "tests": 4
+      "tests": 6
+    },
+    {
+      "name": "MaximumLogonTimestampLagDays",
+      "type": "int",
+      "tests": 1
     },
     {
       "name": "MaximumPasswordAgeDays",
       "type": "int",
-      "tests": 3
+      "tests": 4
     },
     {
       "name": "MaximumPatchLevelAgeDays",
@@ -18492,7 +18557,7 @@
     {
       "name": "MaximumValidationAgeDays",
       "type": "int",
-      "tests": 2
+      "tests": 1
     },
     {
       "name": "MaximumValidityDays",
@@ -18500,14 +18565,34 @@
       "tests": 2
     },
     {
+      "name": "MinimumHistory",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MinimumIdleDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
       "name": "MinimumIPv4PrefixLength",
       "type": "int",
       "tests": 1
     },
     {
+      "name": "MinimumLength",
+      "type": "int",
+      "tests": 2
+    },
+    {
       "name": "MinimumLockoutDurationSeconds",
       "type": "int",
       "tests": 4
+    },
+    {
+      "name": "MinimumLockoutMinutes",
+      "type": "int",
+      "tests": 2
     },
     {
       "name": "MinimumOsVersion",
@@ -18525,6 +18610,16 @@
       "tests": 1
     },
     {
+      "name": "MinimumResetMinutes",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MinimumSupportedRelease",
+      "type": "int",
+      "tests": 1
+    },
+    {
       "name": "ParkedDomains",
       "type": "string[]",
       "tests": 1
@@ -18535,8 +18630,23 @@
       "tests": 24
     },
     {
+      "name": "PolicyInventoryReadAccessConfirmed",
+      "type": "bool",
+      "tests": 2
+    },
+    {
       "name": "RecentModificationDays",
       "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "RecommendedMinimumDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "RegexPatterns",
+      "type": "string[]",
       "tests": 1
     },
     {
@@ -18552,6 +18662,11 @@
     {
       "name": "RequiredRecipients",
       "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "RetentionDays",
+      "type": "int",
       "tests": 1
     },
     {

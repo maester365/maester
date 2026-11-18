@@ -1,25 +1,22 @@
-**Authentication policies** control how clients can authenticate to and interact with domain controllers for certain operations (depending on configuration and policy scope). Inadequate or unexpected authentication policy configuration can:
-
-- Increase exposure of DC authentication endpoints
-- Allow broader authentication patterns than intended
-- Complicate incident investigations by enabling inconsistent authentication behavior
-
-Because authentication to domain controllers is a critical trust boundary, this test focuses on ensuring policies are explicitly configured and managed.
+This inventory counts objects under the AD authentication policy configuration container. A container/object count does not show whether an authentication policy is assigned to an account, nor whether any particular policy is effective.
 
 #### Control Type
 
 **Operational**
 
 #### Security Recommendation
-- Ensure authentication policies are configured to restrict DC access to **authorized systems** and approved authentication behaviors.
-- Use change control: treat authentication policy changes as security-critical.
-- Validate that policy configuration aligns with your domain’s intended security baseline and any application/service requirements.
+
+Where authentication policies are part of the organization's design, review their scope, assignments and intended restrictions with the AD security owner. Do not equate the presence of policy objects with enforcement.
 
 #### How the Test Works
-This test inspects AD authentication policy configuration and reports a count/visibility metric so administrators can confirm whether authentication policies are present and aligned with expectations.
 
-#### Related Tests
-- `Test-MtAdDsHeuristicsCount` - Helps validate advanced directory behavior settings that can influence authentication-related behaviors.
+The test counts objects returned from the authentication policy configuration container. It does not evaluate policy contents, account assignments or effective authentication behavior.
+
+
+
+#### Remediation action
+
+Review the policies, policy silos and assignments where your organization uses authentication policies. A zero count alone does not establish a security failure; investigate whether the configuration matches your intended controls.
 
 <!--- Results --->
 %TestResult%

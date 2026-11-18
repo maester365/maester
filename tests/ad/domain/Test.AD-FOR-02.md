@@ -1,10 +1,6 @@
-Understanding the number and names of domains in your forest is critical for:
+Reports the number and names of domains in the forest. A domain count is a topology fact for review, not proof that trusts or cross-forest access are configured securely.
 
-- **Security Boundaries**: Each domain represents a security boundary with its own policies
-- **Trust Management**: Understanding trust relationships between domains
-- **Administrative Scope**: Knowing where administrative permissions apply
-- **Compliance Scope**: Determining the scope of compliance assessments
-- **Disaster Recovery**: Planning recovery procedures across all domains
+Forest domain inventory helps define administrative and recovery scope across domain policies. Domains are not independent security boundaries against a compromised forest administrator; trust and access require their own assessments.
 
 #### Control Type
 
@@ -12,19 +8,20 @@ Understanding the number and names of domains in your forest is critical for:
 
 #### Security Recommendation
 
-- **Minimize Domains**: Fewer domains reduce complexity and attack surface
-- **Document Structure**: Maintain documentation of all domains and their purposes
-- **Review Regularly**: Periodically review if all domains are still needed
-- **Consistent Policies**: Apply consistent security policies across all domains
+Review the inventory with Active Directory administrators. Confirm missing metadata and assess actual requirements before changing configuration. Document each domain's purpose, assess whether the complexity is still justified, and review policies and recovery plans across domains.
 
 #### How the Test Works
 
-This test retrieves all domains from the Active Directory forest and counts them. It also lists all domain names for reference.
+Retrieves the forest domain inventory and reports domain names and their count. This is not a trust validation or access audit.
 
 #### Related Tests
 
-- `Test-MtAdForestFunctionalLevel` - Retrieves the forest functional level
-- `Test-MtAdDomainControllerCount` - Counts domain controllers in the current domain
+- **AD-FOR-01 — Forest functional level meets connected-domain DC support** — `Test-MtAdForestFunctionalLevel` — Reviews the forest level against connected-domain DC support.
+- **AD-DOM-03 — Connected domain DC count for review** — `Test-MtAdDomainControllerCount` — Inventories controllers for the connected domain.
+
+#### Related links
+
+* [Active Directory Domain Services documentation](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-domain-services)
 
 <!--- Results --->
 %TestResult%

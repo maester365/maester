@@ -44,11 +44,12 @@
 
     $adState = Get-MtADDomainState -Categories @('Groups')
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
         return $null
     }
 
     $groups = $adState.Groups
+    if ($null -eq $groups) { throw 'Group collection is unavailable.' }
 
     $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
 
@@ -71,16 +72,20 @@
 
     $privilegedGroupsWithMembers = @()
 
-    foreach ($group in $groups) {
-        # Check if group is privileged (adminCount = 1 or well-known RID)
-        $isPrivileged = $group.adminCount -eq 1
-        $rid = ($group.SID.Value -split '-')[-1]
-        $isWellKnown = $privilegedRIDs.ContainsKey($rid)
+    try {
+        foreach ($group in $groups) {
+            # Check if group is privileged (adminCount = 1 or well-known RID).
+            $isPrivileged = $group.adminCount -eq 1
+            $sid = if ($group.SID -is [string]) { $group.SID } else { [string]$group.SID.Value }
+            $rid = ($sid -split '-')[-1]
+            $isWellKnown = $privilegedRIDs.ContainsKey($rid) -and (
+                ($sid -match '^S-1-5-21-\d+-\d+-\d+-(512|518|519)$') -or
+                ($sid -match '^S-1-5-32-(548|549|550|551)$')
+            )
 
-        if ($isPrivileged -or $isWellKnown) {
-            $totalPrivileged++
+            if ($isPrivileged -or $isWellKnown) {
+                $totalPrivileged++
 
-            try {
                 $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
                 $memberCount = ($members | Measure-Object).Count
 
@@ -100,15 +105,12 @@
                     $privilegedWithoutMembers++
                 }
             }
-            catch {
-                Write-Verbose "Could not check members for group $($group.Name): $($_.Exception.Message)"
-            }
         }
+    } finally {
+        $protocolConnection.Dispose()
     }
 
-    $protocolConnection.Dispose()
-
-    $testResult = $true
+    $testResult = $null -ne $adState.Groups
 
     if ($testResult) {
         $result = "| Category | Count |" + "`n"
@@ -126,6 +128,11 @@
 
         foreach ($group in $sortedWellKnown) {
             $result += "| $($group.Name) | $($group.RID) | $($group.MemberCount) |" + "`n"
+        }
+        $result += "`n### Other AdminCount-Protected Groups with Members`n`n"
+        $result += "| Group | Member Count |" + "`n| --- | --- |" + "`n"
+        foreach ($group in @($privilegedGroupsWithMembers | Where-Object { -not $_.IsWellKnown } | Sort-Object MemberCount -Descending)) {
+            $result += "| $($group.Name) | $($group.MemberCount) |" + "`n"
         }
 
         $testResultMarkdown = "Security audit found **$privilegedWithMembers** privileged groups with members out of **$totalPrivileged** total privileged groups." + "`n" + "`n"

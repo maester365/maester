@@ -28,7 +28,7 @@ This test counts SRV records used by Active Directory Domain Services, including
 
 #### Related Tests
 
-- `Test-MtAdDnsAdSrvRecordDetails` - Provides detailed SRV record information
+- **AD-DNS-12 — AD DS SRV record details should be retrievable** — `Test-MtAdDnsAdSrvRecordDetails` — Provides detailed SRV record information.
 
 <!--- Results --->
 %TestResult%

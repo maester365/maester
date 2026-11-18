@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     This test retrieves the Active Directory configuration data for the collection of
-    well-known security principals (default expected count: 27) and reports how many
+    well-known security principals and reports how many
     objects are present.
 
     .EXAMPLE
@@ -37,38 +37,31 @@
     $adState = Get-MtADDomainState -Categories @('Configuration')
 
     # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Configuration -or $null -eq $adState.Configuration.WellKnownSecurityPrincipals) {
+        throw 'Well-known security principal inventory could not be retrieved.'
     }
 
     $config = $adState.Configuration
 
-    $expectedCount = 27
-    $wellKnownPrincipals = $config.WellKnownSecurityPrincipals
+    $wellKnownPrincipals = if ($null -ne $config) { $config.WellKnownSecurityPrincipals } else { $null }
     $wellKnownPrincipalsCount = @($wellKnownPrincipals).Count
     $hasData = $null -ne $config.WellKnownSecurityPrincipals
 
     # Return $true if configuration data was retrieved successfully.
-    # Compliance with the default expected count is reported in the markdown output.
     $testResult = $hasData
-    $meetsExpectedCount = $wellKnownPrincipalsCount -eq $expectedCount
 
     # Generate markdown results
     if ($hasData) {
         $result = "| Metric | Value |" + "`n"
         $result += "| --- | --- |" + "`n"
         $result += "| WellKnownSecurityPrincipals Count | $wellKnownPrincipalsCount |" + "`n"
-        $result += "| Expected Count | $expectedCount |" + "`n"
-        $result += "| Matches Expected Count | $meetsExpectedCount |" + "`n"
-
-        $testResultMarkdown = "Active Directory well-known security principals have been counted. $wellKnownPrincipalsCount well-known security principal(s) were found (expected: $expectedCount).`n`n%TestResult%"
+        $testResultMarkdown = "Active Directory well-known security principals have been enumerated ($wellKnownPrincipalsCount found). Review the actual identities; counts vary by forest and OS version and do not establish tampering.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory configuration data for WellKnownSecurityPrincipals. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

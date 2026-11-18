@@ -1,16 +1,6 @@
-FSMO (Flexible Single Master Operations) roles are critical directory services operations that can only be performed by one domain controller at a time:
+Assesses recommended FSMO role placement and lists each role's NTDS Settings DN, the role count, and distinct owner count. The Schema and Domain Naming Masters should be on the forest-root PDC; RID Master should share its domain PDC. In a multi-domain forest with non-GC DCs and Recycle Bin disabled, Infrastructure Master should be a non-GC. A read-only DC cannot own a role. Spreading roles across hosts is not inherently safer, and role placement alone does not prove availability.
 
-- **Schema Master**: Controls schema updates
-- **Domain Naming Master**: Controls domain additions/removals
-- **PDC Emulator**: Primary DC for backward compatibility
-- **RID Master**: Allocates relative IDs for SIDs
-- **Infrastructure Master**: Handles cross-domain object references
-
-Concentrating all 5 FSMO roles on a single DC creates a single point of failure. While not a direct security issue, it impacts:
-
-- **Availability**: If the FSMO role holder fails, certain operations cannot be performed
-- **Disaster recovery**: All critical roles are in one location
-- **Maintenance**: Updates to the FSMO holder require careful planning
+FSMO roles coordinate schema changes, domain naming, RID allocation, PDC-emulator operations and infrastructure updates. Role ownership should be documented for maintenance and recovery; multiple role owners are not a substitute for backups, healthy replication or failover procedures.
 
 #### Control Type
 
@@ -18,24 +8,21 @@ Concentrating all 5 FSMO roles on a single DC creates a single point of failure.
 
 #### Security Recommendation
 
-Consider distributing FSMO roles across multiple domain controllers for redundancy:
-
-- Place Schema Master and Domain Naming Master in the forest root domain
-- Place PDC Emulator, RID Master, and Infrastructure Master in each domain
-- Ensure at least one FSMO role holder is in a different physical location
-- Document FSMO role locations and transfer procedures
+Review any placement findings and plan role transfers with AD administrators according to the Microsoft guidance below. Confirm current owner DNs and operational health before transferring roles; do not distribute roles merely to increase the holder count. Record owners and transfer/seizure procedures in the recovery plan.
 
 #### How the Test Works
 
-This test identifies which domain controllers hold FSMO roles and counts how many DCs hold all 5 roles. It displays:
-- Current FSMO role holders
-- Number of unique DCs holding roles
-- Whether any single DC holds all roles
+Checks FSMO owner NTDS Settings DNs against placement guidance and reports role and distinct-owner counts. It does not declare a DC healthy because it owns a role or require the five roles to be spread over several hosts.
 
 #### Related Tests
 
-- `Test-MtAdDcFsmoRoleHolderDetails` - Detailed FSMO role distribution
-- `Test-MtAdDomainControllerCount` - Total DC count
+- **AD-DOM-03 — Connected domain DC count for review** — `Test-MtAdDomainControllerCount` — Inventories connected-domain controllers.
+- **AD-DCD-04 — Global Catalog status should be reviewed or meet the configured policy** — `Test-MtAdDcNonGlobalCatalogCount` — Inventories GC status or evaluates the selected placement rule.
+
+#### Related links
+
+* [Active Directory Domain Services documentation](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-domain-services)
+* [FSMO placement and optimization](https://learn.microsoft.com/troubleshoot/windows-server/active-directory/fsmo-placement-and-optimization-on-ad-dcs)
 
 <!--- Results --->
 %TestResult%

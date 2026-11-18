@@ -353,7 +353,8 @@ Describe 'Benchmark of the tests shipped with Maester' {
 
     It 'Carries Benchmark as null on every other test' {
         $others = @($script:builtIn | Where-Object { $_.Id -notlike 'CIS.*' -and $_.Id -notlike 'CISA.*' -and $_.Id -notlike 'ASD.*' -and $_.Id -notlike 'DISA.*' })
-        $others.Count | Should -BeGreaterThan 600
+        # Consolidation changes catalog counts; verify every remaining non-benchmark row.
+        $others.Count | Should -BeGreaterThan 0
         @($others | Where-Object { -not $_.PSObject.Properties['Benchmark'] -or $null -ne $_.Benchmark } | ForEach-Object Id) | Should -BeNullOrEmpty
     }
 

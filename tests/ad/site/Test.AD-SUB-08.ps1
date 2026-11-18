@@ -1,25 +1,18 @@
 ﻿function Test-MtAdSubnetFirstOctetCount {
     <#
     .SYNOPSIS
-    Counts the distinct first octets used in IPv4 subnets.
-
+    Hierarchical IPv4 prefix overview.
     .DESCRIPTION
-    This test analyzes the distribution of subnets by their first octet.
-    This provides insight into the IP addressing scheme and network
-    segmentation across the organization.
-
+    Uses cached Active Directory state to assess or inventory hierarchical ipv4 prefix overview.
     .EXAMPLE
-    Test-MtAdSubnetFirstOctetCount
-
-    Returns $true if subnet data is accessible.
-    The test result includes the count of distinct first octets.
-
+    Invoke-MtTest -Id AD-SUB-08
+    Review hierarchical IPv4 subnet prefixes manually.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdSubnetFirstOctetCount
+    https://maester.dev/docs/tests/AD-SUB-08
     #>
     [MaesterTest(
         Id = 'AD-SUB-08',
-        Title = 'Distinct first octets count should be retrievable',
+        Title = 'Hierarchical IPv4 prefix overview',
         Product = 'ad',
         Feature = 'sites-and-subnets',
         Area = 'infrastructure',
@@ -34,50 +27,13 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdSubnetFirstOctetCount"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Subnets')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    $view = Get-MtAdSubnetInventory -State (Get-MtADDomainState -Categories @('Subnets'))
+    $ipv4 = @($view | Where-Object IsIpv4)
+    $rows = @('| First octet | First two octets | First three octets | Source CIDR |', '| --- | --- | --- | --- |')
+    foreach ($entry in $ipv4) {
+        $octets = $entry.Address.GetAddressBytes()
+        $rows += '| {0} | {1}.{2} | {3}.{4}.{5} | {6} |' -f $octets[0], $octets[0], $octets[1], $octets[0], $octets[1], $octets[2], (Format-MtAdSiteInventoryValue $entry.Cidr)
     }
-
-    $subnets = $adState.Subnets
-
-    # Extract first octets from IPv4 subnets
-    $firstOctets = $subnets | Where-Object { $_.Name -notmatch ':' } | ForEach-Object {
-        if ($_.Name -match '^([0-9]+)\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+') {
-            [int]$matches[1]
-        }
-    } | Select-Object -Unique | Sort-Object
-
-    $distinctCount = ($firstOctets | Measure-Object).Count
-    $totalSubnets = ($subnets | Where-Object { $_.Name -notmatch ':' } | Measure-Object).Count
-
-    # Test passes if we successfully retrieved data
-    $testResult = ($subnets | Measure-Object).Count -ge 0
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total IPv4 Subnets | $totalSubnets |" + "`n"
-        $result += "| Distinct First Octets | $distinctCount |" + "`n"
-
-        if ($distinctCount -gt 0) {
-            $result += "| First Octets Used | $($firstOctets -join ', ') |" + "`n"
-        }
-
-        $testResultMarkdown = "Active Directory subnet first octet analysis has been performed. $distinctCount distinct first octet(s) are in use.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory subnet information. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    Add-MtTestResultDetail -Result "Review $($ipv4.Count) IPv4 subnet entries by address hierarchy (not inferred /8, /16 or /24 network memberships).`n`n$($rows -join "`n")" -Investigate
+    return $true
 }

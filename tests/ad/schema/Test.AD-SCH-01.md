@@ -1,14 +1,14 @@
-Understanding when your Active Directory schema has been modified provides important visibility into the evolution of your directory infrastructure. Schema modifications typically occur during:
+Understanding when Active Directory schema objects were created provides visibility into the evolution of your directory infrastructure. This inventory groups objects by `whenCreated`, not by a modification date; it does not establish an audit history of subsequent changes. Schema extensions typically occur during:
 
 - **Domain upgrades**: When upgrading to newer Windows Server versions
 - **Application installations**: Products like Exchange, Skype for Business, and third-party applications extend the schema
 - **Custom developments**: Organizations may add custom attributes or classes
 
-Tracking schema modification years helps:
-- **Audit trail**: Understand when major changes occurred
+Tracking schema object creation years helps:
+- **Inventory**: Understand when extensions first appeared (not later edits)
 - **Compliance**: Document directory evolution for compliance purposes
 - **Troubleshooting**: Correlate issues with schema change timeframes
-- **Planning**: Identify when the directory was last updated
+- **Planning**: Identify when objects were first created
 
 #### Control Type
 
@@ -25,15 +25,13 @@ While schema modifications are normal and necessary, they should be:
 #### How the Test Works
 
 This test retrieves all schema objects and analyzes their creation dates to identify:
-- How many different years have had schema modifications
+- How many different years had schema objects created
 - The total number of schema objects
-- The first and most recent schema changes
+- A count for each year and details of every schema object with a creation date
 
 #### Related Tests
 
-- `Test-MtAdSchemaModificationYearDetails` - Provides detailed breakdown by year
-- `Test-MtAdSchemaVersionEntryCount` - Shows the current schema version
-- `Test-MtAdSchemaVersionDetails` - Provides comprehensive schema information
+- **AD-SCH-03 — Schema version and class definitions should be investigated** — `Test-MtAdSchemaVersionEntryCount` — Reviews schema version and class definitions.
 
 <!--- Results --->
 %TestResult%

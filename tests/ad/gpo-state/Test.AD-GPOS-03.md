@@ -16,7 +16,7 @@
 - Retrieves GPO state, filters for Gpos with a non-empty WmiFilter, and renders a Markdown table with details.
 
 #### Related Tests
-- `Test-MtAdGpoWmiFilterCount`.
+- **AD-GPOS-02 — WMI filter count should be investigated** — `Test-MtAdGpoWmiFilterCount` — Provides the WMI filter count for these details.
 
 #### Related links
 - [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 

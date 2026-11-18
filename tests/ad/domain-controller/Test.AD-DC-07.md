@@ -1,12 +1,6 @@
-Knowing the operating systems running on your domain controllers is important for:
+Checks inventoried DCs in the connected domain against the configurable minimum Windows Server release (default 2022). Reports each assessed DC's directory OS name, OS version and classified release alongside counts and the baseline decision. DCs belonging to other domains are excluded and counted separately; assess those domains with their own connections. Missing or conflicting OS metadata for an in-scope DC remains an error. Directory metadata does not verify patch installation or contractual support.
 
-- **Lifecycle management**: Identifying DCs running end-of-life operating systems
-- **Security patching**: Ensuring all DCs receive security updates
-- **Feature availability**: Determining which AD features are available
-- **Standardization**: Reducing OS variety for easier management
-- **Upgrade planning**: Identifying DCs that need to be upgraded
-
-Running outdated operating systems on domain controllers poses security risks as they may not receive security patches.
+Older DC operating systems can constrain directory capabilities and upgrade planning. Release classification helps prioritize review but cannot establish security-update state or Microsoft's current lifecycle status.
 
 #### Control Type
 
@@ -14,32 +8,22 @@ Running outdated operating systems on domain controllers poses security risks as
 
 #### Security Recommendation
 
-- Standardize on a supported Windows Server version for all DCs
-- Plan to upgrade DCs running end-of-life operating systems
-- Ensure all DCs are receiving security updates
-- Consider running the latest Windows Server version for new DCs
-
-Current Windows Server support status:
-- Windows Server 2022: Supported
-- Windows Server 2019: Supported
-- Windows Server 2016: Supported
-- Windows Server 2012 R2: Extended support ended October 2023
-- Windows Server 2012: Extended support ended October 2023
-- Earlier versions: Not supported
+Plan replacement or upgrade of DCs below the chosen minimum with AD administrators; verify replication, roles and application dependencies before decommissioning an older DC. Independently assess installed updates and vendor support. Document the approved baseline and maintain a separate patch and support inventory.
 
 #### How the Test Works
 
-This test retrieves the OperatingSystem attribute from all domain controllers and counts the unique OS versions in use.
+Scopes the shared DC inventory to the connected domain's distinguished name (with exact DNS-root fallback), then classifies only those DCs using directory OS name and version. Other-domain lookup failures do not fail this scoped assessment. Unknown or contradictory in-scope OS evidence remains an error, not evidence of compliance; the collector's forest inventory is not modified.
 
 #### Related Tests
 
-- `Test-MtAdDcOperatingSystemDetails` - Detailed OS distribution breakdown
-- `Test-MtAdDomainControllerCount` - Total DC count
+- **AD-DOM-03 — Connected domain DC count for review** — `Test-MtAdDomainControllerCount` — Inventories connected-domain controllers.
+- **AD-DOM-01 — Domain functional level meets the highest supported common level** — `Test-MtAdDomainFunctionalLevel` — Reviews domain functional level separately.
 
 #### Related links
 
-- [Microsoft Learn: Windows Server release information](https://learn.microsoft.com/windows-server/get-started/windows-server-release-info)
-- [ANSSI Active Directory checkpoints: DC/RODC with an obsolete operating system](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_dc_obsolete)
+* [Active Directory Domain Services documentation](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-domain-services)
+* [Microsoft: Windows Server release information](https://learn.microsoft.com/windows-server/get-started/windows-server-release-info)
+* [ANSSI: DC or RODC with an obsolete operating system](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_dc_obsolete)
 
 <!--- Results --->
 %TestResult%

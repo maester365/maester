@@ -38,9 +38,8 @@
     $adState = Get-MtADDomainState -Categories @('Configuration')
 
     # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Configuration -or $null -eq $adState.Configuration.LdapQueryPolicies) {
+        throw 'Default LDAP query policy inventory could not be retrieved.'
     }
 
     $config = $adState.Configuration
@@ -78,7 +77,7 @@
         $testResultMarkdown = "Unable to retrieve LDAP query policy information. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

@@ -1,34 +1,29 @@
 ﻿function Test-MtAdGpoUnlinkedTargetCount {
     <#
     .SYNOPSIS
-    Counts AD targets (OUs, domains, sites) that do not have any GPO links.
+    Reports direct GPO links on OUs, domain roots and sites for investigation.
 
     .DESCRIPTION
-    This test identifies policy deployment gaps by counting Active Directory targets
-    (organizational units, the domain root, and site link objects) that have no GPO links.
-
-    Targets without GPO links may indicate incomplete security policy coverage and can lead
-    to inconsistent enforcement of security baselines.
+    Counts linked and unlinked OUs and lists targets with no direct GPO links.
+    A target can inherit policy from its parent, so absence of a direct link is not
+    proof of a policy gap. This inventory requires manual review of effective policy.
 
     .EXAMPLE
     Test-MtAdGpoUnlinkedTargetCount
 
-    Returns $true if no unlinked targets were found, $false if targets without any GPO links exist,
-    and $null if AD/GPO data is not accessible.
+    Reports Investigate when target collection succeeds.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGpoUnlinkedTargetCount
     #>
     [MaesterTest(
         Id = 'AD-GPOL-03',
-        Title = 'GPO unlinked target count should be compliant',
+        Title = 'Direct GPO link coverage should be investigated',
         Product = 'ad',
         Feature = 'group-policy',
         Area = 'infrastructure',
         ResourceType = 'OrganizationalUnit',
-        Severity = 'Low',
-        UserImpact = 'Low',
-        ImplementationCost = 'Medium',
+        Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
@@ -44,9 +39,8 @@
     $gpoState = Get-MtADGpoState
 
     # If unable to retrieve GPO data, skip the test
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $gpoState -or $null -eq $gpoState.LinkContainers -or $null -eq $gpoState.SiteContainers) {
+        throw 'Domain, OU or site GPO link containers were not retrieved.'
     }
 
     function Test-MtGpoLinkPresent {
@@ -84,6 +78,7 @@
 
     # Domain root
     $domainObj = $gpoState.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'domainDNS' } | Select-Object -First 1
+    if ($null -eq $domainObj) { throw 'Domain-root GPO link metadata was not returned.' }
     if ($null -ne $domainObj -and -not (Test-MtGpoLinkPresent -gPLinkValue $domainObj.GpLink)) {
         $unlinkedDomains = @($domainObj)
     }
@@ -125,7 +120,8 @@
     $unlinkedCountSites = @($unlinkedSites).Count
 
     $totalUnlinkedTargets = $unlinkedCountOus + $unlinkedCountDomains + $unlinkedCountSites
-    $testResult = $totalUnlinkedTargets -eq 0
+    # Investigate reports successful collection, not compliance with a link baseline.
+    $testResult = $null -ne $gpoState.LinkContainers -and $null -ne $gpoState.SiteContainers
 
     # Sample unlinked targets
     $sampleLimit = 5
@@ -156,8 +152,9 @@
     $result += "| Unlinked OUs | $unlinkedCountOus |" + "`n"
     $result += "| Total Domains | $totalDomains |" + "`n"
     $result += "| Unlinked Domains | $unlinkedCountDomains |" + "`n"
-    $result += "| Total Sites (siteLink) | $totalSites |" + "`n"
-    $result += "| Unlinked Sites (siteLink) | $unlinkedCountSites |" + "`n"
+    $result += "| OUs with direct links | $($totalOus - $unlinkedCountOus) |" + "`n"
+    $result += "| Total Sites | $totalSites |" + "`n"
+    $result += "| Sites without direct links | $unlinkedCountSites |" + "`n"
     $result += "| Total Unlinked Targets | $totalUnlinkedTargets |" + "`n"
     if ($sampleText) {
         # Avoid breaking markdown tables when DNs contain pipes
@@ -166,15 +163,16 @@
         $result += "| Sample Unlinked Targets | $safeSampleText |" + "`n"
     }
 
-    if ($testResult) {
-        $testResultMarkdown = "✅ All analyzed targets (OUs, domain root, and sites) have at least one GPO link. This indicates consistent GPO-based security policy coverage.`n`n%TestResult%"
+    $result += "`n| Target without direct links | Distinguished name |`n| --- | --- |`n"
+    foreach ($target in @($unlinkedOus) + @($unlinkedDomains) + @($unlinkedSites)) {
+        $dn = ([string]$target.DistinguishedName).Replace('|', '&#124;') -replace '[\r\n]+', ' '
+        $type = @($target.ObjectClass)[-1]
+        $result += "| $type | $dn |`n"
     }
-    else {
-        $testResultMarkdown = "⚠️ One or more Active Directory targets do not have any GPO links ($totalUnlinkedTargets). Unlinked targets can indicate incomplete policy coverage, leading to inconsistent security enforcement across the environment.`n`n%TestResult%"
-    }
+    $testResultMarkdown = "Investigate direct GPO links and inherited policy. $totalUnlinkedTargets target(s) have no direct links; this does not establish whether security policy is effective.`n`n%TestResult%"
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     return $testResult
 }

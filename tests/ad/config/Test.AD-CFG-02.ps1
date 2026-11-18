@@ -1,12 +1,12 @@
 ﻿function Test-MtAdDsHeuristicsCount {
     <#
     .SYNOPSIS
-    Counts Active Directory dSHeuristics configuration settings.
+    Reports Active Directory dSHeuristics for review.
 
     .DESCRIPTION
     Phase 14 (AD Configuration tests) - AD-CFG-02.
-    This test retrieves $config.DsHeuristics and calculates the count as (string length / 2).
-    If dSHeuristics is null, the count is 0.
+    Reports the configured dSHeuristics string for human review. Its positions
+    have independent meanings; the string length is not a count of settings.
 
     .EXAMPLE
     Test-MtAdDsHeuristicsCount
@@ -18,7 +18,7 @@
     #>
     [MaesterTest(
         Id = 'AD-CFG-02',
-        Title = 'dSHeuristics count should be retrievable',
+        Title = 'dSHeuristics value should be investigated',
         Product = 'ad',
         Feature = 'directory-configuration',
         Area = 'infrastructure',
@@ -37,30 +37,17 @@
 
     $adState = Get-MtADDomainState -Categories @('Configuration')
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Configuration) {
+        throw 'Directory Service configuration could not be retrieved.'
     }
 
     $config = $adState.Configuration
-    $dsHeuristics = if ($null -ne $config) { $config.DsHeuristics } else { $null }
-
-    $dsHeuristicsCount = if ($null -ne $dsHeuristics) { [int]($dsHeuristics.Length / 2) } else { 0 }
-    $testResult = $null -ne $config
-
-    if ($testResult) {
-        $result = "| Property | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| dSHeuristics | $dsHeuristics |" + "`n"
-        $result += "| dSHeuristics Count (length/2) | $dsHeuristicsCount |" + "`n" + "`n"
-
-        $testResultMarkdown = "Active Directory dSHeuristics configuration has been analyzed.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($config.PSObject.Properties.Name -contains 'DirectoryServiceRetrieved' -and $config.DirectoryServiceRetrieved -ne $true) {
+        throw 'Directory Service object could not be retrieved; dSHeuristics is unknown.'
     }
-    else {
-        $testResultMarkdown = "Unable to retrieve Active Directory configuration. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
+    $dsHeuristics = $config.DsHeuristics
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    return $testResult
+    $value = if ([string]::IsNullOrEmpty([string]$dsHeuristics)) { '(not set)' } else { [string]$dsHeuristics }
+    Add-MtTestResultDetail -Result "Review the position-specific dSHeuristics value against your directory baseline: $value" -Investigate
+    return $true
 }

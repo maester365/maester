@@ -1,11 +1,10 @@
-Strong SID filtering is a critical security control for inter-forest trusts:
+Checks applicable external and forest trusts for SID filtering using their LDAP `trustAttributes` flags.
 
-- **Prevents Privilege Escalation**: Blocks malicious SID history from being honored across trust boundaries
-- **Limits Blast Radius**: Contains the impact of a compromised external domain
-- **Security Best Practice**: Microsoft recommends SID filtering for all external trusts
-- **Compliance Requirement**: Many security frameworks require SID filtering on external trusts
+SID filtering protects trust boundaries from unauthorized SID history and limits the reach of a compromised trusted domain. A weak flag warrants investigation, but migration and privileged-identity scenarios require the trust's specific context before remediation.
 
-Without strong SID filtering, an attacker who compromises a domain in a trusting forest could inject SIDs from the trusted forest's privileged groups (like Domain Admins or Enterprise Admins) into their own account, effectively gaining privileged access across the trust boundary.
+External downlevel and uplevel trusts without `WITHIN_FOREST` or `FOREST_TRANSITIVE` are checked for `QUARANTINED_DOMAIN` (`0x4`). Forest trusts are checked for `TREAT_AS_EXTERNAL` (`0x40`), which relaxes cross-forest filtering to external-trust rules. Within-forest and MIT realm trusts are excluded. PIM trusts (`0x400`) are counted for manual review rather than failed on this general-purpose rule; they have distinct filtering rules. A missing trust type or bitmask does not count as a pass; investigate configurations and documented exceptions before changing any trust.
+
+The result includes total, evaluated, strong, weak, unknown, and excluded counts, plus details of **every weak or unknown trust**. Selective authentication is a separate control and is not forced as a universal SID-filtering baseline.
 
 #### Control Type
 
@@ -13,38 +12,25 @@ Without strong SID filtering, an attacker who compromises a domain in a trusting
 
 #### Security Recommendation
 
-- **Enable SID Filtering**: Enable SID filtering (quarantine) on ALL external trusts
-- **Disable SID History**: Disable SID history on ALL forest trusts
-- **Audit Regularly**: Regularly verify that external trusts remain quarantined and forest trusts do not have SID history enabled
-- **Document Exceptions**: If strong SID filtering cannot be enabled, document the risk and compensating controls
-- **Use Forest Trusts**: When possible, use forest trusts instead of external trusts as they provide better security controls
-- **Monitor Changes**: Alert on any changes to trust SID filtering status
+Enable appropriate filtering on applicable external trusts and review forest trust flags and exceptions with administrators; retain necessary SID-history migration paths only with documented risk controls.
+
+#### Remediation action
+
+1. Review affected trust directions and business requirements with domain administrators.
+2. Verify SID filtering behavior and SID-history migration needs before changing trust flags; pilot any change to avoid breaking cross-domain access.
 
 #### How the Test Works
 
-This test derives trust classification and SID filtering status from the `trustAttributes` LDAP attribute and `trustType`:
-
-- **External trusts**: `trustType` in `1,2` and `trustAttributes` does not have `FOREST_TRANSITIVE` (`0x8`) or `WITHIN_FOREST` (`0x20`)
-- **Forest trusts**: `trustAttributes` has `FOREST_TRANSITIVE` (`0x8`)
-- **Strong external trusts**: `QUARANTINED_DOMAIN` (`0x4`) is set
-- **Strong forest trusts**: `TREAT_AS_EXTERNAL` (`0x40`) is not set (SID history disabled)
-
-The test returns:
-- Total count of trusts
-- Count of external/forest trusts evaluated
-- Count of trusts with strong SID filtering
-- Count of trusts with weak SID filtering
+The check classifies LDAP trust records using `trustType` and `trustAttributes`; external trusts require `QUARANTINED_DOMAIN` and forest trusts without `TREAT_AS_EXTERNAL` meet the general filtering rule. It reports weak and unknown trusts, excluding within-forest and realm trusts and routing PIM trusts to manual review. Unknown flags cannot be counted as strong.
 
 #### Related Tests
 
-- `Test-MtAdTrustNonQuarantinedDetails` - Lists specific trusts without SID filtering
-- `Test-MtAdTrustInterForestCount` - Identifies external trusts that should be quarantined
-- `Test-MtAdTrustDetails` - Shows quarantine status for all trusts
+- **AD-TRUST-02 — Trust inter-forest count should be investigated** — `Test-MtAdTrustInterForestCount` — Inventories inter-forest trusts.
+- **AD-TRUST-01 — Trust count and configuration should be investigated** — `Test-MtAdTrustTotalCount` — Inventories trust configuration.
 
 #### Related links
 
-- [Microsoft Learn: Security considerations for trusts](https://learn.microsoft.com/previous-versions/windows/it-pro/windows-server-2003/cc755321%28v=ws.10%29)
-- [ANSSI Active Directory checkpoints: Unfiltered outbound domain trust relationship](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_trusts_domain_notfiltered)
+* [Microsoft MS-ADTS trust attribute flags](https://learn.microsoft.com/openspecs/windows_protocols/ms-adts/e9a2d23c-c31e-4a6f-88a0-6646fdb51a3c)
 
 <!--- Results --->
 %TestResult%

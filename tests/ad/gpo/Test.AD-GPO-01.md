@@ -24,9 +24,9 @@ This test retrieves all Group Policy Objects from Active Directory and counts th
 
 #### Related Tests
 
-- `Test-MtAdGpoUnlinkedCount` - Identifies GPOs that are not linked to any location
-- `Test-MtAdGpoCreatedBefore2020Count` - Identifies potentially outdated GPOs
-- `Test-MtAdGpoLinkedCount` - Counts GPOs that are actively linked
+- **AD-GPO-04 — GPOs should have at least one link** — `Test-MtAdGpoUnlinkedCount` — Identifies GPOs with no links.
+- **AD-GPO-02 — GPOs should be modified within the configured age limit** — `Test-MtAdGpoStale` — Replaces the retired created-before-2020 count.
+- **AD-GPOL-01 — GPO linked count should be investigated** — `Test-MtAdGpoLinkedCount` — Inventories linked GPOs.
 
 <!--- Results --->
 %TestResult%

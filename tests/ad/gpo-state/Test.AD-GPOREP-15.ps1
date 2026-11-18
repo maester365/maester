@@ -1,30 +1,23 @@
-﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
-function Test-MtAdGpoVersionMismatchCount {
+﻿function Test-MtAdGpoVersionMismatchCount {
     <#
     .SYNOPSIS
-    Counts the number of GPOs with a version mismatch.
-
+    Checks for mismatched Active Directory and SYSVOL GPO versions.
     .DESCRIPTION
-    This test retrieves Active Directory Group Policy state information using Get-MtADGpoState,
-    then counts how many returned GPO reports indicate a version mismatch.
-
+    Lists policies with differing directory and GPT.INI versions; incomplete scans are errors.
     .EXAMPLE
-    Test-MtAdGpoVersionMismatchCount
-
-    Returns $true if GPO report data is accessible, $false otherwise.
-    The test result includes the number of GPOs with version mismatch.
-
+    Invoke-MtTest -Id AD-GPOREP-15
+    Assess GPO directory and SYSVOL version mismatches.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoVersionMismatchCount
+    https://maester.dev/docs/tests/AD-GPOREP-15
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-15',
-        Title = 'No GPOs should have version mismatches',
+        Title = 'GPO directory and SYSVOL versions should match',
         Product = 'ad',
         Feature = 'group-policy',
         Area = 'infrastructure',
         ResourceType = 'GroupPolicy',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',
@@ -36,39 +29,26 @@ function Test-MtAdGpoVersionMismatchCount {
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdGpoVersionMismatchCount"
-    $gpoState = Get-MtADGpoState
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.GPOReports -or $null -eq $state.GPOs) {
+        throw 'GPO version reports or GPO metadata could not be collected.'
     }
-    Write-Verbose "Filtering/counting gpo version mismatch count"
-
-    $gpoReports = $gpoState.GPOReports
-    if ($null -eq $gpoReports) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory GPO report data from Get-MtADGpoState.'
-        return $false
+    $reports = @($state.GPOReports | Where-Object { $null -ne $_ })
+    if ($reports.Count -eq 0 -or $reports.Count -ne @($state.GPOs).Count) { throw 'GPO version report count is empty or does not match GPO inventory.' }
+    $incomplete = @($reports | Where-Object {
+            $null -eq $_.HasVersionMismatch -or $null -eq $_.DirectoryVersion -or
+            $null -eq $_.SysvolVersion -or $null -eq $_.Errors -or @($_.Errors).Count -gt 0
+        })
+    if ($incomplete.Count -gt 0) { throw "Version comparison incomplete for $($incomplete.Count) GPOs; verify SYSVOL collection and GPT.INI access." }
+    $mismatched = @($reports | Where-Object { $true -eq $_.HasVersionMismatch })
+    $table = "| GPO | Directory version | SYSVOL version |`n| --- | --- | --- |`n"
+    foreach ($report in @($mismatched | Sort-Object Name)) {
+        $name = [System.Net.WebUtility]::HtmlEncode([string]$report.Name) -replace '\|', '&#124;'
+        $table += "| $name | $($report.DirectoryVersion) | $($report.SysvolVersion) |`n"
     }
-
-    $gpoReportsArray = @($gpoReports | Where-Object { $null -ne $_ })
-    $totalCount = $gpoReportsArray.Count
-    $mismatchCount = @($gpoReportsArray | Where-Object { [bool]$_.HasVersionMismatch }).Count
-
-    $testResult = $mismatchCount -eq 0
-    $mismatchPercentage = if ($totalCount -gt 0) { [Math]::Round(($mismatchCount / $totalCount) * 100, 2) } else { 0 }
-
-    $result = "| Metric | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| Total GPOs | $totalCount |" + "`n"
-    $result += "| GPOs with version mismatch | $mismatchCount |" + "`n"
-    $result += "| Mismatch ratio | $mismatchPercentage% |" + "`n"
-    Write-Verbose "Counts computed"
-
-    $testResultMarkdown = "Active Directory GPOs have been analyzed for version mismatches. $mismatchCount out of $totalCount GPO(s) indicate a version mismatch.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    Write-Verbose "Completed Test-MtAdGpoVersionMismatchCount"
-    return $testResult
+    $pass = $mismatched.Count -eq 0
+    $message = if ($pass) { "Well done. All $($reports.Count) GPO directory and SYSVOL versions match." }
+    else { "$($mismatched.Count) of $($reports.Count) GPOs have different directory and SYSVOL versions; investigate replication and GPT.INI." }
+    Add-MtTestResultDetail -Result "$message`n`n$table"
+    return $pass
 }

@@ -1,4 +1,6 @@
-- Unconstrained delegation is one of the most dangerous configurations in Active Directory. When enabled on a computer, it allows services on that computer to impersonate authenticated users to ANY service on ANY computer in the domain.
+Unconstrained delegation on non-domain-controller computers or managed service accounts exposes users' Kerberos tickets. This check fails when a non-DC computer, sMSA, gMSA or dMSA has the `TrustedForDelegation` flag. Managed accounts are reported separately; the device percentage still uses only non-DC computers as its denominator.
+
+Only the collected DC server inventory establishes DC identity: `serverReference` DN, or DNS fallback when that reference is unavailable. Primary groups 516 and 521 alone never exclude a computer. Unexpected DC primary-group claims are counted for review under AD-COMP-04.
 
 **Security Risks:**
 - **Complete Impersonation**: Attackers can impersonate any user who authenticates to the computer
@@ -35,9 +37,7 @@ This test counts computers with the `TrustedForDelegation` flag enabled and cate
 
 #### Related Tests
 
-- `Test-MtAdComputerNonDcUnconstrainedDelegationCount` - Focuses on non-DC computers (critical risk)
-- `Test-MtAdComputerNonDcConstrainedDelegationCount` - Reviews constrained delegation
-- `Test-MtAdUserDelegationConfiguredCount` - Reviews user account delegation
+- **AD-DCOMP-03 — Non-DC computer and managed account constrained delegation should be investigated** — `Test-MtAdComputerNonDcConstrainedDelegationCount` — Reviews constrained delegation separately.
 
 #### Related links
 

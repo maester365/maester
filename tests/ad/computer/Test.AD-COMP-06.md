@@ -1,7 +1,7 @@
 Computers located in the default `CN=Computers` container represent a security and management concern:
 
-- **No Group Policy inheritance**: The Computers container is not an OU, so it doesn't support Group Policy inheritance
-- **Management gaps**: Computers in the default container may not receive security policies, software updates, or configurations
+- **No OU-linked Group Policy**: The Computers container is not an OU and cannot receive a direct OU GPO link; site/domain GPOs and filtering may still apply
+- **Management gaps**: Computers in the default container may miss intended OU-linked settings, but are not necessarily unprotected
 - **Provisioning issues**: Indicates the domain join process hasn't been customized or automated provisioning is failing
 - **Shadow IT**: May represent unauthorized systems joined to the domain
 
@@ -25,8 +25,12 @@ This test identifies enabled computer accounts where the Distinguished Name cont
 
 #### Related Tests
 
-- `Test-MtAdComputerOUCount` - Shows the distribution of computers across OUs
-- `Test-MtAdComputerPerOUAverage` - Analyzes OU structure effectiveness
+- **AD-COMP-07 — Computer OU count should be retrievable** — `Test-MtAdComputerOUCount` — Inventories parent locations.
+- **AD-COMP-08 — Computer per OU average should be retrievable** — `Test-MtAdComputerPerOUAverage` — Reports placement distribution, not policy effectiveness.
+
+#### Related links
+
+- [Microsoft: Group Policy scope](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-scope)
 
 <!--- Results --->
 %TestResult%

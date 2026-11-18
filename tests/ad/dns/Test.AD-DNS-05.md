@@ -24,7 +24,7 @@ This test counts DNS records that have timestamps (dynamic) versus those without
 
 #### Related Tests
 
-- `Test-MtAdDnsZoneRecordDetails` - Provides detailed record counts per zone
+- **AD-DNS-07 — Zone record count details should be retrievable** — `Test-MtAdDnsZoneRecordDetails` — Provides detailed record counts per zone.
 
 <!--- Results --->
 %TestResult%

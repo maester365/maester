@@ -19,8 +19,8 @@ This test identifies DNS zones that contain records beyond the default SOA and N
 
 #### Related Tests
 
-- `Test-MtAdDnsZoneCount` - Counts all zones with records
-- `Test-MtAdDnsZonesWithOnlySoaNs` - Finds zones with only default records
+- **AD-DNS-01 — DNS zone count should be retrievable** — `Test-MtAdDnsZoneCount` — Counts all zones with records.
+- **AD-DNS-02 — Zones with only SOA/NS records should be retrievable** — `Test-MtAdDnsZonesWithOnlySoaNs` — Finds zones with only default records.
 
 <!--- Results --->
 %TestResult%

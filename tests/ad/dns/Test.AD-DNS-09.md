@@ -26,7 +26,7 @@ This test provides detailed information about each zone delegation, including:
 
 #### Related Tests
 
-- `Test-MtAdDnsZoneDelegationCount` - Counts zone delegations
+- **AD-DNS-08 — Zone delegation count should be retrievable** — `Test-MtAdDnsZoneDelegationCount` — Counts zone delegations.
 
 <!--- Results --->
 %TestResult%

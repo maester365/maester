@@ -50,10 +50,14 @@
 
 # If unable to retrieve AD data, skip the test
     if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'GPO state is unavailable; inheritance blocking cannot be determined.'
         return $null
     }
 
+    if ($null -eq $gpoState.LinkContainers) {
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Domain/OU link-container inventory is unavailable; inheritance blocking cannot be determined.'
+        return
+    }
     $ous = @($gpoState.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'organizationalUnit' })
 
     $ouCount = ($ous | Measure-Object).Count

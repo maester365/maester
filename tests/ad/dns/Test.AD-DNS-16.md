@@ -24,8 +24,8 @@ This test counts reverse lookup zones (zones ending in .in-addr.arpa for IPv4 an
 
 #### Related Tests
 
-- `Test-MtAdDnsReverseZoneNetworkCount` - Counts distinct networks with reverse zones
-- `Test-MtAdDnsReverseZoneNetworkDetails` - Provides detailed network information
+- **AD-DNS-18 — Reverse zone network count should be retrievable** — `Test-MtAdDnsReverseZoneNetworkCount` — Counts distinct networks with reverse zones.
+- **AD-DNS-19 — Reverse zone network details should be retrievable** — `Test-MtAdDnsReverseZoneNetworkDetails` — Provides detailed network information.
 
 <!--- Results --->
 %TestResult%

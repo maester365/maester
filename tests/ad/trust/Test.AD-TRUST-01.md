@@ -21,17 +21,16 @@ Trusts allow users from one domain to access resources in another. While necessa
 
 #### How the Test Works
 
-This test retrieves all trust objects from Active Directory using `Get-ADTrust` and counts the total number of configured trusts. The test returns:
+This test retrieves the cached LDAP trusted-domain inventory and counts the configured trusts. The test returns:
 
-- Total count of trusts
+- Total count of trusts and each trust's target, direction, type, within-forest status, quarantine bit, and selective authentication bit
 - Informational result (no pass/fail criteria)
 
 #### Related Tests
 
-- `Test-MtAdTrustInterForestCount` - Identifies external/inter-forest trusts
-- `Test-MtAdTrustQuarantinedCount` - Checks for SID filtering on trusts
-- `Test-MtAdTrustStaleCount` - Identifies trusts not validated recently
-- `Test-MtAdTrustDetails` - Provides detailed trust configuration information
+- **AD-TRUST-02 — Trust inter-forest count should be investigated** — `Test-MtAdTrustInterForestCount` — Inventories inter-forest trusts.
+- **AD-TRUST-03 — Applicable trusts should have strong SID filtering with no weak findings** — `Test-MtAdTrustQuarantinedCount` — Reviews SID filtering on applicable trusts.
+- **AD-TRUST-06 — Trust validation age and unknown dates should be investigated** — `Test-MtAdTrustStaleCount` — Investigates trust validation age; safe LDAP cannot establish staleness.
 
 <!--- Results --->
 %TestResult%

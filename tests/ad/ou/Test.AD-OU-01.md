@@ -1,31 +1,32 @@
-- Organizational Units with overlapping (duplicate) names can create administrative confusion and operational risks in Active Directory:
-- Administrative errors: Administrators may inadvertently apply Group Policies, permissions, or settings to the wrong OU when multiple OUs share the same name
-- Scripting complications: Automation scripts that reference OUs by name may target incorrect containers
-- Policy application issues: Group Policy links may be applied to unintended OUs
-- Audit confusion: Security audits and compliance reports become harder to interpret when OU names are ambiguous
-- While Active Directory technically allows duplicate OU names (as long as they're in different locations), this practice should be minimized to reduce operational risk.
+OU names are unique across the hierarchy.
+
+Repeated OU names in different locations are allowed by Active Directory. This is an optional organization-wide naming hygiene baseline, not a duplicate distinguished name error.
+
+Ambiguous short names can complicate scripts, audits and manual GPO or delegation changes when administrators ignore the OU's full distinguished name. Legitimate hierarchies may intentionally reuse names.
 
 #### Control Type
 
 **Operational**
 
 #### Security Recommendation
-- Review OUs with duplicate names and consider renaming them to be more descriptive and unique. Use naming conventions that incorporate location, function, or department to make OU names unambiguous. For example:
 
-- Instead of multiple "Users" OUs, use "NYC-Users", "LA-Users", "London-Users"
-- Instead of multiple "Servers" OUs, use "Production-Servers", "Test-Servers", "Dev-Servers"
+1. Review the objects in **Active Directory Sites and Services** or **Active Directory Users and Computers**, as appropriate.
+2. Review the reported objects against the organization baseline, document intentional exceptions and correct unintended configuration with the directory and network owners.
+
+Where ambiguity causes operational risk, adopt descriptive naming conventions and target OUs by distinguished name in automation. Avoid renaming valid OUs solely because their leaf names repeat.
 
 #### How the Test Works
 
-- This test retrieves all Organizational Units from Active Directory and:
-- Groups OUs by their Name property
-- Identifies names that appear more than once
-- Counts the number of duplicate name groups
-- Lists all OUs that share names with other OUs
+Groups visible OU objects by name and reports repeated names across the hierarchy. It does not treat separate OUs with the same leaf name as a directory uniqueness violation.
 
 #### Related Tests
-- `Test-MtAdOuAtDomainRootCount` - Analyzes OU structure at the domain root level
-- `Test-MtAdOuEmptyCount` - Identifies OUs that contain no objects
+
+- **AD-OU-02 — Root-level OU inventory** — `Test-MtAdOuAtDomainRootCount` — Inventories root-level OUs.
+- **AD-OU-04 — OUs with no selected visible direct children inventory** — `Test-MtAdOuEmptyCount` — Inventories OUs without selected visible children.
+
+#### Related links
+
+* [Microsoft Learn: Reviewing OU Design Concepts](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/reviewing-ou-design-concepts)
 
 <!--- Results --->
 %TestResult%

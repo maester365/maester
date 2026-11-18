@@ -1,14 +1,6 @@
-NetBIOS names are still used in many Windows networking scenarios, even though DNS is the primary name resolution method. Non-compliant NetBIOS names can cause:
+Validates every forest domain partition's NetBIOS name for the 15-character limit and disallowed characters. Displays each partition DN, NetBIOS name and syntax outcome. Missing partition metadata is an error.
 
-- **Legacy Application Issues**: Older applications may not handle non-standard characters
-- **WINS Problems**: Windows Internet Name Service may have trouble with invalid names
-- **Network Browsing**: Issues with network neighborhood and browsing services
-- **Script Failures**: PowerShell and batch scripts may fail with special characters
-
-Valid NetBIOS names should:
-- Be 1-15 characters in length
-- Contain only alphanumeric characters and: !@#$%^&'()_-.+{}~
-- Not contain: \ / : * ? " < > |
+Legacy applications, scripts and Windows networking components may still use NetBIOS names. Invalid characters or overlong names can cause interoperability problems; a valid name does not guarantee legacy-client compatibility.
 
 #### Control Type
 
@@ -16,19 +8,19 @@ Valid NetBIOS names should:
 
 #### Security Recommendation
 
-- **Use Simple Names**: Stick to alphanumeric characters for maximum compatibility
-- **Keep Short**: Stay well under the 15-character limit
-- **Avoid Special Characters**: Even allowed special characters can cause issues
-- **Document Requirements**: If special characters are needed, document the business case
+Verify invalid names against the directory and plan a supported domain rename or migration with AD administrators; do not directly edit partition metadata. For new names, prefer short alphanumeric choices even when additional characters are permitted, and document exceptions.
 
 #### How the Test Works
 
-This test validates NetBIOS names against standard naming conventions, checking for valid characters and length requirements.
+Checks NetBIOS names on forest domain partitions for length and prohibited characters, reporting each partition and its result. Missing names or partition metadata are not silently accepted.
 
 #### Related Tests
 
-- `Test-MtAdNetbiosNameNonStandardDetails` - Lists non-compliant NetBIOS names
-- `Test-MtAdDomainNameStandardCompliance` - Checks domain name compliance
+- **AD-DOM-05 — Forest domain DNS names have valid syntax** — `Test-MtAdDomainNameStandardCompliance` — Reviews DNS names alongside NetBIOS names.
+
+#### Related links
+
+* [Active Directory Domain Services documentation](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-domain-services)
 
 <!--- Results --->
 %TestResult%

@@ -1,30 +1,25 @@
 ﻿function Test-MtAdOuOverlappingNameCount {
     <#
     .SYNOPSIS
-    Counts the number of Organizational Units with overlapping (duplicate) names in Active Directory.
-
+    OU names are unique across the hierarchy.
     .DESCRIPTION
-    This test identifies OUs that share the same name but exist in different locations within the directory.
-    While this is technically allowed in Active Directory, overlapping OU names can cause confusion and
-    administration errors, particularly when applying Group Policies or managing permissions.
-
+    Uses cached Active Directory state to assess or inventory ou names are unique across the hierarchy.
     .EXAMPLE
-    Test-MtAdOuOverlappingNameCount
-
-    Returns $true if OU data is accessible, $false otherwise.
-    The test result includes the count of OUs with duplicate names.
-
+    Invoke-MtTest -Id AD-OU-01
+    Assess whether OU names are unique across the hierarchy.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdOuOverlappingNameCount
+    https://maester.dev/docs/tests/AD-OU-01
     #>
     [MaesterTest(
         Id = 'AD-OU-01',
-        Title = 'OU overlapping name count should be retrievable',
+        Title = 'OU names are unique across the hierarchy',
         Product = 'ad',
         Feature = 'organizational-units',
         Area = 'infrastructure',
         ResourceType = 'OrganizationalUnit',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:organizationalUnit:ReadProperty'),
@@ -34,56 +29,16 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdOuOverlappingNameCount"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('OrganizationalUnits')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $organizationalUnits = $adState.OrganizationalUnits
-
-    # Count total OUs
-    $totalCount = ($organizationalUnits | Measure-Object).Count
-
-    # Find OUs with overlapping names
-    $ouNameGroups = $organizationalUnits | Group-Object -Property Name
-    $overlappingNames = $ouNameGroups | Where-Object { $_.Count -gt 1 }
-    $overlappingNameCount = ($overlappingNames | Measure-Object).Count
-    $affectedOuCount = ($overlappingNames | ForEach-Object { $_.Count } | Measure-Object -Sum).Sum
-
-    # Test passes if we successfully retrieved OU data
-    $testResult = $totalCount -gt 0
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total OUs | $totalCount |" + "`n"
-        $result += "| Duplicate OU Names | $overlappingNameCount |" + "`n"
-        $result += "| OUs with Duplicate Names | $affectedOuCount |" + "`n" + "`n"
-
-        if ($overlappingNameCount -gt 0) {
-            $result += "**Duplicate OU Names:**" + "`n" + "`n"
-            $result += "| OU Name | Count | Distinguished Names |" + "`n"
-            $result += "| --- | --- | --- |" + "`n"
-            foreach ($group in $overlappingNames) {
-                $dns = ($group.Group | ForEach-Object { $_.DistinguishedName }) -join "<br>"
-                $result += "| $($group.Name) | $($group.Count) | $dns |" + "`n"
-            }
+    $ous = @(Get-MtAdOrganizationalUnitOverview -State (Get-MtADDomainState -Categories @('OrganizationalUnits')))
+    $duplicates = @($ous | Group-Object Name | Where-Object Count -gt 1)
+    $rows = @('| Repeated OU name | Distinguished name |', '| --- | --- |')
+    foreach ($group in $duplicates) {
+        foreach ($ou in $group.Group) {
+            $rows += '| {0} | {1} |' -f (Format-MtAdSiteInventoryValue $group.Name), (Format-MtAdSiteInventoryValue $ou.DistinguishedName)
         }
-
-        $testResultMarkdown = "Active Directory Organizational Units have been analyzed. $overlappingNameCount duplicate OU name(s) found affecting $affectedOuCount OU(s).`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory Organizational Units. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $ok = $duplicates.Count -eq 0
+    $summary = if ($ok) { 'Well done. OU names are unique in the organization hierarchy.' } else { 'Review repeated OU names across the hierarchy and rename where appropriate for administrator clarity.' }
+    Add-MtTestResultDetail -Result "$summary $($duplicates.Count) repeated name group(s) among $($ous.Count) OUs. Distinguished names remain unique in Active Directory.`n`n$($rows -join "`n")"
+    return $ok
 }

@@ -1,15 +1,6 @@
-Domain controllers typically use the standard LDAP port (389) for directory services communication. Non-standard LDAP ports may indicate:
+Reports both LDAP and LDAPS port metadata for each forest DC, with known, unknown and nonstandard counts against 389 and 636. Current collector values are unmeasured, not proof of default ports or live listeners. This inventory does not test TLS certificates or network reachability.
 
-- **Custom configurations** that could affect compatibility with standard LDAP clients and tools
-- **Security evasion attempts** where alternate ports are used to bypass network monitoring
-- **Legacy configurations** that haven't been updated to standard settings
-- **Multi-tenant or specialized deployments** with unique port requirements
-
-While non-standard ports may be intentional for specific scenarios, they can cause issues with:
-- LDAP client connectivity
-- Directory synchronization services
-- Authentication protocols expecting standard ports
-- Network security monitoring and firewall rules
+LDAP clients commonly expect port 389 and LDAPS clients port 636. Documented deviations can affect firewall and client configuration; an unknown port is not a detected alternate port or evidence of evasion.
 
 #### Control Type
 
@@ -17,24 +8,20 @@ While non-standard ports may be intentional for specific scenarios, they can cau
 
 #### Security Recommendation
 
-1. **Document intentional deviations**: If non-standard ports are required, ensure they are well-documented with business justification
-2. **Review firewall rules**: Ensure proper firewall rules are in place for any non-standard ports
-3. **Monitor for unauthorized changes**: Non-standard ports without documentation may indicate unauthorized configuration changes
-4. **Consider standardization**: Where possible, use standard ports to simplify management and troubleshooting
+Review advertised configuration if it is available; use separate connectivity and TLS tests from the relevant client networks before making any network or certificate changes. Document intentional deviations, check firewall rules and investigate unauthorized changes using independently collected evidence.
 
 #### How the Test Works
 
-This test retrieves all domain controllers and checks their configured LDAP port. The standard LDAP port is 389. The test reports:
-
-- Total number of domain controllers
-- Number of DCs using the standard LDAP port (389)
-- Number of DCs using non-standard LDAP ports
-- Names of DCs with non-standard ports and the specific ports they use
+Reports known, unknown and nonstandard LDAP/LDAPS port metadata against 389/636 for inventoried DCs. Unmeasured collector values remain unknown; this test does not probe listeners.
 
 #### Related Tests
 
-- `Test-MtAdDcNonStandardLdapsPortCount` - Checks for non-standard secure LDAP ports
-- `Test-MtAdDcSiteCoverageCount` - Analyzes DC distribution across sites
+- **AD-DC-01 — Site DNs containing DC objects for review** — `Test-MtAdDcSiteCoverageCount` — Inventories DC site DNs.
+- **AD-DOM-03 — Connected domain DC count for review** — `Test-MtAdDomainControllerCount` — Inventories connected-domain controllers.
+
+#### Related links
+
+* [Active Directory Domain Services documentation](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-domain-services)
 
 <!--- Results --->
 %TestResult%

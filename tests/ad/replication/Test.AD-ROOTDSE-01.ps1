@@ -9,8 +9,8 @@
     (Directory Service Agent) publishes the supported SASL mechanisms which
     clients use to negotiate authentication.
 
-    Common SASL mechanisms include:
-    - GSSAPI: Kerberos-based authentication (most secure)
+    Common SASL mechanism identifiers include:
+    - GSSAPI: Kerberos-based authentication
     - GSS-SPNEGO: Negotiate authentication
     - EXTERNAL: External authentication
     - DIGEST-MD5: Digest authentication
@@ -28,7 +28,7 @@
     #>
     [MaesterTest(
         Id = 'AD-ROOTDSE-01',
-        Title = 'Supported SASL mechanism count should be investigated',
+        Title = 'Advertised SASL mechanism count and details should be investigated',
         Product = 'ad',
         Feature = 'directory-configuration',
         Area = 'authentication',
@@ -48,25 +48,33 @@
     $adState = Get-MtADDomainState -Categories @('Domain')
 
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+        throw 'Active Directory domain state was not returned.'
     }
 
     $rootDse = $adState.RootDSE
+    if ($null -eq $rootDse) { throw 'LDAP RootDSE was not returned.' }
     $saslMechanisms = $rootDse.SupportedSASLMechanisms
     $mechanismCount = if ($saslMechanisms) { ($saslMechanisms | Measure-Object).Count } else { 0 }
 
-    $testResult = $true
+    $testResult = $null -ne $rootDse
 
     $result = "| Property | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
     $result += "| Supported SASL Mechanisms Count | $mechanismCount |" + "`n"
 
-    if ($mechanismCount -gt 0) {
-        $result += "| Mechanisms | $(($saslMechanisms -join ', ')) |" + "`n"
+    $result += "`n| Advertised mechanism | Description |`n| --- | --- |`n"
+    foreach ($mechanism in $saslMechanisms) {
+        $description = switch ($mechanism) {
+            'GSSAPI' { 'Kerberos (GSSAPI)' }
+            'GSS-SPNEGO' { 'Negotiation (Kerberos or NTLM)' }
+            'EXTERNAL' { 'External authentication' }
+            'DIGEST-MD5' { 'Digest; advertised by Windows Server 2003 and later' }
+            default { 'Mechanism advertised by this domain controller' }
+        }
+        $result += "| $mechanism | $description |`n"
     }
 
-    $testResultMarkdown = "Active Directory supported SASL mechanisms have been enumerated. These mechanisms define available authentication protocols.`n`n%TestResult%"
+    $testResultMarkdown = "Active Directory domain controllers publish supportedSASLMechanisms in RootDSE. These are the values visible in the current LDAP session; RFC 4513 allows them to vary after TLS or other session-state changes. Compare them with the environment's required mechanisms. This inventory does not establish whether a bind succeeds, which clients use a mechanism, or that every DC meets the environment's authentication requirements.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown -Investigate

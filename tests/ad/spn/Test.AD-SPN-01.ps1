@@ -41,11 +41,12 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
         return $null
     }
 
     $computers = $adState.Computers
+    if ($null -eq $computers) { throw 'Computer collection is unavailable.' }
 
     # Extract all SPNs from computer objects
     $allSpns = $computers | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object { $_.servicePrincipalName } | ForEach-Object { $_ }
@@ -61,7 +62,7 @@
     $totalSpnCount = ($allSpns | Measure-Object).Count
 
     # Test passes if we successfully retrieved SPN data
-    $testResult = $totalSpnCount -ge 0
+    $testResult = $null -ne $computers
 
     # Generate markdown results
     if ($testResult) {
@@ -69,9 +70,13 @@
         $result += "| --- | --- |" + "`n"
         $result += "| Total SPNs | $totalSpnCount |" + "`n"
         $result += "| Distinct Service Classes | $serviceClassCount |" + "`n"
+        $result += "`n| Service Class | SPN Count |" + "`n| --- | --- |" + "`n"
+        foreach ($class in @($allSpns | Where-Object { $_ -match '^[^/]+' } | ForEach-Object { ($_ -split '/')[0] } | Group-Object | Sort-Object Count -Descending)) {
+            $result += "| $($class.Name) | $($class.Count) |" + "`n"
+        }
 
         if ($serviceClassCount -gt 0) {
-            $result += "| Computers with SPNs | $(($computers | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count) |" + "`n"
+            $result += "| Computers with SPNs | $(@($computers | Where-Object { @($_.servicePrincipalName | Where-Object { $_ }).Count -gt 0 }).Count) |" + "`n"
         }
 
         $testResultMarkdown = "Active Directory computer SPNs have been analyzed. $serviceClassCount distinct service classes found across $totalSpnCount SPNs.`n`n%TestResult%"
@@ -80,7 +85,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory computer SPN data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

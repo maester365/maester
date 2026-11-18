@@ -27,8 +27,8 @@ This test analyzes all enabled computer accounts and counts the distinct organiz
 
 #### Related Tests
 
-- `Test-MtAdComputerPerOUAverage` - Calculates the average computers per OU
-- `Test-MtAdComputerInDefaultContainer` - Identifies computers in the unmanaged default container
+- **AD-COMP-08 — Computer per OU average should be retrievable** — `Test-MtAdComputerPerOUAverage` — Calculates placement density.
+- **AD-COMP-06 — Enabled computers should be moved out of the default Computers container** — `Test-MtAdComputerInDefaultContainer` — Checks default-container placement.
 
 <!--- Results --->
 %TestResult%

@@ -37,8 +37,8 @@ This test retrieves the KRBTGT account and checks:
 
 #### Related Tests
 
-- `Test-MtAdKrbtgtPasswordLastSet` - Checks KRBTGT password age
-- `Test-MtAdKrbtgtNonStandardUacCount` - Validates KRBTGT UAC settings
+- **AD-KRBTGT-01 — KRBTGT password age should not exceed the configured maximum** — `Test-MtAdKrbtgtPasswordLastSet` — Checks KRBTGT password age.
+- **AD-KRBTGT-03 — KRBTGT should have standard UAC settings (disabled account)** — `Test-MtAdKrbtgtNonStandardUacCount` — Validates KRBTGT UAC settings.
 
 <!--- Results --->
 %TestResult%

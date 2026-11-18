@@ -4,11 +4,9 @@
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
         # Check functions that became native tests are not exported.
         Use-MtModuleFunction -Name @(
-            'Test-MtAdDaclIdentityAceDistribution'
+            'Test-MtAdDaclDistinctIdentityCount'
             'Test-MtAdDaclPrivilegedAllowAceCount'
-            'Test-MtAdDaclPrivilegedAllowAceDetails'
             'Test-MtAdDaclPrivilegedExtendedRightCount'
-            'Test-MtAdDaclPrivilegedExtendedRightDetails'
         )
 
         $domainSid = 'S-1-5-21-1004336348-1177238915-682003330'
@@ -81,8 +79,8 @@
         }
     }
 
-    It 'AD-DACL-08 (Test-MtAdDaclIdentityAceDistribution) splits the ACEs of each identity into allow and deny' {
-        Test-MtAdDaclIdentityAceDistribution | Should -BeTrue
+    It 'AD-DACL-07 splits the ACEs of each identity into allow and deny' {
+        Test-MtAdDaclDistinctIdentityCount | Should -BeTrue
 
         # IdentityReference | ACE Count | Distinct Objects | Allow ACEs | Deny ACEs
         $script:Result | Should -BeLike "*| $helpdesk | 2 | 1 | 2 | 0 |*"
@@ -103,8 +101,8 @@
         $script:Result | Should -BeLike '*| ACEs containing ExtendedRight | 2 |*'
     }
 
-    It 'AD-DACL-10 (Test-MtAdDaclPrivilegedAllowAceDetails) lists the object that holds privileged allow ACEs' {
-        Test-MtAdDaclPrivilegedAllowAceDetails | Should -BeTrue
+    It 'AD-DACL-09 lists the object that holds privileged allow ACEs' {
+        Test-MtAdDaclPrivilegedAllowAceCount | Should -BeTrue
 
         # Object Name | Object Class | ACE Count | Distinct Identities | Privileged Rights | Object DN
         $script:Result | Should -BeLike '*| Sales | organizationalUnit | 4 | 2 | ExtendedRight, GenericAll, WriteDacl, WriteOwner | OU=Sales,DC=contoso,DC=com |*'
@@ -120,8 +118,8 @@
         $script:Result | Should -BeLike '*| Distinct objects with ExtendedRight | 1 |*'
     }
 
-    It 'AD-DACL-12 (Test-MtAdDaclPrivilegedExtendedRightDetails) lists each ObjectType granted through an ExtendedRight allow ACE' {
-        Test-MtAdDaclPrivilegedExtendedRightDetails | Should -BeTrue
+    It 'AD-DACL-11 lists each ObjectType granted through an ExtendedRight allow ACE' {
+        Test-MtAdDaclPrivilegedExtendedRightCount | Should -BeTrue
 
         # ObjectType | ACE Count | Distinct Objects | Distinct Identities
         $script:Result | Should -BeLike "*| $resetPassword | 1 | 1 | 1 |*"

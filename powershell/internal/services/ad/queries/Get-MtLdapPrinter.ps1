@@ -9,6 +9,6 @@
     )
 
     if ([string]::IsNullOrWhiteSpace($SearchBase)) { $SearchBase = (Get-MtLdapRootDse -Connection $Connection).DefaultNamingContext }
-    $entries = @(Invoke-MtLdapSearch -Connection $Connection -SearchBase $SearchBase -Scope Subtree -Filter '(objectClass=printQueue)' -Attributes @('distinguishedName', 'name', 'serverName', 'location'))
-    return @($entries | ForEach-Object { [PSCustomObject]@{ DistinguishedName = [string]$_.DistinguishedName; Name = [string]$_.name; ServerName = [string]$_.serverName; Location = [string]$_.location } })
+    $entries = @(Invoke-MtLdapSearch -Connection $Connection -SearchBase $SearchBase -Scope Subtree -Filter '(objectClass=printQueue)' -Attributes @('distinguishedName', 'name', 'serverName', 'location', 'description'))
+    return @($entries | ForEach-Object { [PSCustomObject]@{ DistinguishedName = [string]$_.DistinguishedName; Name = [string]$_.name; ServerName = [string]$_.serverName; Location = [string]$_.location; Description = [string]$_.description } })
 }

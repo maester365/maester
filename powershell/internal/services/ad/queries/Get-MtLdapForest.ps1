@@ -38,7 +38,7 @@
         })
         $rootPartition = $domainPartitions | Where-Object { $_.nCName -eq $rootDse.RootDomainNamingContext } | Select-Object -First 1
         $forestModeNames = @('Windows2000Forest', 'Windows2003InterimForest', 'Windows2003Forest', 'Windows2008Forest', 'Windows2008R2Forest', 'Windows2012Forest', 'Windows2012R2Forest', 'Windows2016Forest')
-        $forestModeValue = [int]$rootDse.ForestFunctionality
+        $forestModeValue = if ($null -ne $rootDse.ForestFunctionality) { [int]$rootDse.ForestFunctionality } else { $null }
         $fallbackRootDomain = (([regex]::Matches($rootDse.RootDomainNamingContext, '(?i)(?:^|,)DC=([^,]+)') | ForEach-Object { $_.Groups[1].Value }) -join '.')
 
         $crossForestReferences = @($partitions | Where-Object {
@@ -59,9 +59,14 @@
         return [PSCustomObject]@{
             RootDomain           = if ($null -ne $rootPartition) { [string]$rootPartition.dnsRoot } else { $fallbackRootDomain }
             Domains              = [string[]]@($domainPartitions | ForEach-Object { $_.dnsRoot } | Sort-Object -Unique)
-            ForestMode           = if ($forestModeValue -ge 0 -and $forestModeValue -lt $forestModeNames.Count) { $forestModeNames[$forestModeValue] } else { $forestModeValue }
+            ForestMode           = if ($forestModeValue -eq 10) { 'Windows2025Forest' } elseif ($null -ne $forestModeValue -and $forestModeValue -ge 0 -and $forestModeValue -lt $forestModeNames.Count) { $forestModeNames[$forestModeValue] } else { $forestModeValue }
+            ForestLevelValue     = $forestModeValue
+            RootDomainDistinguishedName = [string]$rootDse.RootDomainNamingContext
+            DomainPartitions     = @($domainPartitions | ForEach-Object { [pscustomobject]@{ DistinguishedName = [string]$_.nCName; DnsRoot = [string]$_.dnsRoot; NetBIOSName = [string]$_.nETBIOSName } })
             SchemaMaster         = Resolve-FsmoOwner -OwnerDistinguishedName ([string]$schemaFsmo.fSMORoleOwner)
             DomainNamingMaster   = Resolve-FsmoOwner -OwnerDistinguishedName ([string]$partitionsContainer.fSMORoleOwner)
+            SchemaOwnerDistinguishedName = [string]$schemaFsmo.fSMORoleOwner
+            DomainNamingOwnerDistinguishedName = [string]$partitionsContainer.fSMORoleOwner
             UPNSuffixes          = [string[]]@(@($partitionsContainer.uPNSuffixes) | Where-Object { $null -ne $_ })
             SPNSuffixes          = [string[]]@(@($partitionsContainer.'msDS-SPNSuffixes') | Where-Object { $null -ne $_ })
             CrossForestReferences = $crossForestReferences

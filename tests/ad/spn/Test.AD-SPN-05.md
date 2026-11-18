@@ -1,4 +1,4 @@
-SPNs should use fully qualified domain names (FQDNs) for the host portion to ensure proper Kerberos authentication across domain boundaries and to avoid ambiguity. Non-FQDN hosts can cause:
+SPNs using short host names may warrant review against the service's intended Kerberos naming and DNS design. A host name without a dot is not necessarily invalid. Depending on the workload, short names can cause:
 
 - **Authentication failures**: Kerberos may fail to find the correct service principal
 - **DNS resolution issues**: Short names may not resolve correctly in all contexts
@@ -19,12 +19,12 @@ Review SPNs with non-FQDN hosts:
 
 #### How the Test Works
 
-This test parses all computer SPNs and checks if the host portion contains a dot (indicating FQDN format). SPNs without dots in the host portion are flagged as non-FQDN.
+This test parses computer SPNs and checks whether the host portion contains a dot as a simple FQDN-format proxy. A flagged name is for investigation, not proof of a broken service.
 
 #### Related Tests
 
-- `Test-MtAdUserSpnNonFqdnHosts` - Checks user account SPNs for non-FQDN hosts
-- `Test-MtAdComputerSpnServiceClassCount` - Overall SPN analysis
+- **AD-SPN-11 — User SPN non-FQDN hosts should be investigated** — `Test-MtAdUserSpnNonFqdnHosts` — Reviews user-account SPN hosts.
+- **AD-SPN-01 — Computer SPN service class count should be retrievable** — `Test-MtAdComputerSpnServiceClassCount` — Inventories service classes, not host validity.
 
 <!--- Results --->
 %TestResult%
