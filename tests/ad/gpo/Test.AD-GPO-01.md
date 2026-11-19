@@ -1,32 +1,12 @@
-Understanding the total number of Group Policy Objects (GPOs) in your Active Directory environment is crucial for several security and operational reasons:
+Inventories the Group Policy Objects (GPOs) returned from Active Directory and reports the total. The **Investigate** result is intentional: the count gives administrators a starting point to assess policy sprawl, ownership, and consolidation; it does not by itself indicate a security problem.
 
-- **Policy Sprawl**: A large number of GPOs can indicate policy sprawl, making it difficult to manage and troubleshoot policy conflicts
-- **Performance Impact**: Each GPO adds processing overhead during user logon and computer startup
-- **Security Complexity**: More GPOs mean more potential attack surfaces if any contain misconfigurations
-- **Audit Requirements**: Compliance frameworks often require understanding of policy scope and distribution
+#### Remediation action
 
-#### Control Type
+Review the inventory and confirm that each GPO has an owner and purpose. Consolidate only policies with compatible scope and settings; archive or remove policies only after verifying they are no longer needed.
 
-**Operational**
+#### Related links
 
-#### Security Recommendation
-
-Regularly audit your GPO inventory and consolidate redundant or overlapping policies. Consider:
-
-- Merging GPOs with similar settings
-- Removing unused or obsolete GPOs
-- Documenting the purpose of each GPO
-- Implementing a naming convention for better organization
-
-#### How the Test Works
-
-This test retrieves all Group Policy Objects from Active Directory and counts the total number. It uses the Get-MtADGpoState function to access cached GPO data.
-
-#### Related Tests
-
-- `Test-MtAdGpoUnlinkedCount` - Identifies GPOs that are not linked to any location
-- `Test-MtAdGpoCreatedBefore2020Count` - Identifies potentially outdated GPOs
-- `Test-MtAdGpoLinkedCount` - Counts GPOs that are actively linked
+* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

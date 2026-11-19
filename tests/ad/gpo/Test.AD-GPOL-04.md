@@ -1,31 +1,12 @@
-Enforced Group Policy Object (GPO) links are special link entries that **block inheritance** from being overridden at lower levels (for example, by child OUs).
+Counts GPO link entries marked **Enforced**, which override inheritance blocking at lower levels. The test reports a finding when enforced links exist; enforcement can be intentional, but can make a policy apply beyond the scope administrators expect.
 
-This can be a powerful mechanism for security baselines, but it also increases the chance that a critical policy unintentionally becomes “sticky” across the domain.
+#### Remediation action
 
-#### Control Type
+Review each enforced link's purpose, target, and settings in **Group Policy Management**. Retain enforcement only when required by the policy design; otherwise remove the enforced flag after assessing the effect on inherited policy.
 
-**Detective**
+#### Related links
 
-#### Security Recommendation
-
-- **Enforced GPOs override inheritance blocking**: any configuration enforced at a higher scope can still apply even if child OUs attempt to disable inheritance.
-- **Use enforced links sparingly**: reserve them for critical security policies that must apply everywhere.
-- **Review enforced policies regularly**: confirm the GPO’s purpose and ownership, and ensure the enforced settings remain aligned with current security requirements.
-
-#### How the Test Works
-
-This test retrieves Active Directory GPO state from `Get-MtADGpoState` (using `$gpoState.GPOLinks`) and:
-
-1. Examines each collected link object for the `Enforced` property.
-2. Counts link entries where `Enforced` is `$true`.
-3. Reports the enforced link count and the enforced ratio in Markdown.
-
-#### Related Tests
-
-- `Test-MtAdGpoTotalCount` - Counts total GPO inventory
-- `Test-MtAdGpoLinkedCount` - Identifies GPOs that are actively linked
-- `Test-MtAdGpoUnlinkedCount` - Identifies GPOs not linked anywhere
-- `Test-MtAdGpoUnlinkedDetails` - Shows unlinked GPO details
+* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

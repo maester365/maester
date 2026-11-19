@@ -13,6 +13,10 @@
     that principal applies to the GPO) and HasInheritedPermissions (an entry is inherited from the parent
     container). These are $null when the security descriptor of the GPO was not returned.
 
+    DirectoryVersion and SysvolVersion expose the versions compared by HasVersionMismatch.
+    Password scan flags are $null when files could not be scanned, unless a secret was found.
+    Errors records incomplete SYSVOL scans. Failed metadata or link collection remains $null.
+
     .PARAMETER Refresh
     Forces a refresh of the data from Active Directory, bypassing the cache.
 
@@ -103,6 +107,7 @@
             }
             catch {
                 Write-Verbose "Could not collect GPO metadata: $($_.Exception.Message)"
+                $gpoState['GPOs'] = $null
             }
 
             $parsedGpoLinks = [System.Collections.Generic.List[object]]::new()
@@ -175,6 +180,7 @@
                 Write-Verbose "Could not collect site GPO links: $($_.Exception.Message)"
                 $siteLinksFailed = $true
                 $gpoState['SiteContainers'] = $null
+                $gpoState['GPOLinks'] = $null
             }
             if (-not $domainLinksFailed -and -not $siteLinksFailed) {
                 $gpoState['GPOLinks'] = @($parsedGpoLinks)
@@ -199,9 +205,10 @@
                         $hasDenyAce = [bool]($access | Where-Object { $_.AccessControlType -eq 'Deny' } | Select-Object -First 1)
                         $hasApplyGroupPolicyAce = [bool]($access | Where-Object {
                                 $_.AccessControlType -eq 'Allow' -and
-                                (([string]$_.ObjectType -eq $applyGroupPolicyGuid) -or
-                                    ([string]$_.ActiveDirectoryRights -match 'ApplyGroupPolicy') -or
-                                    (([string]$_.ActiveDirectoryRights -match 'ExtendedRight') -and ([string]$_.ObjectType -eq $applyGroupPolicyGuid)))
+                                [string]$_.AceFlags -notmatch 'InheritOnly' -and
+                                (([string]$_.ActiveDirectoryRights -match 'ApplyGroupPolicy') -or
+                                    (([string]$_.ActiveDirectoryRights -match 'ExtendedRight') -and
+                                        ([string]$_.ObjectType -eq $applyGroupPolicyGuid)))
                             } | Select-Object -First 1)
                     }
 
@@ -234,17 +241,25 @@
                     }
 
                     $hasVersionMismatch = $null
+                    $sysvolVersion = $null
                     $cpasswordFound = $null
                     $defaultPasswordFound = $null
                     $errors = [System.Collections.Generic.List[object]]::new()
                     try {
                         Write-Verbose "Collecting SYSVOL content for GPO '$gpoGuid'"
                         $sysvolContent = Get-MtSysvolContent -Operation Connect -GpoGuid $gpoGuid
+                        if ($null -eq $sysvolContent) { throw 'SYSVOL content scanning returned no result.' }
                         if ($null -ne $sysvolContent.GptIni -and $null -ne $sysvolContent.GptIni.Version) {
-                            $hasVersionMismatch = [long]$gpo.VersionNumber -ne [long]$sysvolContent.GptIni.Version
+                            $sysvolVersion = [long]$sysvolContent.GptIni.Version
+                            if ($null -ne $gpo.VersionNumber) {
+                                $hasVersionMismatch = [long]$gpo.VersionNumber -ne $sysvolVersion
+                            }
                         }
-                        $cpasswordFound = [bool]$sysvolContent.CpasswordFound
-                        $defaultPasswordFound = [bool]$sysvolContent.DefaultPasswordFound
+                        $cpasswordFound = $sysvolContent.CpasswordFound
+                        $defaultPasswordFound = $sysvolContent.DefaultPasswordFound
+                        foreach ($path in @($sysvolContent.ScanErrors | Where-Object { $_ })) {
+                            $errors.Add([PSCustomObject]@{ Transport = 'SYSVOL'; Message = "File could not be scanned: $path" }) | Out-Null
+                        }
                     }
                     catch {
                         $errors.Add([PSCustomObject][ordered]@{
@@ -263,6 +278,8 @@
                         Name                           = $gpo.DisplayName
                         DisabledLinks                  = if ($null -ne $gpoLinks) { @($gpoLinks | Where-Object { $_.IsDisabled }).Count } else { $null }
                         HasVersionMismatch             = $hasVersionMismatch
+                        DirectoryVersion               = $gpo.VersionNumber
+                        SysvolVersion                  = $sysvolVersion
                         CpasswordFound                 = $cpasswordFound
                         DefaultPasswordFound           = $defaultPasswordFound
                         HasApplyGroupPolicyAce         = $hasApplyGroupPolicyAce
@@ -278,11 +295,12 @@
                     }
                 }
                 $gpoState['GPOReports'] = @($gpoReports)
+                if ($null -eq $gpoState.GPOs) { $gpoState['GPOReports'] = $null }
                 Write-Verbose "Collected $($gpoState.GPOReports.Count) GPO reports"
             }
             catch {
                 Write-Verbose "Could not build GPO reports: $($_.Exception.Message)"
-                $gpoState['GPOReports'] = @()
+                $gpoState['GPOReports'] = $null
             }
 
             $__MtSession.ADCache[$cacheKey] = $gpoState

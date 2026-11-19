@@ -146,35 +146,23 @@
         "AD-GMC-11",
         "AD-GPO-01",
         "AD-GPO-02",
-        "AD-GPO-03",
         "AD-GPO-04",
-        "AD-GPO-05",
         "AD-GPOL-01",
         "AD-GPOL-02",
         "AD-GPOL-03",
         "AD-GPOL-04",
         "AD-GPOL-05",
-        "AD-GPOL-06",
         "AD-GPOREP-01",
-        "AD-GPOREP-02",
         "AD-GPOREP-03",
-        "AD-GPOREP-04",
         "AD-GPOREP-05",
         "AD-GPOREP-06",
         "AD-GPOREP-07",
-        "AD-GPOREP-08",
         "AD-GPOREP-09",
         "AD-GPOREP-10",
-        "AD-GPOREP-11",
         "AD-GPOREP-12",
-        "AD-GPOREP-13",
         "AD-GPOREP-14",
         "AD-GPOREP-15",
-        "AD-GPOREP-16",
         "AD-GPOREP-17",
-        "AD-GPOREP-18",
-        "AD-GPOREP-19",
-        "AD-GPOREP-20",
         "AD-GPOS-01",
         "AD-GPOS-02",
         "AD-GPOS-03",
@@ -286,6 +274,78 @@
         "AD-USER-27",
         "AD-USER-28",
         "AD-USER-29"
+      ]
+    },
+    {
+      "Tag": "AD-GPO-03",
+      "Tests": [
+        "AD-GPO-02"
+      ]
+    },
+    {
+      "Tag": "AD-GPO-05",
+      "Tests": [
+        "AD-GPO-04"
+      ]
+    },
+    {
+      "Tag": "AD-GPOL-06",
+      "Tests": [
+        "AD-GPOL-03"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-02",
+      "Tests": [
+        "AD-GPOREP-01"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-04",
+      "Tests": [
+        "AD-GPOREP-03"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-08",
+      "Tests": [
+        "AD-GPOREP-07"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-11",
+      "Tests": [
+        "AD-GPOREP-10"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-13",
+      "Tests": [
+        "AD-GPOREP-12"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-16",
+      "Tests": [
+        "AD-GPOREP-15"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-18",
+      "Tests": [
+        "AD-GPOREP-17"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-19",
+      "Tests": [
+        "AD-GPOREP-17"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-20",
+      "Tests": [
+        "AD-GPOREP-17"
       ]
     },
     {
@@ -444,40 +504,28 @@
       "Tests": [
         "AD-GPO-01",
         "AD-GPO-02",
-        "AD-GPO-03",
         "AD-GPO-04",
-        "AD-GPO-05",
         "AD-GPOL-01",
         "AD-GPOL-02",
         "AD-GPOL-03",
         "AD-GPOL-04",
-        "AD-GPOL-05",
-        "AD-GPOL-06"
+        "AD-GPOL-05"
       ]
     },
     {
       "Tag": "AD.GPOState",
       "Tests": [
         "AD-GPOREP-01",
-        "AD-GPOREP-02",
         "AD-GPOREP-03",
-        "AD-GPOREP-04",
         "AD-GPOREP-05",
         "AD-GPOREP-06",
         "AD-GPOREP-07",
-        "AD-GPOREP-08",
         "AD-GPOREP-09",
         "AD-GPOREP-10",
-        "AD-GPOREP-11",
         "AD-GPOREP-12",
-        "AD-GPOREP-13",
         "AD-GPOREP-14",
         "AD-GPOREP-15",
-        "AD-GPOREP-16",
         "AD-GPOREP-17",
-        "AD-GPOREP-18",
-        "AD-GPOREP-19",
-        "AD-GPOREP-20",
         "AD-GPOS-01",
         "AD-GPOS-02",
         "AD-GPOS-03",

@@ -18410,6 +18410,11 @@
       "tests": 1
     },
     {
+      "name": "MaximumAgeYears",
+      "type": "int",
+      "tests": 1
+    },
+    {
       "name": "MaximumDevicesPerUser",
       "type": "int",
       "tests": 1

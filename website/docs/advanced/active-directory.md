@@ -9,7 +9,7 @@ sidebar:
 
 - Version: 3.0
 - Methodology: Extracted from `[MaesterTest] Permission` attribute on each AD test
-- Total tests: 270
+- Total tests: 258
 - Format: `<Service>:<Kind>:<Name>`
 
 The permission model documents the exact minimum permissions each built-in AD test requires. It does not describe human role names (e.g., Domain Admin); it describes the technical permission a test needs to retrieve its data.
@@ -123,13 +123,13 @@ A standard **authenticated user** (Domain User) can read most LDAP attributes on
 |---|---|---|
 | AD-DC-02, AD-DC-03, AD-DC-04 | `ActiveDirectory:Cim:root\Microsoft\Windows\SMB:MSFT_SmbServerConfiguration:Read`, `ActiveDirectory:Remoting:Microsoft.PowerShell` | Remote CIM access for SMB server configuration and PowerShell remoting execution require elevated access. |
 
-### GPO Tests (40 tests)
+### GPO Tests (28 tests)
 
 | Tests | Required Permission | Why It May Require Elevation |
 |---|---|---|
-| AD-GPO-01 through AD-GPO-05, AD-GPOL-01 through AD-GPOL-06, AD-GPOREP-01 through AD-GPOREP-20, AD-GPOS-01 through AD-GPOS-09 | `ActiveDirectory:File:SYSVOL:Read` | Reading files from the `\\domain\SYSVOL` share. While Authenticated Users typically receive read access to SYSVOL, this is filesystem access separate from LDAP and may be restricted in hardened environments. |
+| AD-GPO-01 through AD-GPO-02 and AD-GPO-04; AD-GPOL-01 through AD-GPOL-05; AD-GPOREP-01, 03, 05-07, 09-10, 12, 14-15 and 17; AD-GPOS-01 through AD-GPOS-09 | `ActiveDirectory:File:SYSVOL:Read` | Reading files from the `\\domain\SYSVOL` share. While Authenticated Users typically receive read access to SYSVOL, this is filesystem access separate from LDAP and may be restricted in hardened environments. |
 
-**Summary:** 80 of 270 AD tests (30%) require privileges beyond a standard authenticated user. The remaining 190 tests can run with standard Domain User LDAP read access.
+**Summary:** 68 of 258 AD tests (26%) require privileges beyond a standard authenticated user. The remaining 190 tests can run with standard Domain User LDAP read access.
 
 ## Category Summary
 
@@ -151,9 +151,9 @@ A standard **authenticated user** (Domain User) can read most LDAP attributes on
 | `fors` | AD-FORS-01 through AD-FORS-04 | `ActiveDirectory:Ldap:crossRef:ReadProperty` |
 | `gchg` | AD-GCHG-01 | `ActiveDirectory:Ldap:group:ReadProperty` |
 | `gmc` | AD-GMC-01 through AD-GMC-11 | `ActiveDirectory:Ldap:group:ReadProperty`; GMC-01 also needs `ActiveDirectory:Ldap:group.member:ReadProperty` |
-| `gpo` | AD-GPO-01 through AD-GPO-05 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
-| `gpol` | AD-GPOL-01 through AD-GPOL-06 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
-| `gporep` | AD-GPOREP-01 through AD-GPOREP-20 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
+| `gpo` | AD-GPO-01 through AD-GPO-02, and AD-GPO-04 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
+| `gpol` | AD-GPOL-01 through AD-GPOL-05 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
+| `gporep` (Group Policy settings) | AD-GPOREP-01, 03, 05-07, 09-10, 12, 14-15, and 17 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
 | `gpos` | AD-GPOS-01 through AD-GPOS-09 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
 | `grp` | AD-GRP-01 through AD-GRP-10 | `ActiveDirectory:Ldap:group:ReadProperty` |
 | `krbtgt` | AD-KRBTGT-01 through AD-KRBTGT-03 | `ActiveDirectory:Ldap:user:ReadProperty` |
@@ -170,6 +170,23 @@ A standard **authenticated user** (Domain User) can read most LDAP attributes on
 | `trust` | AD-TRUST-01 through AD-TRUST-07 | `ActiveDirectory:Ldap:trustedDomain:ReadProperty` |
 | `user` | AD-USER-01 through AD-USER-29 | `ActiveDirectory:Ldap:user:ReadProperty` |
 
+## Retired GPO test IDs
+
+The consolidated tests keep the surviving ID; retired IDs no longer have standalone tests. Update `TestSettings`, ID-based selections and exclusions that name them. Historical `-Tag` and `-ExcludeTag` selectors redirect to the consolidated checks through the generated legacy-tag table; this does not migrate parameter or severity overrides.
+
+| Retired ID | Consolidated into |
+|---|---|
+| AD-GPO-03 | AD-GPO-02 |
+| AD-GPO-05 | AD-GPO-04 |
+| AD-GPOL-06 | AD-GPOL-03 |
+| AD-GPOREP-02 | AD-GPOREP-01 |
+| AD-GPOREP-04 | AD-GPOREP-03 |
+| AD-GPOREP-08 | AD-GPOREP-07 |
+| AD-GPOREP-11 | AD-GPOREP-10 |
+| AD-GPOREP-13 | AD-GPOREP-12 |
+| AD-GPOREP-16 | AD-GPOREP-15 |
+| AD-GPOREP-18, AD-GPOREP-19, AD-GPOREP-20 | AD-GPOREP-17 |
+
 ## Known Misleading Outcomes
 
 The following behaviors can hide incomplete access. They are documented here so operators do not misinterpret empty or partial results as proof of a clean configuration.
@@ -180,7 +197,7 @@ The following behaviors can hide incomplete access. They are documented here so 
 
 ### GPO tests (AD-GPO-*, AD-GPOL-*, AD-GPOREP-*, AD-GPOS-*)
 
-`Get-MtADGpoState` can return a non-null state with an empty GPO array. A non-null check therefore does not establish that GPO data was retrieved. GPO reads also depend on SMB/SYSVOL file access; an LDAP probe alone does not prove policy files were read.
+An empty GPO inventory is not, by itself, proof of a complete audit: it may be a legitimate empty result or reflect an unreadable or incomplete query. Interpret it with collection status and the specific test's result. Failed metadata, link, or report collection remains unavailable (`null`), rather than being treated as an empty successful collection. The collector also records directory and SYSVOL version details; a missing XML scan or failed SYSVOL/report collection is not evidence that the scanned policy is clean. LDAP access alone does not prove policy files were read.
 
 ### DNS tests (AD-DNS-*)
 

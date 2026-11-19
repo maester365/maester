@@ -18,7 +18,7 @@
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-03',
-        Title = 'GPOs without authenticated users count should be retrievable',
+        Title = 'GPOs should include Authenticated Users permissions',
         Product = 'ad',
         Feature = 'group-policy',
         Area = 'access-control',
@@ -35,16 +35,10 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdGpoNoAuthenticatedUsersCount"
-    $gpoState = $null
     $gpoState = Get-MtADGpoState
-Write-Verbose "Retrieved AD state"
-
-if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $gpoState -or $null -eq $gpoState.GPOReports) {
+        throw 'GPO permission reports could not be collected.'
     }
-    Write-Verbose "Filtering/counting gpo no authenticated users count"
 
     $gpoReports = $gpoState.GPOReports
     if ($null -eq $gpoReports) {
@@ -81,27 +75,34 @@ if ($null -eq $gpoState) {
 
     $resultTable = "| Metric | Value |" + "`n"
     $resultTable += "| --- | --- |" + "`n"
-    $resultTable += "| Total GPO Reports | $([int]($gpoReports | Measure-Object).Count) |" + "`n"
-    $resultTable += "| GPO Reports Without Authenticated Users | $noAuthenticatedUsersCount |" + "`n"
+    $resultTable += "| Total GPOs | $($gpoReports.Count) |" + "`n"
+    $resultTable += "| GPOs Without Authenticated Users | $noAuthenticatedUsersCount |" + "`n"
     if ($noAuthenticatedUsersCount -gt 0 -and $sampleNamesText) {
-        $resultTable += "| Sample GPO Reports | $sampleNamesText |" + "`n"
+        $resultTable += "| Sample GPOs | $($sampleNamesText.Replace('|', '&#124;')) |" + "`n"
     }
     if ($notEvaluatedCount -gt 0) {
         $notEvaluatedNames = @($reportsNotEvaluated | Select-Object -First $sampleLimit | ForEach-Object { [string]$_.Name }) -join ', '
-        $resultTable += "| GPO Reports Not Evaluated (permissions could not be read) | $notEvaluatedCount |" + "`n"
-        $resultTable += "| Sample GPO Reports Not Evaluated | $notEvaluatedNames |" + "`n"
+        $resultTable += "| GPOs Not Evaluated (permissions could not be read) | $notEvaluatedCount |" + "`n"
+        $resultTable += "| Sample GPOs Not Evaluated | $($notEvaluatedNames.Replace('|', '&#124;')) |" + "`n"
+    }
+
+    $resultTable += "`n| GPO | Authenticated Users permission |`n| --- | --- |`n"
+    foreach ($report in @($reportsWithNoAuthenticatedUsers + $reportsNotEvaluated | Sort-Object Name)) {
+        $name = [System.Net.WebUtility]::HtmlEncode([string]$report.Name) -replace '\|', '&#124;'
+        $status = if ($null -eq $report.HasAuthenticatedUsers) { 'Not evaluated' } else { 'Not present' }
+        $resultTable += "| $name | $status |`n"
     }
 
     # Nothing was flagged, but a GPO whose permissions could not be read is not a pass.
     $needsInvestigation = $testResult -and $notEvaluatedCount -gt 0
     if ($needsInvestigation) {
-        $recommendation = "ℹ️ No GPO reports were found missing Authenticated Users among the GPOs that could be evaluated, but the permissions of $notEvaluatedCount GPO(s) could not be read. Review those GPOs manually."
+        $recommendation = "No evaluated GPOs lack Authenticated Users permissions, but permissions of $notEvaluatedCount GPO(s) could not be read. Review those GPOs manually."
     }
     elseif ($testResult) {
-        $recommendation = '✅ No GPO reports were found missing Authenticated Users. GPO permissions were analyzed successfully.'
+        $recommendation = 'Well done. No GPOs were found missing Authenticated Users permissions.'
     }
     else {
-        $recommendation = "⚠️ GPO reports were found missing Authenticated Users ($noAuthenticatedUsersCount). Review and remediate GPO security ACLs."
+        $recommendation = "$noAuthenticatedUsersCount GPOs lack Authenticated Users permissions. Review intended security filtering and remediate GPO security ACLs."
     }
     Write-Verbose "Counts computed"
 

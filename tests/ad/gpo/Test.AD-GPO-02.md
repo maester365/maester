@@ -1,28 +1,17 @@
-Group Policy Objects (GPOs) created a long time ago can be a sign of policy growth over time. Older GPOs may contain outdated security settings, legacy configuration patterns, and assumptions that no longer match your current security baseline.
+Checks that GPOs have been modified within `MaximumAgeYears`, defaulting to five calendar years. The result includes creation and modification dates together. A modification exactly at the cutoff passes; only an older modification fails. An old creation date alone does not fail a recently maintained policy.
 
-Tracking the count of GPOs created before 2020 helps you quickly identify areas that may benefit from review and modernization.
+Age is a hygiene indicator, not proof of insecure settings. LDAP `whenChanged` is specific to the queried domain controller and can reflect metadata or permission changes, not just policy settings. Missing modification dates or an empty inventory produce an error.
 
-#### Control Type
+Configure `MaximumAgeYears` under `TestSettings` > `Parameters` for `AD-GPO-02` in `maester-config.json`, or pass it through `Invoke-MtTest -Parameter`.
 
-**Detective**
+#### Remediation action
 
-#### Security Recommendation
+1. In **Group Policy Management**, review listed stale policies with their owners against current security baselines.
+2. Update obsolete settings and verify intended scope, or archive and remove policies no longer needed. Do not edit a policy merely to refresh its timestamp.
 
-- **Review legacy GPOs regularly**: Older GPOs are more likely to include security configurations that are no longer aligned to current best practices.
-- **Validate intended changes**: Before updating or removing an older GPO, validate its purpose, inheritance, and scope to avoid unintended access or availability impacts.
-- **Plan for modernization**: Consolidate redundant GPOs and update policy settings to match current compliance and security requirements.
+#### Related links
 
-#### How the Test Works
-
-This test retrieves GPO state from Active Directory using **Get-MtADGpoState** (it uses `$gpoState.GPOs`).
-
-It then filters all GPOs where the `CreationTime` is earlier than **January 1st, 2020** and reports the resulting count.
-
-#### Related Tests
-
-- `Test-MtAdGpoTotalCount` - Total GPO inventory
-- `Test-MtAdGpoUnlinkedCount` - GPOs not linked anywhere
-- `Test-MtAdGpoLinkedCount` - GPOs that are actively linked
+* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-GPO-01',
-        Title = 'GPO total count should be retrievable',
+        Title = 'GPO inventory should be investigated',
         Product = 'ad',
         Feature = 'group-policy',
         Area = 'infrastructure',
@@ -40,9 +40,8 @@
     $gpoState = Get-MtADGpoState
 
     # If unable to retrieve GPO data, skip the test
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $gpoState -or $null -eq $gpoState.GPOs) {
+        throw 'The GPO inventory could not be retrieved.'
     }
 
     $gpos = $gpoState.GPOs
@@ -65,7 +64,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory Group Policy Objects. Ensure you have appropriate permissions and the Group Policy Management Console is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

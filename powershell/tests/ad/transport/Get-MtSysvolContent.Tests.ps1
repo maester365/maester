@@ -86,6 +86,62 @@ Describe 'Get-MtSysvolContent transport contract' {
         }
     }
 
+    It 'does not treat unreadable XML as a clean scan' {
+        Mock Test-MtSysvolWindowsPlatform -ModuleName Maester { $true }
+        Mock Invoke-MtSysvolWindowsAdapter -ModuleName Maester {
+            if ($Operation -eq 'List') {
+                return [PSCustomObject]@{ RelativePath = 'Machine/Preferences/Groups/Groups.xml'; Length = 20 }
+            }
+            if ($Operation -eq 'ReadText') { throw 'SECRET-MUST-NOT-PRINT' }
+            return $true
+        }
+        InModuleScope Maester {
+            $result = Get-MtSysvolContent -GpoGuid '11111111-1111-1111-1111-111111111111'
+            $result.ScanErrors | Should -Contain 'Machine/Preferences/Groups/Groups.xml'
+            $null -eq $result.CpasswordFound | Should -BeTrue
+            $null -eq $result.DefaultPasswordFound | Should -BeTrue
+            ($result | ConvertTo-Json -Depth 10) | Should -Not -Match 'SECRET-MUST-NOT-PRINT'
+        }
+    }
+
+    It 'preserves a known secret when another XML file is malformed' {
+        Mock Test-MtSysvolWindowsPlatform -ModuleName Maester { $true }
+        Mock Invoke-MtSysvolWindowsAdapter -ModuleName Maester {
+            if ($Operation -eq 'List') {
+                return @(
+                    [PSCustomObject]@{ RelativePath = 'Machine/Preferences/Groups/Groups.xml'; Length = 20 }
+                    [PSCustomObject]@{ RelativePath = 'User/Preferences/Groups/Groups.xml'; Length = 20 }
+                )
+            }
+            if ($Operation -eq 'ReadText') {
+                if ($RelativePath -like 'Machine/*') { return '<Groups><User cpassword="encrypted" /></Groups>' }
+                return '<Groups><broken>'
+            }
+            return $true
+        }
+        InModuleScope Maester {
+            $result = Get-MtSysvolContent -GpoGuid '11111111-1111-1111-1111-111111111111'
+            $result.CpasswordFound | Should -BeTrue
+            $null -eq $result.DefaultPasswordFound | Should -BeTrue
+            $result.ScanErrors | Should -Contain 'User/Preferences/Groups/Groups.xml'
+            $result.ScanErrors | Should -Contain 'GPT.INI'
+        }
+    }
+
+    It 'does not treat an empty SYSVOL listing as a clean scan' {
+        Mock Test-MtSysvolWindowsPlatform -ModuleName Maester { $true }
+        Mock Invoke-MtSysvolWindowsAdapter -ModuleName Maester {
+            if ($Operation -eq 'List') { return @() }
+            return $true
+        }
+        InModuleScope Maester {
+            $result = Get-MtSysvolContent -GpoGuid '11111111-1111-1111-1111-111111111111'
+            $result.ScanErrors | Should -Contain 'GPT.INI'
+            $null -eq $result.CpasswordFound | Should -BeTrue
+            $null -eq $result.DefaultPasswordFound | Should -BeTrue
+        }
+    }
+
     It 'uses the Unix adapter with the same normalized file contract' {
         Mock Test-MtSysvolWindowsPlatform -ModuleName Maester { $false }
         Mock Invoke-MtSysvolUnixAdapter -ModuleName Maester {

@@ -1,35 +1,13 @@
-Unlinked (or orphaned) Group Policy Objects (GPOs) exist in Active Directory but are not linked to any OU, domain, or site. While they may look harmless, they can still create operational and security risk:
+Counts GPOs whose identifiers do not appear in the collected domain, OU, or site `gPLink` values. Unlinked policies may be obsolete, but can also be retained intentionally; verify their purpose before removing them. This check identifies references, not effective policy processing.
 
-- **Resource and operational overhead**: Unused GPOs add clutter and can increase administrative effort.
-- **Accidental exposure**: An unlinked GPO can be mistakenly linked later, suddenly applying unknown settings to users or computers.
-- **Harder incident investigation**: Policy behavior becomes harder to reason about when unused GPOs remain in the environment.
+#### Remediation action
 
-#### Control Type
+1. In **Group Policy Management**, review each listed GPO's owner, purpose, backup, and change history.
+2. If it is no longer needed, archive or remove it under your change process. Otherwise document why it is unlinked and retain it.
 
-**Detective**
+#### Related links
 
-#### Security Recommendation
-
-After verification, **remove unlinked GPOs** to reduce risk and simplify policy management:
-
-- Confirm the GPO’s purpose (documentation, change history, owners).
-- Verify it is not required for any special-case deployment path.
-- If you are confident it is unused, remove it (or archive it) and ensure backups/restore requirements are met.
-- Restrict who can create/link GPOs to prevent accidental re-introduction.
-
-#### How the Test Works
-
-This test retrieves Active Directory Group Policy state data using `Get-MtADGpoState` and:
-
-1. Uses the cached list of GPOs (`$gpoState.GPOs`).
-2. Extracts GPO link references from the collected `GPOLinks` (via `gPLink`).
-3. Counts GPOs whose IDs are not referenced by any collected `gPLink` entry.
-
-#### Related Tests
-
-- `Test-MtAdGpoTotalCount` - Counts the total number of GPOs
-- `Test-MtAdGpoLinkedCount` - Identifies GPOs that are actively linked
-- `Test-MtAdGpoCreatedBefore2020Count` - Identifies potentially outdated GPOs
+* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%
