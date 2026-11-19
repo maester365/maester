@@ -96,7 +96,7 @@ function Test-MtCaGap {
         Mitre = 'T1078.004',
         Service = 'Graph',
         Author = 'RobbeVandenDaele',
-        Contributor = ('soulemike', 'weyCC81', 'thomas-s-schmidt')
+        Contributor = ('soulemike', 'weyCC81', 'thomas-s-schmidt', 'Dfrank77')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -129,6 +129,14 @@ function Test-MtCaGap {
     [System.Collections.ArrayList]$excludedServicePrincipals = @()
     [System.Collections.ArrayList]$includedServicePrincipals = @()
     [System.Collections.ArrayList]$differencesServicePrincipals = @()
+    # Variables related to agent identities (agent identities are service principals, targeted through their own condition)
+    [System.Collections.ArrayList]$excludedAgentIdentities = @()
+    [System.Collections.ArrayList]$includedAgentIdentities = @()
+    [System.Collections.ArrayList]$differencesAgentIdentities = @()
+    # Variables related to agent users (agents' user accounts, targeted through the agents condition)
+    [System.Collections.ArrayList]$excludedAgentUsers = @()
+    [System.Collections.ArrayList]$includedAgentUsers = @()
+    [System.Collections.ArrayList]$differencesAgentUsers = @()
     # Variables related to Locations
     [System.Collections.ArrayList]$excludedLocations = @()
     [System.Collections.ArrayList]$includedLocations = @()
@@ -157,6 +165,10 @@ function Test-MtCaGap {
         $_.Conditions.Applications.IncludeApplications | ForEach-Object { $includedApplications.Add($_) | Out-Null }
         $_.Conditions.ClientApplications.ExcludeServicePrincipals | ForEach-Object { $excludedServicePrincipals.Add($_) | Out-Null }
         $_.Conditions.ClientApplications.IncludeServicePrincipals | ForEach-Object { $includedServicePrincipals.Add($_) | Out-Null }
+        $_.Conditions.ClientApplications.ExcludeAgentIdServicePrincipals | ForEach-Object { $excludedAgentIdentities.Add($_) | Out-Null }
+        $_.Conditions.ClientApplications.IncludeAgentIdServicePrincipals | ForEach-Object { $includedAgentIdentities.Add($_) | Out-Null }
+        $_.Conditions.Agents.ExcludeAgentUsers | ForEach-Object { $excludedAgentUsers.Add($_) | Out-Null }
+        $_.Conditions.Agents.IncludeAgentUsers | ForEach-Object { $includedAgentUsers.Add($_) | Out-Null }
         $_.Conditions.Locations.ExcludeLocations | ForEach-Object { $excludedLocations.Add($_) | Out-Null }
         $_.Conditions.Locations.IncludeLocations | ForEach-Object { $includedLocations.Add($_) | Out-Null }
         $_.Conditions.Platforms.ExcludePlatforms | ForEach-Object { $excludedPlatforms.Add($_) | Out-Null }
@@ -168,6 +180,8 @@ function Test-MtCaGap {
             $_.Conditions.Users.ExcludeRoles + `
             $_.Conditions.Applications.ExcludeApplications + `
             $_.Conditions.ClientApplications.ExcludeServicePrincipals + `
+            $_.Conditions.ClientApplications.ExcludeAgentIdServicePrincipals + `
+            $_.Conditions.Agents.ExcludeAgentUsers + `
             $_.Conditions.Locations.ExcludeLocations + `
             $_.Conditions.Platforms.ExcludePlatforms
         # Create the mapping
@@ -187,6 +201,8 @@ function Test-MtCaGap {
     [System.Collections.ArrayList]$differencesRoles = @(Get-ObjectDifference -excludedObjects $excludedRoles -includedObjects $includedRoles)
     [System.Collections.ArrayList]$differencesApplications = @(Get-ObjectDifference -excludedObjects $excludedApplications -includedObjects $includedApplications)
     [System.Collections.ArrayList]$differencesServicePrincipals = @(Get-ObjectDifference -excludedObjects $excludedServicePrincipals -includedObjects $includedServicePrincipals)
+    [System.Collections.ArrayList]$differencesAgentIdentities = @(Get-ObjectDifference -excludedObjects $excludedAgentIdentities -includedObjects $includedAgentIdentities)
+    [System.Collections.ArrayList]$differencesAgentUsers = @(Get-ObjectDifference -excludedObjects $excludedAgentUsers -includedObjects $includedAgentUsers)
     [System.Collections.ArrayList]$differencesLocations = @(Get-ObjectDifference -excludedObjects $excludedLocations -includedObjects $includedLocations)
     [System.Collections.ArrayList]$differencesPlatforms = @(Get-ObjectDifference -excludedObjects $excludedPlatforms -includedObjects $includedPlatforms)
     Write-Verbose 'Finished searching for gaps in policies.'
@@ -198,6 +214,8 @@ function Test-MtCaGap {
             -and $differencesRoles.Count -eq 0 `
             -and $differencesApplications.Count -eq 0 `
             -and $differencesServicePrincipals.Count -eq 0 `
+            -and $differencesAgentIdentities.Count -eq 0 `
+            -and $differencesAgentUsers.Count -eq 0 `
             -and $differencesLocations.Count -eq 0 `
             -and $differencesPlatforms.Count -eq 0 `
     ) {
@@ -268,6 +286,32 @@ function Test-MtCaGap {
                     $DisplayName = "${Object} (Unable to resolve GUID)"
                 }
                 $testResult += "`n    Service Principal: ${DisplayName}`n"
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $Object
+            }
+        }
+        # Add agent identity objects to results
+        if ($differencesAgentIdentities.Count -ne 0) {
+            $testResult += "The following agent identity objects did not have a fallback:`n`n"
+            foreach ($Object in $differencesAgentIdentities) {
+                try {
+                    $DisplayName = (Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -ApiVersion v1.0 -UniqueId $Object -ErrorAction Stop).displayName
+                } catch {
+                    $DisplayName = "${Object} (Unable to resolve GUID)"
+                }
+                $testResult += "`n    Agent identity: ${DisplayName}`n"
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $Object
+            }
+        }
+        # Add agent user objects to results
+        if ($differencesAgentUsers.Count -ne 0) {
+            $testResult += "The following agent user objects did not have a fallback:`n`n"
+            foreach ($Object in $differencesAgentUsers) {
+                try {
+                    $DisplayName = (Invoke-MtGraphRequest -RelativeUri 'users' -ApiVersion v1.0 -UniqueId $Object -ErrorAction Stop).displayName
+                } catch {
+                    $DisplayName = "${Object} (Unable to resolve GUID)"
+                }
+                $testResult += "`n    Agent user: ${DisplayName}`n"
                 $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $Object
             }
         }
