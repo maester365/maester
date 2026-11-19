@@ -1,4 +1,4 @@
-function Test-MtAdcsPublishedTemplatePrerequisites {
+﻿function Test-MtAdcsPublishedTemplatePrerequisites {
     [MaesterTest(
         Id = 'AD-CS-01',
         Title = 'Published AD CS templates should not expose dangerous enrollment prerequisites',
