@@ -1,11 +1,11 @@
-﻿function Test-MtAdcsPublishedTemplatePrerequisites {
+function Test-MtAdcsPublishedTemplatePrerequisites {
     [MaesterTest(
         Id = 'AD-CS-01',
         Title = 'Published AD CS templates should not expose dangerous enrollment prerequisites',
         Product = 'ad',
         Feature = 'certificate-services',
         Area = 'infrastructure',
-        ResourceType = 'CertificateTemplate',
+        ResourceType = 'CertificateAuthority',
         Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
