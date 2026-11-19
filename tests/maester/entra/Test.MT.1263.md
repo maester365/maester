@@ -23,11 +23,18 @@ This is the medium-risk companion to MT.1262, which reports high-risk service pr
 5. If the activity is confirmed safe after investigation, dismiss the risk so the flag clears.
 6. Consider a risk-based Conditional Access policy for workload identities so that risky service principals are blocked automatically rather than left waiting for manual review.
 
+#### Known limitations
+
+* **Agents.** Agent identities and agent identity blueprint principals are service principals, but Entra ID Protection reports agent risk in its own list, `riskyAgents` (Microsoft Graph beta), which also covers agents' user accounts. This check reads only `riskyServicePrincipals`. In testing, an agent identity confirmed compromised (high risk) appeared in `riskyAgents` and not in `riskyServicePrincipals`, and MT.1262, which reads the same list as this check, did not report it.
+* **Privileged means directory roles.** The Privileged role column lists only built-in directory roles that Microsoft classifies as privileged, active or PIM-eligible. Custom roles and Microsoft Graph application permissions are not checked, so a service principal that holds powerful Graph permissions but no privileged built-in role shows `None`.
+* **PIM-eligible roles.** Eligible role assignments are checked only when the tenant has Microsoft Entra ID P2 or Microsoft Entra ID Governance. Otherwise only active assignments are checked, and when the check reports service principals the result includes a note saying so.
+
 #### Related links
 
 * [Securing workload identities with ID Protection](https://learn.microsoft.com/entra/id-protection/concept-workload-identity-risk)
 * [Conditional Access for workload identities](https://learn.microsoft.com/entra/identity/conditional-access/workload-identity)
 * [riskyServicePrincipal resource type](https://learn.microsoft.com/graph/api/resources/riskyserviceprincipal)
+* [ID Protection for agents](https://learn.microsoft.com/entra/id-protection/concept-risky-agents)
 
 <!--- Results --->
 %TestResult%
