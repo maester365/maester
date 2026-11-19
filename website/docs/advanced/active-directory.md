@@ -9,7 +9,7 @@ sidebar:
 
 - Version: 3.0
 - Methodology: Extracted from `[MaesterTest] Permission` attribute on each AD test
-- Total tests: 258
+- Total tests: 252
 - Format: `<Service>:<Kind>:<Name>`
 
 The permission model documents the exact minimum permissions each built-in AD test requires. It does not describe human role names (e.g., Domain Admin); it describes the technical permission a test needs to retrieve its data.
@@ -123,13 +123,13 @@ A standard **authenticated user** (Domain User) can read most LDAP attributes on
 |---|---|---|
 | AD-DC-02, AD-DC-03, AD-DC-04 | `ActiveDirectory:Cim:root\Microsoft\Windows\SMB:MSFT_SmbServerConfiguration:Read`, `ActiveDirectory:Remoting:Microsoft.PowerShell` | Remote CIM access for SMB server configuration and PowerShell remoting execution require elevated access. |
 
-### GPO Tests (28 tests)
+### GPO Tests (22 tests)
 
 | Tests | Required Permission | Why It May Require Elevation |
 |---|---|---|
-| AD-GPO-01 through AD-GPO-02 and AD-GPO-04; AD-GPOL-01 through AD-GPOL-05; AD-GPOREP-01, 03, 05-07, 09-10, 12, 14-15 and 17; AD-GPOS-01 through AD-GPOS-09 | `ActiveDirectory:File:SYSVOL:Read` | Reading files from the `\\domain\SYSVOL` share. While Authenticated Users typically receive read access to SYSVOL, this is filesystem access separate from LDAP and may be restricted in hardened environments. |
+| AD-GPO-01 through AD-GPO-02 and AD-GPO-04; AD-GPOL-01 through AD-GPOL-05; AD-GPOREP-01, 03, 05-07, 09-10, 12, 14-15 and 17; AD-GPOS-02, AD-GPOS-04 and AD-GPOS-08 | `ActiveDirectory:File:SYSVOL:Read` | Reading files from the `\\domain\SYSVOL` share. While Authenticated Users typically receive read access to SYSVOL, this is filesystem access separate from LDAP and may be restricted in hardened environments. |
 
-**Summary:** 68 of 258 AD tests (26%) require privileges beyond a standard authenticated user. The remaining 190 tests can run with standard Domain User LDAP read access.
+**Summary:** 62 of 252 AD tests (about 25%) require privileges beyond a standard authenticated user. The remaining 190 tests can run with standard Domain User LDAP read access.
 
 ## Category Summary
 
@@ -154,7 +154,7 @@ A standard **authenticated user** (Domain User) can read most LDAP attributes on
 | `gpo` | AD-GPO-01 through AD-GPO-02, and AD-GPO-04 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
 | `gpol` | AD-GPOL-01 through AD-GPOL-05 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
 | `gporep` (Group Policy settings) | AD-GPOREP-01, 03, 05-07, 09-10, 12, 14-15, and 17 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
-| `gpos` | AD-GPOS-01 through AD-GPOS-09 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
+| `gpos` | AD-GPOS-02, AD-GPOS-04, and AD-GPOS-08 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
 | `grp` | AD-GRP-01 through AD-GRP-10 | `ActiveDirectory:Ldap:group:ReadProperty` |
 | `krbtgt` | AD-KRBTGT-01 through AD-KRBTGT-03 | `ActiveDirectory:Ldap:user:ReadProperty` |
 | `msa` | AD-MSA-01 | `ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount:ReadProperty` |
@@ -178,6 +178,10 @@ The consolidated tests keep the surviving ID; retired IDs no longer have standal
 |---|---|
 | AD-GPO-03 | AD-GPO-02 |
 | AD-GPO-05 | AD-GPO-04 |
+| AD-GPOS-01 | AD-GPO-01 |
+| AD-GPOS-03 | AD-GPOS-02 |
+| AD-GPOS-05, AD-GPOS-06, AD-GPOS-07 | AD-GPOS-04 |
+| AD-GPOS-09 | AD-GPOS-08 |
 | AD-GPOL-06 | AD-GPOL-03 |
 | AD-GPOREP-02 | AD-GPOREP-01 |
 | AD-GPOREP-04 | AD-GPOREP-03 |
@@ -186,6 +190,10 @@ The consolidated tests keep the surviving ID; retired IDs no longer have standal
 | AD-GPOREP-13 | AD-GPOREP-12 |
 | AD-GPOREP-16 | AD-GPOREP-15 |
 | AD-GPOREP-18, AD-GPOREP-19, AD-GPOREP-20 | AD-GPOREP-17 |
+
+The Group Policy consolidation reduces these checks from 28 to 22. Retired GPO IDs no longer have standalone tests; the mappings above preserve their legacy-tag destinations.
+
+`AD-GPOL-04` retains its no-enforced-links pass/fail rule with a default severity of **Low**. Review any configuration that deliberately overrides its earlier **Info** severity.
 
 ## Known Misleading Outcomes
 

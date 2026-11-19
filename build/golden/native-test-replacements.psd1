@@ -13,4 +13,10 @@
     'AD-GPOREP-18' = 'AD-GPOREP-17'
     'AD-GPOREP-19' = 'AD-GPOREP-17'
     'AD-GPOREP-20' = 'AD-GPOREP-17'
+    'AD-GPOS-01' = 'AD-GPO-01'
+    'AD-GPOS-03' = 'AD-GPOS-02'
+    'AD-GPOS-05' = 'AD-GPOS-04'
+    'AD-GPOS-06' = 'AD-GPOS-04'
+    'AD-GPOS-07' = 'AD-GPOS-04'
+    'AD-GPOS-09' = 'AD-GPOS-08'
 }

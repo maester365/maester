@@ -132,7 +132,7 @@ Describe 'Merged AD Group Policy checks' {
             })
         InModuleScope Maester { Test-MtCheckADGPOREP12 | Should -BeTrue }
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter {
-            $Investigate -and $Result -match '1 disabled links' -and $Result -match 'OU=Clients'
+            $Investigate -and $Result -match '1 of 1 GPO links are disabled' -and $Result -match 'OU=Clients'
         }
     }
 

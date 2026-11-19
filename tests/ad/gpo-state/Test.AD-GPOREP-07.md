@@ -1,9 +1,11 @@
-Checks Group Policy objects for deny access entries and lists affected policies. Deny ACEs can override intended permissions and prevent security policy application. Any deny entry is flagged for review, even when intentional; the check does not calculate effective permissions. Unreadable descriptors are not treated as clean. This check requires Windows for security-descriptor parsing.
+Checks for GPO permission reports with deny access entries. Any evaluated GPO with a deny entry is a finding and fails the test; the check does not calculate effective permissions. Unreadable descriptors are reported as unknown, not clean. All unreadable reports cause a skip, and partial unknowns without findings require investigation. Findings still fail when other reports are unknown. This check requires Windows for security-descriptor parsing; failed permission-report collection is an error.
+
+The result summarizes GPOs with deny entries and unreadable descriptors. Details are shown only for findings or unknown reports.
 
 #### Remediation action
 
 1. In **Group Policy Management**, inspect listed GPOs under **Delegation** > **Advanced**.
-2. Confirm each deny entry is required and does not prevent intended policy application. Remove unintended entries after reviewing inheritance and scope; document intentional restrictions.
+2. Confirm each deny entry's purpose and scope. Remove an entry only after verifying it is unintended and reviewing its effect on policy recipients; document intentional restrictions. Investigate unreadable descriptors.
 
 #### Related links
 

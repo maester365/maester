@@ -34,17 +34,17 @@
     }
     $cutoffDate = (Get-Date).AddYears(-$MaximumAgeYears)
     $stale = @($gpos | Where-Object { [datetime]$_.ModificationTime -lt $cutoffDate })
-    $result = "Total GPOs: $($gpos.Count). Stale GPOs: $($stale.Count). Modification cutoff: $($cutoffDate.ToString('yyyy-MM-dd HH:mm:ss')).`n`n"
-    $result += "| GPO | Created | Modified | Assessment |`n| --- | --- | --- | --- |`n"
-    foreach ($gpo in ($gpos | Sort-Object DisplayName)) {
-        $name = ([string]$gpo.DisplayName).Replace('|', '&#124;') -replace '[\r\n]+', ' '
-        $created = if ($null -ne $gpo.CreationTime) { ([datetime]$gpo.CreationTime).ToString('yyyy-MM-dd HH:mm:ss') } else { 'Unknown' }
-        $modified = ([datetime]$gpo.ModificationTime).ToString('yyyy-MM-dd HH:mm:ss')
-        $assessment = if ([datetime]$gpo.ModificationTime -lt $cutoffDate) { 'Stale' } else { 'Within limit' }
-        $result += "| $name | $created | $modified | $assessment |`n"
-    }
+    $details = @(foreach ($gpo in ($gpos | Sort-Object DisplayName)) {
+            [pscustomobject]@{
+                Name = $gpo.DisplayName
+                Created = if ($null -ne $gpo.CreationTime) { ([datetime]$gpo.CreationTime).ToString('yyyy-MM-dd HH:mm:ss') } else { $null }
+                Modified = ([datetime]$gpo.ModificationTime).ToString('yyyy-MM-dd HH:mm:ss')
+                Assessment = if ([datetime]$gpo.ModificationTime -lt $cutoffDate) { 'Stale' } else { 'Within limit' }
+            }
+        })
     $message = if ($stale.Count -eq 0) { 'Well done. No GPO exceeds the configured modification-age limit.' }
     else { "Review and update $($stale.Count) GPO(s) not modified within $MaximumAgeYears years. Age is a hygiene indicator, not proof of insecure settings." }
-    Add-MtTestResultDetail -Result "$message`n`n$result"
+    $result = Format-MtAdGpoResult -Summary $message -Metrics ([ordered]@{ 'Total GPOs' = $gpos.Count; 'Stale GPOs' = $stale.Count; 'Modification cutoff' = $cutoffDate.ToString('yyyy-MM-dd HH:mm:ss') }) -Details $details -Properties Name, Created, Modified, Assessment -Headers GPO, Created, Modified, Assessment
+    Add-MtTestResultDetail -Result $result
     return ($stale.Count -eq 0)
 }

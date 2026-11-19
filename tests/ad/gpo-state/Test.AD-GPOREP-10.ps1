@@ -25,13 +25,10 @@
     $missing = @($reports | Where-Object { $false -eq $_.HasApplyGroupPolicyAce })
     $unknown = @($reports | Where-Object { $null -eq $_.HasApplyGroupPolicyAce })
     if ($unknown.Count -gt 0) { throw 'GPO application permissions could not be evaluated for every policy.' }
-    $table = "| GPO | Apply Group Policy ACE |`n| --- | --- |`n"
-    foreach ($report in @($missing | Sort-Object Name)) {
-        $name = [System.Net.WebUtility]::HtmlEncode([string]$report.Name) -replace '\|', '&#124;'
-        $table += "| $name | Not present |`n"
-    }
+    $details = @($missing | Sort-Object Name | ForEach-Object { [pscustomobject]@{ Name = $_.Name; ApplicationEntry = 'Not present' } })
     $message = if ($missing.Count -eq 0) { "Well done. All $($reports.Count) GPOs have an Apply Group Policy allow entry." }
     else { "Grant appropriate application rights or archive intentionally unused policies: $($missing.Count) of $($reports.Count) GPOs have no Apply Group Policy allow entry." }
-    Add-MtTestResultDetail -Result "$message`n`n$table"
+    $result = Format-MtAdGpoResult -Summary $message -Metrics ([ordered]@{ 'Total GPOs' = $reports.Count; 'GPOs without Apply Group Policy entries' = $missing.Count }) -Details $details -Properties Name, ApplicationEntry -Headers GPO, 'Apply Group Policy entry'
+    Add-MtTestResultDetail -Result $result
     return ($missing.Count -eq 0)
 }

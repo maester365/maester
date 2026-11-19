@@ -246,10 +246,9 @@ Describe 'Active Directory GPO permissions' {
             $script:resultDetail.Investigate | Should -BeFalse
             $script:resultDetail.SkippedBecause | Should -BeNullOrEmpty
             $script:resultDetail.Result | Should -Not -Match 'GPO Default'
-            # The pass is for the two GPOs, not for an empty list. The details tests print no total.
-            if ($Id -eq 'AD-GPOREP-01') { $script:resultDetail.Result | Should -Match 'All 2 GPOs' }
-            elseif ($Id -eq 'AD-GPOREP-03') { $script:resultDetail.Result | Should -Match 'Total GPOs \| 2 \|' }
-            elseif ($Command -like '*Count') { $script:resultDetail.Result | Should -Match 'Total GPO Reports \| 2 \|' }
+            # A pass must be based on the two collected GPOs, not a vacuous empty set.
+            $script:resultDetail.Result | Should -Match 'Total GPOs \| 2 \|'
+            $script:resultDetail.Result | Should -Not -Match '#### Details|GPO Reports'
         }
 
         It 'Fails for the GPO with <Finding> permissions and not for the others' {
@@ -266,7 +265,7 @@ Describe 'Active Directory GPO permissions' {
 
             & $Command | Should -BeTrue
             $script:resultDetail.Investigate | Should -BeTrue
-            $script:resultDetail.Result | Should -Match 'could not be read'
+            $script:resultDetail.Result | Should -Match 'could not be determined'
             $script:resultDetail.Result | Should -Match 'GPO Unreadable'
             $script:resultDetail.Result | Should -Not -Match 'GPO Default'
         }
@@ -277,7 +276,7 @@ Describe 'Active Directory GPO permissions' {
             & $Command | Should -BeFalse
             $script:resultDetail.Investigate | Should -BeFalse
             $script:resultDetail.Result | Should -Match "GPO $Finding"
-            $script:resultDetail.Result | Should -Match 'could not be read'
+            $script:resultDetail.Result | Should -Match 'could not be determined'
         }
 
         It 'Is skipped when <Case>' -ForEach @(
@@ -297,22 +296,22 @@ Describe 'Active Directory GPO permissions' {
             $script:testGpos = @(New-TestGpo -PermissionProfile 'DomainComputers')
 
             Test-MtAdGpoNoDomainComputersCount | Should -BeTrue
-            $script:resultDetail.Result | Should -Match 'GPO Reports Without Domain Computers \| 0 \|'
+            $script:resultDetail.Result | Should -Match 'GPOs without Domain Computers \| 0 \|'
         }
 
         It 'Reports a GPO without Domain Computers as expected when Authenticated Users has access' {
             $script:testGpos = @(New-TestGpo -PermissionProfile 'Default')
 
             Test-MtAdGpoNoDomainComputersCount | Should -BeTrue
-            $script:resultDetail.Result | Should -Match 'GPO Reports Without Domain Computers \| 1 \|'
-            $script:resultDetail.Result | Should -Match 'GPO Reports Without Domain Computers And Without Authenticated Users \| 0 \|'
+            $script:resultDetail.Result | Should -Match 'GPOs without Domain Computers \| 1 \|'
+            $script:resultDetail.Result | Should -Match 'GPOs with neither Domain Computers nor Authenticated Users \| 0 \|'
         }
 
         It 'Passes when one GPO has Default permissions and another has DomainComputers' {
             $script:testGpos = @((New-TestGpo -PermissionProfile 'Default'), (New-TestGpo -PermissionProfile 'DomainComputers'))
 
             Test-MtAdGpoNoDomainComputersCount | Should -BeTrue
-            $script:resultDetail.Result | Should -Match 'GPO Reports Without Domain Computers And Without Authenticated Users \| 0 \|'
+            $script:resultDetail.Result | Should -Match 'GPOs with neither Domain Computers nor Authenticated Users \| 0 \|'
         }
     }
 }

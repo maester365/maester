@@ -1,101 +1,49 @@
-﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
-function Test-MtAdGpoSettingsDisabledCount {
+﻿function Test-MtAdGpoSettingsDisabledCount {
     <#
     .SYNOPSIS
-    Counts GPOs where settings are disabled (AllDisabled, UserDisabled, or ComputerDisabled).
-
+    Inventories disabled user, computer or both GPO settings.
     .DESCRIPTION
-    This test retrieves Active Directory GPO state data using Get-MtADGpoState and counts how many
-    returned GPOs have GpoStatus values indicating disabled settings.
-
-    GpoStatus mapping:
-    - 0 = AllDisabled
-    - 1 = UserDisabled
-    - 2 = ComputerDisabled
-    - 3 = AllEnabled
-
-    .EXAMPLE
-    Test-MtAdGpoSettingsDisabledCount
-
-    Returns $true if GPO state data is accessible, $false otherwise.
-    The test result includes disabled vs total GPO counts.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoSettingsDisabledCount
+    Combines category counts and policy details. Numeric and named statuses are
+    matched exactly; unknown statuses remain visible and never count as enabled.
     #>
     [MaesterTest(
-        Id = 'AD-GPOS-04',
-        Title = 'Disabled GPO settings count should be investigated',
-        Product = 'ad',
-        Feature = 'group-policy',
-        Area = 'infrastructure',
-        ResourceType = 'GroupPolicy',
-        Severity = 'Info',
-        Mitre = 'None',
-        Service = 'ActiveDirectory',
+        Id = 'AD-GPOS-04', Title = 'Disabled GPO settings should be investigated',
+        Product = 'ad', Feature = 'group-policy', Area = 'infrastructure',
+        ResourceType = 'GroupPolicy', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    Write-Verbose "Starting Test-MtAdGpoSettingsDisabledCount"
-    $gpoState = Get-MtADGpoState
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.GPOs) { throw 'GPO metadata could not be collected; disabled settings cannot be inventoried.' }
+    $rows = @(foreach ($gpo in @($state.GPOs | Where-Object { $null -ne $_ })) {
+            $status = switch -Regex (([string]$gpo.GpoStatus).Trim()) {
+                '^(0|AllDisabled|AllSettingsDisabled)$' { 'All settings disabled'; break }
+                '^(1|UserDisabled|UserSettingsDisabled)$' { 'User settings disabled'; break }
+                '^(2|ComputerDisabled|ComputerSettingsDisabled)$' { 'Computer settings disabled'; break }
+                '^(3|AllEnabled|AllSettingsEnabled)$' { 'All settings enabled'; break }
+                default { 'Unknown' }
+            }
+            [pscustomobject]@{ Name = $gpo.DisplayName; Id = $gpo.Id; Status = $status }
+        })
+    $disabled = @($rows | Where-Object { $_.Status -notin 'All settings enabled', 'Unknown' })
+    $unknown = @($rows | Where-Object Status -EQ 'Unknown')
+    $summary = if ($disabled.Count -eq 0 -and $unknown.Count -eq 0) { 'No collected GPO has disabled user or computer settings.' }
+    elseif ($unknown.Count -eq $rows.Count) { 'Settings status could not be determined for any collected GPO.' }
+    elseif ($disabled.Count -eq 0) { 'No disabled settings were found among evaluated GPOs.' }
+    else { "$($disabled.Count) of $($rows.Count) GPOs have disabled settings. Review whether each disabled category is intentional." }
+    if ($unknown.Count -gt 0) { $summary += " Settings status is unknown for $($unknown.Count) GPOs." }
+    $metrics = [ordered]@{
+        'Total GPOs' = $rows.Count
+        'GPOs with disabled settings' = $disabled.Count
+        'Only user settings disabled' = @($rows | Where-Object Status -EQ 'User settings disabled').Count
+        'Only computer settings disabled' = @($rows | Where-Object Status -EQ 'Computer settings disabled').Count
+        'All settings disabled' = @($rows | Where-Object Status -EQ 'All settings disabled').Count
+        'GPOs with unknown status' = $unknown.Count
     }
-    Write-Verbose "Filtering/counting gpo settings disabled count"
-
-    $gpos = $gpoState.GPOs
-    if ($null -eq $gpos) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory Group Policy Objects (GPOs) from Get-MtADGpoState.'
-        return $false
-    }
-
-    function Convert-GpoStatusToInt {
-        param([object]$Status)
-
-        if ($null -eq $Status) { return $null }
-
-        $s = [string]$Status
-        if ($s -match '^\s*(\d+)\s*$') { return [int]$Matches[1] }
-        switch -Regex ($s) {
-            'AllDisabled' { return 0 }
-            'UserDisabled' { return 1 }
-            'ComputerDisabled' { return 2 }
-            'AllEnabled' { return 3 }
-        }
-
-        return $null
-    }
-
-    $gposArray = @($gpos | Where-Object { $null -ne $_ })
-    $totalCount = $gposArray.Count
-
-    $disabledGpos = foreach ($gpo in $gposArray) {
-        $statusInt = Convert-GpoStatusToInt -Status $gpo.GpoStatus
-        if ($null -ne $statusInt -and $statusInt -in 0,1,2) { $gpo }
-    }
-
-    $disabledCount = @($disabledGpos).Count
-    $testResult = $true
-
-    $disabledPercentage = if ($totalCount -gt 0) { [Math]::Round(($disabledCount / $totalCount) * 100, 2) } else { 0 }
-
-    $result = "| Metric | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| Total GPOs (state) | $totalCount |" + "`n"
-    $result += "| GPOs with disabled settings | $disabledCount |" + "`n"
-    $result += "| Disabled ratio | $disabledPercentage% |" + "`n"
-    Write-Verbose "Counts computed"
-
-    $testResultMarkdown = "Active Directory GPOs have been analyzed for disabled settings. $disabledCount out of $totalCount GPO(s) have disabled settings (GpoStatus 0, 1, or 2).`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-    Write-Verbose "Completed Test-MtAdGpoSettingsDisabledCount"
-    return $testResult
+    $result = Format-MtAdGpoResult -Summary $summary -Metrics $metrics -Details @($disabled + $unknown | Sort-Object Name) -Properties Name, Id, Status -Headers GPO, Id, 'Settings status'
+    Add-MtTestResultDetail -Result $result -Investigate
+    return $true
 }

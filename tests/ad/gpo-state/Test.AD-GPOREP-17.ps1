@@ -35,16 +35,11 @@
     if ($found.Count -eq 0 -and $incomplete.Count -gt 0) {
         throw "SYSVOL secret scan incomplete for $($incomplete.Count) GPOs; check access and scan errors before claiming no exposed passwords."
     }
-    $table = "| GPO | cpassword present | Default password present |`n| --- | --- | --- |`n"
-    foreach ($report in @($found | Sort-Object Name)) {
-        $name = [System.Net.WebUtility]::HtmlEncode([string]$report.Name) -replace '\|', '&#124;'
-        $cpasswordStatus = if ($null -eq $report.CpasswordFound) { 'Unknown' } else { [string][bool]$report.CpasswordFound }
-        $defaultStatus = if ($null -eq $report.DefaultPasswordFound) { 'Unknown' } else { [string][bool]$report.DefaultPasswordFound }
-        $table += "| $name | $cpasswordStatus | $defaultStatus |`n"
-    }
     $pass = $found.Count -eq 0
     $message = if ($pass) { "Well done. No cpassword or default password found in $($reports.Count) scanned GPOs." }
-    else { "$($found.Count) of $($reports.Count) GPOs expose passwords ($($cpassword.Count) with cpassword, $($defaultPassword.Count) with default passwords). Remove the secrets and rotate affected credentials. Scanning was incomplete for $($incomplete.Count) GPOs." }
-    Add-MtTestResultDetail -Result "$message`n`n$table"
+    else { "$($found.Count) of $($reports.Count) GPOs expose passwords ($($cpassword.Count) with cpassword, $($defaultPassword.Count) with default passwords). Remove the secrets and rotate affected credentials." }
+    if ($incomplete.Count -gt 0) { $message += " Scanning was incomplete for $($incomplete.Count) GPOs." }
+    $result = Format-MtAdGpoResult -Summary $message -Metrics ([ordered]@{ 'Total GPOs' = $reports.Count; 'GPOs exposing passwords' = $found.Count; 'GPOs with cpassword' = $cpassword.Count; 'GPOs with default passwords' = $defaultPassword.Count; 'GPOs with incomplete scans' = $incomplete.Count }) -Details @($found | Sort-Object Name) -Properties Name, CpasswordFound, DefaultPasswordFound -Headers GPO, 'cpassword present', 'Default password present'
+    Add-MtTestResultDetail -Result $result
     return $pass
 }

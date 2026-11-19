@@ -20,15 +20,16 @@
         throw 'One or more GPO link states could not be evaluated.'
     }
     $disabled = @($links | Where-Object { $true -eq $_.IsDisabled })
-    $table = "| Metric | Value |`n| --- | --- |`n| Total Links | $($links.Count) |`n| Disabled Links | $($disabled.Count) |`n"
-    $table += "`n| GPO | Linked container |`n| --- | --- |`n"
-    foreach ($link in @($disabled | Sort-Object DistinguishedName, GpoGuid)) {
+    $details = @(foreach ($link in @($disabled | Sort-Object DistinguishedName, GpoGuid)) {
         $gpo = @($state.GPOs | Where-Object { ([string]$_.Id).Trim('{}') -eq ([string]$link.GpoGuid).Trim('{}') } | Select-Object -First 1)
         $name = if ($gpo.Count -gt 0) { [string]$gpo[0].DisplayName } else { [string]$link.GpoGuid }
-        $name = [System.Net.WebUtility]::HtmlEncode($name) -replace '\|', '&#124;'
-        $container = [System.Net.WebUtility]::HtmlEncode([string]$link.DistinguishedName) -replace '\|', '&#124;'
-        $table += "| $name | $container |`n"
-    }
-    Add-MtTestResultDetail -Result "Review $($disabled.Count) disabled links among $($links.Count) GPO links; some may be intentionally disabled.`n`n$table" -Investigate:$Investigate
+        [pscustomobject]@{ Name = $name; Container = $link.DistinguishedName }
+    })
+    $summary = if ($links.Count -eq 0) { 'No GPO links were returned in the collected inventory.' }
+    elseif ($disabled.Count -eq 0) { "No disabled GPO links were found. All $($links.Count) collected links are enabled." }
+    else { "$($disabled.Count) of $($links.Count) GPO links are disabled. Review whether these disabled links are intentional." }
+    if (-not $Investigate -and $disabled.Count -eq 0 -and $links.Count -gt 0) { $summary = "Well done. $summary" }
+    $result = Format-MtAdGpoResult -Summary $summary -Metrics ([ordered]@{ 'Total GPO links' = $links.Count; 'Enabled GPO links' = $links.Count - $disabled.Count; 'Disabled GPO links' = $disabled.Count }) -Details $details -Properties Name, Container -Headers GPO, 'Linked container'
+    Add-MtTestResultDetail -Result $result -Investigate:$Investigate
     return $true
 }

@@ -1,9 +1,11 @@
-Inventories disabled GPO links, including the GPO and linked container for each disabled link. A disabled link can be intentional, but can also leave security settings unapplied. The count is of links, not distinct GPOs, and includes links that are both disabled and enforced. The result requires investigation rather than making a risk judgement.
+Inventories disabled GPO link entries, including links that are both disabled and enforced. Counts are of link entries, not distinct GPOs; the result includes the linked policy and container for each disabled link. The **Investigate** result is informational and does not judge whether a disabled link is appropriate. The summary and metrics table show enabled and disabled link counts; details appear only when disabled links are found. If none are found, the summary says so. Missing link or GPO collection, or an unknown link state, is an error.
+
+`AD-GPOL-02` uses the same inventory but retains its default **Info/Passed** outcome when collection succeeds. The different outcomes are intentional; neither test makes a risk judgement about an individual link.
 
 #### Remediation action
 
-1. In **Group Policy Management**, navigate to the listed organizational unit, domain or site and inspect its linked GPOs.
-2. Re-enable links that should apply, remove obsolete links, and document intentional exceptions. Confirm inherited policy before changing links.
+1. In **Group Policy Management**, locate each listed OU, domain, or site and review its disabled links with the policy owner.
+2. Re-enable links that should apply, remove obsolete links, and document intentional exceptions. Confirm inherited policy and intended scope before changing a link.
 
 #### Related links
 

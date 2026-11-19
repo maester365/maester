@@ -1,70 +1,26 @@
 ﻿function Test-MtAdGpoTotalCount {
     <#
     .SYNOPSIS
-    Counts the total number of Group Policy Objects in Active Directory.
-
+    Inventories the total number of GPOs for investigation.
     .DESCRIPTION
-    This test retrieves the total count of Group Policy Objects (GPOs) in the Active Directory domain.
-    Knowing the total number of GPOs helps administrators understand the scope of policy management
-    and identify potential areas for consolidation or cleanup.
-
-    .EXAMPLE
-    Test-MtAdGpoTotalCount
-
-    Returns $true if GPO data is accessible, $false otherwise.
-    The test result includes the total count of GPOs.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoTotalCount
+    Counts cached GPO metadata. An inventory count is not a security verdict;
+    missing collection is an error, not an empty successful inventory.
     #>
     [MaesterTest(
-        Id = 'AD-GPO-01',
-        Title = 'GPO inventory should be investigated',
-        Product = 'ad',
-        Feature = 'group-policy',
-        Area = 'infrastructure',
-        ResourceType = 'GroupPolicy',
-        Severity = 'Info',
-        Mitre = 'None',
-        Service = 'ActiveDirectory',
+        Id = 'AD-GPO-01', Title = 'GPO inventory should be investigated',
+        Product = 'ad', Feature = 'group-policy', Area = 'infrastructure',
+        ResourceType = 'GroupPolicy', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    Write-Verbose "Starting Test-MtAdGpoTotalCount"
-
-    # Get AD GPO state data (uses cached data if available)
-    $gpoState = Get-MtADGpoState
-
-    # If unable to retrieve GPO data, skip the test
-    if ($null -eq $gpoState -or $null -eq $gpoState.GPOs) {
-        throw 'The GPO inventory could not be retrieved.'
-    }
-
-    $gpos = $gpoState.GPOs
-
-    # Count total GPOs
-    $totalCount = ($gpos | Measure-Object).Count
-
-    # Test passes only if we successfully retrieved the GPO dataset
-    $testResult = $null -ne $gpos
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total GPOs | $totalCount |" + "`n"
-
-        $testResultMarkdown = "Active Directory Group Policy Objects have been analyzed. The domain contains $totalCount GPO(s).`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory Group Policy Objects. Ensure you have appropriate permissions and the Group Policy Management Console is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-
-    return $testResult
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.GPOs) { throw 'The GPO inventory could not be retrieved.' }
+    $count = @($state.GPOs | Where-Object { $null -ne $_ }).Count
+    $summary = if ($count -eq 0) { 'No GPOs were returned in the collected inventory.' } else { "The collected inventory contains $count GPOs. Review policy inventory and ownership." }
+    $result = Format-MtAdGpoResult -Summary $summary -Metrics ([ordered]@{ 'Total GPOs' = $count })
+    Add-MtTestResultDetail -Result $result -Investigate
+    return $true
 }

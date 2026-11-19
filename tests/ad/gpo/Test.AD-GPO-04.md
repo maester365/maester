@@ -1,4 +1,6 @@
-Counts GPOs whose identifiers do not appear in the collected domain, OU, or site `gPLink` values. Unlinked policies may be obsolete, but can also be retained intentionally; verify their purpose before removing them. This check identifies references, not effective policy processing.
+Identifies GPOs whose identifiers do not appear in collected domain, OU, or site `gPLink` values. The check compares references, including disabled links; it does not determine whether a policy is actively applied. Unlinked policies may be obsolete or intentionally retained, so the result needs review rather than an assumption that each policy should be removed. Missing link or GPO collection is an error.
+
+The result reports total, linked, and unlinked GPO counts. It lists unlinked policies only when findings exist.
 
 #### Remediation action
 

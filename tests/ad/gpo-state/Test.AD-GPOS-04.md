@@ -1,26 +1,14 @@
-#### Test-MtAdGpoSettingsDisabledCount
+Inventories GPOs with disabled settings, separating **all settings disabled**, **user settings disabled**, and **computer settings disabled**. These categories are disjoint. Unknown or unrecognized status values are reported separately and are not counted as enabled. The **Investigate** result does not judge whether a disabled category is appropriate. Failed GPO inventory collection is an error.
 
- Counts GPOs where settings are disabled (AllDisabled, UserDisabled, or ComputerDisabled).
+The result reports total GPOs and counts for each disabled category and unknown status. It lists policies with disabled or unknown status when any exist; a clean inventory has no empty details table.
 
-#### Why This Test Matters
-- Detective control: checks how many GPOs have disabled settings (AllDisabled, UserDisabled, ComputerDisabled).
+#### Remediation action
 
-#### Control Type
-
-**Operational**
-
-#### Security Recommendation
-- Review disabled settings to confirm they are intentional and document exceptions if needed.
-
-#### How the Test Works
-- Counts GPOs whose GpoStatus maps to a disabled state and reports totals and ratios.
-
-#### Related Tests
-- `Test-MtAdGpoAllSettingsDisabledDetails` and `Test-MtAdGpoSettingsDisabledCount`.
+Review each listed policy with its owner and confirm whether its disabled settings or unknown status are intentional. Check the policy's scope and change history before enabling settings; document approved exceptions.
 
 #### Related links
-- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 
-- ANSSI checkpoint: https://www.anssi.gouv.fr/
+
+* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

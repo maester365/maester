@@ -1,27 +1,14 @@
-#### Control Type
+Checks for inherited permission entries in GPO security descriptors. Any evaluated GPO with an inherited entry is a finding and fails the test; this is a permission-entry check, not a test of whether permissions could be retrieved. Unreadable descriptors are reported as unknown. If all are unreadable, the test is skipped; partial unknowns without findings require investigation. Findings still fail when other descriptors are unknown. Failed permission-report collection is an error.
 
-**Operational**
+The summary and metrics table report GPOs with inherited entries and unreadable descriptors. With no findings or unknown reports, the summary says no inherited entries were found; the details table appears only for findings or unknown reports.
 
-#### Test-MtAdGpoInheritedPermissionsCount
+#### Remediation action
 
- Counts GPO reports with inherited permissions.
-
-#### Why This Test Matters
-- Detective control: checks for inherited permissions in GPOs which may lead to broader access than intended.
-
-#### Security Recommendation
-- Review inherited permissions and consider removing inheritance where not needed.
-
-#### How the Test Works
-- Scans GPO state for GPO reports with a DACL entry inherited from the parent container (HasInheritedPermissions is true) and reports counts and a small sample.
-- A GPO whose permissions could not be read is reported as not evaluated instead of as a finding. The result is then Investigate, or Skipped when no GPO could be evaluated.
-
-#### Related Tests
-- `Test-MtAdGpoInheritedPermissionsCount`.
+Review each listed inherited entry and its source container. Confirm whether inherited access matches intended GPO delegation before changing inheritance or permissions; do not treat inheritance itself as a retrieval failure. Investigate unreadable descriptors.
 
 #### Related links
-- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 
-- ANSSI checkpoint: https://www.anssi.gouv.fr/
+
+* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

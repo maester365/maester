@@ -163,15 +163,9 @@
         "AD-GPOREP-14",
         "AD-GPOREP-15",
         "AD-GPOREP-17",
-        "AD-GPOS-01",
         "AD-GPOS-02",
-        "AD-GPOS-03",
         "AD-GPOS-04",
-        "AD-GPOS-05",
-        "AD-GPOS-06",
-        "AD-GPOS-07",
         "AD-GPOS-08",
-        "AD-GPOS-09",
         "AD-GRP-01",
         "AD-GRP-02",
         "AD-GRP-03",
@@ -349,6 +343,42 @@
       ]
     },
     {
+      "Tag": "AD-GPOS-01",
+      "Tests": [
+        "AD-GPO-01"
+      ]
+    },
+    {
+      "Tag": "AD-GPOS-03",
+      "Tests": [
+        "AD-GPOS-02"
+      ]
+    },
+    {
+      "Tag": "AD-GPOS-05",
+      "Tests": [
+        "AD-GPOS-04"
+      ]
+    },
+    {
+      "Tag": "AD-GPOS-06",
+      "Tests": [
+        "AD-GPOS-04"
+      ]
+    },
+    {
+      "Tag": "AD-GPOS-07",
+      "Tests": [
+        "AD-GPOS-04"
+      ]
+    },
+    {
+      "Tag": "AD-GPOS-09",
+      "Tests": [
+        "AD-GPOS-08"
+      ]
+    },
+    {
       "Tag": "AD.Computer",
       "Tests": [
         "AD-COMP-01",
@@ -515,6 +545,7 @@
     {
       "Tag": "AD.GPOState",
       "Tests": [
+        "AD-GPO-01",
         "AD-GPOREP-01",
         "AD-GPOREP-03",
         "AD-GPOREP-05",
@@ -526,15 +557,9 @@
         "AD-GPOREP-14",
         "AD-GPOREP-15",
         "AD-GPOREP-17",
-        "AD-GPOS-01",
         "AD-GPOS-02",
-        "AD-GPOS-03",
         "AD-GPOS-04",
-        "AD-GPOS-05",
-        "AD-GPOS-06",
-        "AD-GPOS-07",
-        "AD-GPOS-08",
-        "AD-GPOS-09"
+        "AD-GPOS-08"
       ]
     },
     {

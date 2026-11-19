@@ -28,14 +28,10 @@
         })
     if ($incomplete.Count -gt 0) { throw "Version comparison incomplete for $($incomplete.Count) GPOs; verify SYSVOL collection and GPT.INI access." }
     $mismatched = @($reports | Where-Object { $true -eq $_.HasVersionMismatch })
-    $table = "| GPO | Directory version | SYSVOL version |`n| --- | --- | --- |`n"
-    foreach ($report in @($mismatched | Sort-Object Name)) {
-        $name = [System.Net.WebUtility]::HtmlEncode([string]$report.Name) -replace '\|', '&#124;'
-        $table += "| $name | $($report.DirectoryVersion) | $($report.SysvolVersion) |`n"
-    }
     $pass = $mismatched.Count -eq 0
     $message = if ($pass) { "Well done. All $($reports.Count) GPO directory and SYSVOL versions match." }
     else { "$($mismatched.Count) of $($reports.Count) GPOs have different directory and SYSVOL versions; investigate replication and GPT.INI." }
-    Add-MtTestResultDetail -Result "$message`n`n$table"
+    $result = Format-MtAdGpoResult -Summary $message -Metrics ([ordered]@{ 'Total GPOs' = $reports.Count; 'GPOs with version mismatches' = $mismatched.Count }) -Details @($mismatched | Sort-Object Name) -Properties Name, DirectoryVersion, SysvolVersion -Headers GPO, 'Directory version', 'SYSVOL version'
+    Add-MtTestResultDetail -Result $result
     return $pass
 }

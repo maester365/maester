@@ -1,8 +1,12 @@
-Counts GPO link entries marked **Enforced**, which override inheritance blocking at lower levels. The test reports a finding when enforced links exist; enforcement can be intentional, but can make a policy apply beyond the scope administrators expect.
+Checks individual GPO link entries for **Enforced** state. It passes when no enforced links are found and fails when any are found; missing link collection or unknown enforcement state is an error. Enforcement overrides **Block Inheritance** at lower levels. It does not block inheritance.
+
+This is a link-scope hygiene check. Changes should be assessed with the policy owner before altering inheritance behavior.
+
+This check evaluates each link entry, unlike `AD-GPOREP-14`, which reports distinct GPOs that have any enforced link and always returns **Investigate**. Enforcement can be intentional; a finding is a prompt to review the override, not an instruction to disable it.
 
 #### Remediation action
 
-Review each enforced link's purpose, target, and settings in **Group Policy Management**. Retain enforcement only when required by the policy design; otherwise remove the enforced flag after assessing the effect on inherited policy.
+Review each enforced link's purpose, owner, target, and settings in **Group Policy Management**. Confirm whether the override is required by the policy design before changing it. If not, assess the effect on inheritance and remove the enforced flag through the normal change process; do not disable enforcement blindly.
 
 #### Related links
 

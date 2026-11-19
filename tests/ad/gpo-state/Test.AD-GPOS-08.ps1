@@ -1,76 +1,33 @@
-﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
-function Test-MtAdGpoOwnerDistinctCount {
+﻿function Test-MtAdGpoOwnerDistinctCount {
     <#
     .SYNOPSIS
-    Counts the number of distinct GPO owners.
-
+    Inventories distinct GPO owners and the policies owned by each.
     .DESCRIPTION
-    This test retrieves Active Directory GPO state data using Get-MtADGpoState and counts the number of
-    distinct (non-empty) Owner values found across returned GPO objects.
-
-    .EXAMPLE
-    Test-MtAdGpoOwnerDistinctCount
-
-    Returns $true if GPO state data is accessible, $false otherwise.
-    The test result includes the distinct owner count.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoOwnerDistinctCount
+    Combines the owner count and grouped details. Unresolved owners are listed
+    separately and are not counted as an additional known owner.
     #>
     [MaesterTest(
-        Id = 'AD-GPOS-08',
-        Title = 'GPO owner distinct count should be investigated',
-        Product = 'ad',
-        Feature = 'group-policy',
-        Area = 'access-control',
-        ResourceType = 'GroupPolicy',
-        Severity = 'Info',
-        Mitre = 'None',
-        Service = 'ActiveDirectory',
+        Id = 'AD-GPOS-08', Title = 'GPO owners should be investigated',
+        Product = 'ad', Feature = 'group-policy', Area = 'access-control',
+        ResourceType = 'GroupPolicy', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    Write-Verbose "Starting Test-MtAdGpoOwnerDistinctCount"
-    $gpoState = Get-MtADGpoState
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-    Write-Verbose "Filtering/counting gpo owner distinct count"
-
-    $gpos = $gpoState.GPOs
-    if ($null -eq $gpos) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory Group Policy Objects (GPOs) from Get-MtADGpoState.'
-        return $false
-    }
-
-    $gposArray = @($gpos | Where-Object { $null -ne $_ })
-
-    $owners = $gposArray |
-        ForEach-Object {
-            $o = $_.Owner
-            if (-not [string]::IsNullOrWhiteSpace([string]$o)) { [string]$o }
-        } |
-        Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } |
-        Select-Object -Unique
-
-    $distinctOwnerCount = @($owners).Count
-    $testResult = $true
-
-    $result = "| Metric | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| Distinct GPO owner count | $distinctOwnerCount |" + "`n"
-    Write-Verbose "Counts computed"
-
-    $testResultMarkdown = "Active Directory GPO owners have been analyzed. There are $distinctOwnerCount distinct owner(s).`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-    Write-Verbose "Completed Test-MtAdGpoOwnerDistinctCount"
-    return $testResult
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.GPOs) { throw 'GPO metadata could not be collected; owners cannot be inventoried.' }
+    $gpos = @($state.GPOs | Where-Object { $null -ne $_ })
+    $known = @($gpos | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.Owner) } | Group-Object Owner | Sort-Object Name)
+    $unknown = @($gpos | Where-Object { [string]::IsNullOrWhiteSpace([string]$_.Owner) })
+    $details = @(foreach ($group in $known) {
+            [pscustomobject]@{ Owner = $group.Name; Count = $group.Count; Policies = ($group.Group.DisplayName | Sort-Object) -join ', ' }
+        })
+    if ($unknown.Count -gt 0) { $details += [pscustomobject]@{ Owner = $null; Count = $unknown.Count; Policies = ($unknown.DisplayName | Sort-Object) -join ', ' } }
+    $summary = if ($gpos.Count -eq 0) { 'No GPOs were returned; no owners can be listed.' } else { "The $($gpos.Count) collected GPOs have $($known.Count) distinct known owners. Review ownership and delegation." }
+    if ($unknown.Count -gt 0) { $summary += " Owners could not be resolved for $($unknown.Count) GPOs." }
+    $result = Format-MtAdGpoResult -Summary $summary -Metrics ([ordered]@{ 'Total GPOs' = $gpos.Count; 'Distinct known owners' = $known.Count; 'GPOs with unknown owners' = $unknown.Count }) -Details $details -Properties Owner, Count, Policies -Headers Owner, 'GPO count', GPOs
+    Add-MtTestResultDetail -Result $result -Investigate
+    return $true
 }

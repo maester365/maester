@@ -1,26 +1,12 @@
-#### Test-MtAdGpoOwnerDistinctCount
+Inventories distinct known owners across collected GPOs and groups policies by owner. Blank or unresolved owners are listed as unknown and are not counted as a distinct known owner. The **Investigate** result is informational; it does not judge the number of owners. If no GPOs are returned, the summary says so without an empty details table. Failed GPO inventory collection is an error.
 
- Counts the number of distinct GPO owners.
+#### Remediation action
 
-#### Why This Test Matters
-- Operational control: assesses diversity of GPO owners which can highlight unusual configurations or omissions.
-
-#### Control Type
-
-**Operational**
-
-#### Security Recommendation
-- If many owners are identical or blank, review GPO creation practices to ensure proper ownership.
-
-#### How the Test Works
-- Retrieves GPO state, extracts Owner fields, computes distinct non-empty owners, and reports the count.
-
-#### Related Tests
-- `Test-MtAdGpoOwnerDetails` - summarizes owners per GPOs.
+Review each known owner and the policies assigned to them. Resolve unknown ownership where possible, and confirm that ownership and delegation are current and appropriate for each policy.
 
 #### Related links
-- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 
-- ANSSI checkpoint: https://www.anssi.gouv.fr/
+
+* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

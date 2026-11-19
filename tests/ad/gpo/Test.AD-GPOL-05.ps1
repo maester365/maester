@@ -1,113 +1,29 @@
 ﻿function Test-MtAdGpoBlockedInheritanceCount {
     <#
     .SYNOPSIS
-    Counts targets blocking GPO inheritance.
-
+    Checks that OUs do not block GPO inheritance.
     .DESCRIPTION
-    This test retrieves Active Directory Organizational Units (OUs) and counts how many targets
-    are configured to block Group Policy Object (GPO) inheritance.
-
-    Blocked inheritance is set on OUs via the `gpOptions` attribute.
-    When `gpOptions -eq 1`, GPO inheritance is blocked for that OU.
-
-    Blocking inheritance can create security gaps because settings from parent OUs won't apply.
-    Policies can become “sticky” at lower levels, so blocked inheritance should be monitored and
-    justified.
-
-    .EXAMPLE
-    Test-MtAdGpoBlockedInheritanceCount
-
-    Returns $true when no OUs are blocking GPO inheritance, $false when blocked inheritance is present.
-    The test result includes the blocked OU count.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoBlockedInheritanceCount
+    Fails when gpOptions equals 1 on an OU. An unset gpOptions attribute uses the
+    default (inheritance enabled); failed container collection is not a clean pass.
     #>
     [MaesterTest(
-        Id = 'AD-GPOL-05',
-        Title = 'GPO blocked inheritance count should be compliant',
-        Product = 'ad',
-        Feature = 'group-policy',
-        Area = 'infrastructure',
-        ResourceType = 'OrganizationalUnit',
-        Severity = 'Medium',
-        UserImpact = 'Low',
-        ImplementationCost = 'Medium',
-        Mitre = 'None',
-        Service = 'ActiveDirectory',
+        Id = 'AD-GPOL-05', Title = 'OUs should not block Group Policy inheritance',
+        Product = 'ad', Feature = 'group-policy', Area = 'infrastructure',
+        ResourceType = 'OrganizationalUnit', Severity = 'Medium', UserImpact = 'Low',
+        ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    Write-Verbose "Starting Test-MtAdGpoBlockedInheritanceCount"
-
-    # Get AD GPO state data (uses cached data if available)
-    $gpoState = $null
-    $gpoState = Get-MtADGpoState
-
-# If unable to retrieve AD data, skip the test
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $ous = @($gpoState.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'organizationalUnit' })
-
-    $ouCount = ($ous | Measure-Object).Count
-
-    $blockedOus = @()
-    $blockedOus = @(
-        foreach ($ou in $ous) {
-            $gpOptionsValue = $ou.gpOptions
-            if ($null -eq $gpOptionsValue) {
-                continue
-            }
-
-            # gpOptions: 1 = blocked inheritance
-            if ([int]$gpOptionsValue -eq 1) {
-                $ou
-            }
-        }
-    )
-
-    $blockedCount = ($blockedOus | Measure-Object).Count
-    $blockedPercentage = if ($ouCount -gt 0) { [math]::Round(($blockedCount / $ouCount) * 100, 2) } else { 0 }
-
-    # Security intent: pass only when no OU is blocking GPO inheritance.
-    $testResult = $blockedCount -eq 0
-
-    $sampleLimit = 5
-    $sampleBlocked = $blockedOus | Select-Object -First $sampleLimit
-    $sampleNames = @($sampleBlocked | ForEach-Object {
-        if ($_.Name) { $_.Name } else { $_.DistinguishedName }
-    })
-    $sampleNamesText = ($sampleNames | Where-Object { $_ }) -join ', '
-    if ($blockedCount -gt $sampleLimit -and $sampleNamesText) {
-        $sampleNamesText += " (showing first $sampleLimit)"
-    }
-
-    $resultTable = "| Metric | Value |" + "`n"
-    $resultTable += "| --- | --- |" + "`n"
-    $resultTable += "| Total OUs | $ouCount |" + "`n"
-    $resultTable += "| OUs Blocking Inheritance | $blockedCount |" + "`n"
-    $resultTable += "| Blocked Ratio | $blockedPercentage% |" + "`n"
-    if ($blockedCount -gt 0 -and $sampleNamesText) {
-        $resultTable += "| Sample Blocked OUs | $sampleNamesText |" + "`n"
-    }
-
-    if ($testResult) {
-        $recommendation = "✅ GPO inheritance blocking was not detected on any OU. Active Directory Group Policy Objects have been analyzed successfully."
-    }
-    else {
-        $recommendation = "⚠️ GPO inheritance blocking was detected on $blockedCount OU(s). Blocked inheritance can create security gaps because policies from parent OUs won't apply. Review and justify these OU configurations."
-    }
-
-    $testResultMarkdown = "$recommendation`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultTable
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    return $testResult
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.LinkContainers) { throw 'GPO link containers could not be collected; inheritance blocking cannot be assessed.' }
+    $ous = @($state.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'organizationalUnit' })
+    $blocked = @($ous | Where-Object { $null -ne $_.GpOptions -and [int]$_.GpOptions -eq 1 } | Sort-Object DistinguishedName)
+    $pass = $blocked.Count -eq 0
+    $summary = if ($pass) { 'Well done. No collected OU blocks Group Policy inheritance.' } else { "$($blocked.Count) of $($ous.Count) OUs block Group Policy inheritance. Review and justify these exceptions; enforced parent links still apply." }
+    $result = Format-MtAdGpoResult -Summary $summary -Metrics ([ordered]@{ 'Total OUs' = $ous.Count; 'OUs blocking inheritance' = $blocked.Count }) -Details $blocked -Properties DistinguishedName -Headers OU
+    Add-MtTestResultDetail -Result $result
+    return $pass
 }
