@@ -19,7 +19,9 @@ This is the agent companion to MT.1263, which reports medium-risk service princi
    - Disable the agent so it stops signing in while you investigate.
    - Remove the compromised credentials from the agent identity blueprint and add new ones.
    - Remove permissions and roles the agent doesn't need.
-5. If the activity is confirmed safe after investigation, select **Confirm safe**, or **Dismiss risk** if the activity was expected, so the flag clears.
+5. When the investigation is done, clear the flag so the agent is no longer reported:
+   - If the activity is confirmed safe, select **Confirm safe**.
+   - If the activity was expected, or a confirmed compromise has been remediated and the risk is no longer relevant, select **Dismiss risk**.
 6. Consider a risk-based Conditional Access policy for agents so that risky agents are blocked automatically rather than left waiting for manual review.
 
 #### Known limitations
