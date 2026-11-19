@@ -1,4 +1,4 @@
-function ConvertTo-MtAdcsEnrollmentPrerequisiteState {
+﻿function ConvertTo-MtAdcsEnrollmentPrerequisiteState {
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param(

@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '../../../..')
     . (Join-Path $repoRoot 'powershell/internal/services/ad/ConvertTo-MtAdcsEnrollmentPrerequisiteState.ps1')
     function ConvertFrom-MtLdapValue { param($Value) return $Value }
