@@ -1,4 +1,4 @@
-﻿BeforeAll {
+BeforeAll {
     $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '../../../..')
     . (Join-Path $repoRoot 'powershell/internal/services/ad/ConvertTo-MtAdcsEnrollmentPrerequisiteState.ps1')
     function ConvertFrom-MtLdapValue { param($Value) return $Value }
@@ -72,4 +72,36 @@ Describe 'ConvertTo-MtAdcsEnrollmentPrerequisiteState' {
         $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState -Configuration $configuration
         $result.Templates[0].Disposition | Should -Be 'Inconclusive'
     }
-}
+    It 'keeps missing certificate-name flag evidence inconclusive' {
+        $configuration = [PSCustomObject]@{
+            EnterpriseCAs = @([PSCustomObject]@{ Name='CA01'; certificateTemplates=@('UnknownNameFlag') })
+            CertificateTemplates = @([PSCustomObject]@{
+                Name='UnknownNameFlag'
+                'pKIExtendedKeyUsage'=@('1.3.6.1.5.5.7.3.2')
+                'msPKI-Enrollment-Flag'=0
+                'msPKI-Certificate-Name-Flag'=$null
+                nTSecurityDescriptor=[PSCustomObject]@{}
+            })
+        }
+        $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState -Configuration $configuration
+        $result.Templates[0].Disposition | Should -Be 'Inconclusive'
+        $result.PotentiallyEligibleCount | Should -Be 0
+        $result.InconclusiveCount | Should -Be 1
+    }
+
+    It 'keeps missing enrollment flag evidence inconclusive' {
+        $configuration = [PSCustomObject]@{
+            EnterpriseCAs = @([PSCustomObject]@{ Name='CA01'; certificateTemplates=@('UnknownEnrollmentFlag') })
+            CertificateTemplates = @([PSCustomObject]@{
+                Name='UnknownEnrollmentFlag'
+                'pKIExtendedKeyUsage'=@('1.3.6.1.5.5.7.3.2')
+                'msPKI-Enrollment-Flag'=$null
+                'msPKI-Certificate-Name-Flag'=1
+                nTSecurityDescriptor=[PSCustomObject]@{}
+            })
+        }
+        $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState -Configuration $configuration
+        $result.Templates[0].Disposition | Should -Be 'Inconclusive'
+        $result.PotentiallyEligibleCount | Should -Be 0
+        $result.InconclusiveCount | Should -Be 1
+    }}

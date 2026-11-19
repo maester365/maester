@@ -22,7 +22,7 @@ The test deliberately distinguishes observed prerequisites from exploitability. 
 
 - **PrerequisitesNotSatisfied**: at least one modeled condition is disproven.
 - **PotentiallyEligible**: dangerous template and publication conditions exist, with ACL evidence available for follow-up.
-- **Inconclusive**: required authorization evidence is unavailable.
+- **Inconclusive**: required configuration or authorization evidence is unavailable.
 
 <!--- Results --->
 %TestResult%

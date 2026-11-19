@@ -1,4 +1,4 @@
-﻿function ConvertTo-MtAdcsEnrollmentPrerequisiteState {
+function ConvertTo-MtAdcsEnrollmentPrerequisiteState {
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param(
@@ -65,8 +65,17 @@
         $managerApprovalRequired = $null -ne $enrollmentFlag -and (($enrollmentFlag -band $pendAllRequestsFlag) -ne 0)
         $securityDescriptorAvailable = $null -ne $template.nTSecurityDescriptor
 
-        $disposition = if (-not $published -or -not $authenticationCapable -or -not $suppliesSubject -or $managerApprovalRequired) {
+        $disposition = if (-not $published -or -not $authenticationCapable) {
             'PrerequisitesNotSatisfied'
+        }
+        elseif ($null -ne $nameFlag -and -not $suppliesSubject) {
+            'PrerequisitesNotSatisfied'
+        }
+        elseif ($null -ne $enrollmentFlag -and $managerApprovalRequired) {
+            'PrerequisitesNotSatisfied'
+        }
+        elseif ($null -eq $nameFlag -or $null -eq $enrollmentFlag) {
+            'Inconclusive'
         }
         elseif (-not $securityDescriptorAvailable) {
             'Inconclusive'
