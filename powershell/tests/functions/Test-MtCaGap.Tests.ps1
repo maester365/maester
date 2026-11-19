@@ -10,7 +10,7 @@
         $script:AgentUser = '33333333-3333-3333-3333-333333333333'
 
         # Builds a Conditional Access policy the way Graph beta returns it.
-        function New-TestPolicy {
+        function Get-TestPolicy {
             param(
                 [string]$Name,
                 [string]$State = 'enabled',
@@ -76,14 +76,14 @@
     }
 
     It 'passes when nothing is excluded' {
-        Mock -ModuleName Maester Get-MtConditionalAccessPolicy { New-TestPolicy -Name 'All users MFA' -IncludeUsers 'All' }
+        Mock -ModuleName Maester Get-MtConditionalAccessPolicy { Get-TestPolicy -Name 'All users MFA' -IncludeUsers 'All' }
 
         Test-MtCaGap | Should -BeTrue
         $script:TestResult | Should -Match 'All excluded objects seem to have a fallback'
     }
 
     It 'reports an excluded user with no fallback (existing behaviour)' {
-        Mock -ModuleName Maester Get-MtConditionalAccessPolicy { New-TestPolicy -Name 'All users MFA' -IncludeUsers 'All' -ExcludeUsers $script:BreakGlassUser }
+        Mock -ModuleName Maester Get-MtConditionalAccessPolicy { Get-TestPolicy -Name 'All users MFA' -IncludeUsers 'All' -ExcludeUsers $script:BreakGlassUser }
 
         Test-MtCaGap | Should -BeFalse
         $script:TestResult | Should -Match '(?m)^    User: breakglass1$'
@@ -92,7 +92,7 @@
 
     It 'reports an excluded agent identity with no fallback' {
         Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
-            New-TestPolicy -Name 'Block risky agents' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals $script:AgentIdentity
+            Get-TestPolicy -Name 'Block risky agents' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals $script:AgentIdentity
         }
 
         Test-MtCaGap | Should -BeFalse
@@ -105,8 +105,8 @@
 
     It 'passes when an excluded agent identity is included by ID in another enabled policy' {
         Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
-            New-TestPolicy -Name 'Block risky agents' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals $script:AgentIdentity
-            New-TestPolicy -Name 'Contoso agent policy' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals $script:AgentIdentity -ExcludeAgentIdServicePrincipals @()
+            Get-TestPolicy -Name 'Block risky agents' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals $script:AgentIdentity
+            Get-TestPolicy -Name 'Contoso agent policy' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals $script:AgentIdentity -ExcludeAgentIdServicePrincipals @()
         }
 
         Test-MtCaGap | Should -BeTrue
@@ -114,7 +114,7 @@
 
     It 'reports an excluded agent user with no fallback' {
         Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
-            New-TestPolicy -Name 'Block risky agent users' -IncludeUsers 'None' -IncludeAgentUsers 'All' -ExcludeAgentUsers $script:AgentUser
+            Get-TestPolicy -Name 'Block risky agent users' -IncludeUsers 'None' -IncludeAgentUsers 'All' -ExcludeAgentUsers $script:AgentUser
         }
 
         Test-MtCaGap | Should -BeFalse
@@ -127,8 +127,8 @@
 
     It 'passes when an excluded agent user is included by ID in another enabled policy' {
         Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
-            New-TestPolicy -Name 'Block risky agent users' -IncludeUsers 'None' -IncludeAgentUsers 'All' -ExcludeAgentUsers $script:AgentUser
-            New-TestPolicy -Name 'Contoso agent user policy' -IncludeUsers 'None' -IncludeAgentUsers $script:AgentUser -ExcludeAgentUsers @()
+            Get-TestPolicy -Name 'Block risky agent users' -IncludeUsers 'None' -IncludeAgentUsers 'All' -ExcludeAgentUsers $script:AgentUser
+            Get-TestPolicy -Name 'Contoso agent user policy' -IncludeUsers 'None' -IncludeAgentUsers $script:AgentUser -ExcludeAgentUsers @()
         }
 
         Test-MtCaGap | Should -BeTrue
@@ -136,8 +136,8 @@
 
     It 'does not count an include of All as a fallback for an excluded agent' {
         Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
-            New-TestPolicy -Name 'Block risky agents' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals $script:AgentIdentity
-            New-TestPolicy -Name 'All agents MFA' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals @()
+            Get-TestPolicy -Name 'Block risky agents' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals $script:AgentIdentity
+            Get-TestPolicy -Name 'All agents MFA' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals @()
         }
 
         Test-MtCaGap | Should -BeFalse
@@ -147,11 +147,11 @@
     It 'does not count a service principal or agent user include as a fallback for an excluded agent identity' {
         # An agent identity is a service principal, but the check keeps the three ID lists apart.
         Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
-            New-TestPolicy -Name 'Block risky agents' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals $script:AgentIdentity
-            $sp = New-TestPolicy -Name 'Workload identity policy' -IncludeUsers 'None'
+            Get-TestPolicy -Name 'Block risky agents' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals $script:AgentIdentity
+            $sp = Get-TestPolicy -Name 'Workload identity policy' -IncludeUsers 'None'
             $sp.conditions.clientApplications = [pscustomobject]@{ includeServicePrincipals = @($script:AgentIdentity); excludeServicePrincipals = @() }
             $sp
-            New-TestPolicy -Name 'Agent user policy' -IncludeUsers 'None' -IncludeAgentUsers $script:AgentIdentity -ExcludeAgentUsers @()
+            Get-TestPolicy -Name 'Agent user policy' -IncludeUsers 'None' -IncludeAgentUsers $script:AgentIdentity -ExcludeAgentUsers @()
         }
 
         Test-MtCaGap | Should -BeFalse
@@ -160,8 +160,8 @@
 
     It 'ignores agent exclusions in policies that are not enabled' {
         Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
-            New-TestPolicy -Name 'Report-only agents' -State 'enabledForReportingButNotEnforced' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals $script:AgentIdentity
-            New-TestPolicy -Name 'Off agent users' -State 'disabled' -IncludeUsers 'None' -IncludeAgentUsers 'All' -ExcludeAgentUsers $script:AgentUser
+            Get-TestPolicy -Name 'Report-only agents' -State 'enabledForReportingButNotEnforced' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals $script:AgentIdentity
+            Get-TestPolicy -Name 'Off agent users' -State 'disabled' -IncludeUsers 'None' -IncludeAgentUsers 'All' -ExcludeAgentUsers $script:AgentUser
         }
 
         Test-MtCaGap | Should -BeTrue
@@ -169,7 +169,7 @@
 
     It 'shows the ID when an agent name cannot be resolved' {
         Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
-            New-TestPolicy -Name 'Block risky agents' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals '44444444-4444-4444-4444-444444444444'
+            Get-TestPolicy -Name 'Block risky agents' -IncludeUsers 'None' -IncludeAgentIdServicePrincipals 'All' -ExcludeAgentIdServicePrincipals '44444444-4444-4444-4444-444444444444'
         }
 
         Test-MtCaGap | Should -BeFalse
@@ -178,8 +178,8 @@
 
     It 'reports user and agent gaps together' {
         Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
-            New-TestPolicy -Name 'All users MFA' -IncludeUsers 'All' -ExcludeUsers $script:BreakGlassUser
-            New-TestPolicy -Name 'Block risky agent users' -IncludeUsers 'None' -IncludeAgentUsers 'All' -ExcludeAgentUsers $script:AgentUser
+            Get-TestPolicy -Name 'All users MFA' -IncludeUsers 'All' -ExcludeUsers $script:BreakGlassUser
+            Get-TestPolicy -Name 'Block risky agent users' -IncludeUsers 'None' -IncludeAgentUsers 'All' -ExcludeAgentUsers $script:AgentUser
         }
 
         Test-MtCaGap | Should -BeFalse
