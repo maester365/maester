@@ -14,12 +14,13 @@ This is the agent companion to MT.1263, which reports medium-risk service princi
 
 1. Open the [Microsoft Entra admin center](https://entra.microsoft.com) and navigate to **ID Protection** > **Risky agents**.
 2. Locate each reported agent by its name or object ID. Start with any agent this check's result lists with a privileged role. Note the agent's **Enabled** value in the result before you change anything, so you know whether it was already disabled.
-3. Investigate the agent's risk detections, sign-in logs and audit logs, and decide whether it is compromised. If you see active misuse, **Disable** the agent first. For an agent user (Type **Agent user** in the result), also review its directory roles, group memberships and granted permissions, and remove access it doesn't need before you clear the flag.
+3. Investigate the agent's risk detections, sign-in logs and audit logs, and decide whether it is compromised. If you see active misuse, **Disable** the agent first. Disabling a blueprint principal (Type **Blueprint principal** in the result) also blocks every agent identity created from its blueprint. For an agent user (Type **Agent user** in the result), also review its directory roles, group memberships and granted permissions, and remove access it doesn't need before you clear the flag.
 4. If the agent is compromised, select **Confirm compromise**, and **Disable** the agent if you haven't already. Then follow Microsoft's [steps for responding to agent security incidents](https://learn.microsoft.com/entra/agent-id/manage-agent-identities-admin#respond-to-agent-security-incidents). To contain more than one agent, for example when the blueprint's credentials may be compromised, see [Disable or restrict agent identities](https://learn.microsoft.com/entra/agent-id/manage-agent-identities-admin#disable-or-restrict-agent-identities).
 5. When the investigation is done, clear the flag so the agent is no longer reported:
    - If the detection was a false positive, select **Confirm safe**.
    - If the activity was real but expected (a benign true positive), or a confirmed compromise has been remediated, select **Dismiss risk**.
    - If you disabled the agent during this investigation, re-enable it once it's safe to, which for a compromised agent means after credentials are rotated. Retire it instead if it's no longer needed.
+   - Before you re-enable a blueprint principal, review the agent identities created from its blueprint and disable or remove any you don't recognize.
 6. Consider a risk-based Conditional Access policy for agents ([Microsoft's template](https://aka.ms/CreateAgentRiskPolicy)) so that risky agents are blocked automatically rather than left waiting for manual review.
 
 #### Known limitations
