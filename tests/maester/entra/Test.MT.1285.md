@@ -14,15 +14,17 @@ This is the agent companion to MT.1263, which reports medium-risk service princi
 
 1. Open the [Microsoft Entra admin center](https://entra.microsoft.com) and navigate to **ID Protection** > **Risky agents**.
 2. Locate each reported agent by its name or object ID. Start with any agent listed with a privileged role.
-3. Open the agent's risk detections and investigate them: look for sign-ins or resource access the agent shouldn't make, credentials added to its blueprint, and permissions or roles the agent should not have.
+3. Investigate the agent's risk detections (also listed under **Risk detections** > **Agent detections** for up to 90 days), sign-in logs and audit logs. Look for sign-ins or resource access the agent shouldn't make, credentials added to its blueprint, and permissions or roles the agent should not have.
 4. If the agent is compromised:
-   - Disable the agent so it stops signing in while you investigate.
-   - Remove the compromised credentials from the agent identity blueprint and add new ones.
-   - Remove permissions and roles the agent doesn't need.
+   - Select **Confirm compromise**, which sets its risk level to high and triggers any risk-based Conditional Access policy that blocks high agent risk, then **Disable** the agent so it can't sign in while you remediate.
+   - Remove the compromised credentials from the agent identity blueprint and add new ones. Blueprint credentials are shared by every agent identity created from that blueprint, so if a credential was stolen, disable the agent identity blueprint principal too until the credentials are rotated.
+   - Remove permissions and roles the agent doesn't need, including permissions granted to its blueprint principal that the agent inherits.
+   - Re-enable the agent only after its credentials are rotated, or retire the agent identity if it's no longer needed.
 5. When the investigation is done, clear the flag so the agent is no longer reported:
-   - If the activity is confirmed safe, select **Confirm safe**.
-   - If the activity was expected, or a confirmed compromise has been remediated and the risk is no longer relevant, select **Dismiss risk**.
-6. Consider a risk-based Conditional Access policy for agents so that risky agents are blocked automatically rather than left waiting for manual review.
+   - If the detection was a false positive, select **Confirm safe**. This sets the risk level to none and tells ID Protection to avoid flagging similar activity.
+   - If the activity was real but expected (a benign true positive), select **Dismiss risk**, so ID Protection keeps flagging similar activity.
+   - If a confirmed compromise has been remediated and the risk is no longer relevant, select **Dismiss risk**.
+6. Consider a risk-based Conditional Access policy for agents ([Microsoft's template](https://aka.ms/CreateAgentRiskPolicy)) so that risky agents are blocked automatically rather than left waiting for manual review.
 
 #### Known limitations
 
