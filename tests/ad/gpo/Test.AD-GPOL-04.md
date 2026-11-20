@@ -1,4 +1,4 @@
-Checks individual GPO link entries for **Enforced** state. It passes when no enforced links are found and fails when any are found. Enforcement overrides **Block Inheritance** at lower levels; it does not block inheritance. A finding is a hygiene prompt to review the override, not an instruction to disable intentional enforcement.
+Checks individual GPO link entries for configured **Enforced** flags. It passes when no configured flags are found and fails when any are found, including on disabled links. Enabled enforced links override **Block Inheritance** at lower levels; disabled links do not apply and therefore do not actively override inheritance. A finding is a hygiene prompt to review the configured flag, not an instruction to disable intentional enforcement.
 
 #### Why This Test Matters
 
@@ -16,9 +16,9 @@ An enforced parent link can continue to apply settings where a lower-level OU bl
 
 #### How the Test Works
 
-The test examines each collected GPO link entry and counts entries with `IsEnforced` set to true. It passes if the count is zero and fails if one or more links are enforced. It reports total and enforced link counts and lists each enforced GPO and linked container.
+The test examines each collected GPO link entry and counts entries with `IsEnforced` set to true. It passes if the count is zero and fails if one or more flags are configured. It separately reports enabled enforcement overrides, disabled flagged links, and flagged links with unknown enabled/disabled state. Details include the GPO ID, container, and link state. This preserves the configured-flag rule rather than silently exempting disabled flags.
 
-Missing link collection or an unknown enforcement state causes an error. This check counts link entries, unlike [AD-GPOREP-14](https://maester.dev/docs/tests/AD-GPOREP-14), which reports distinct GPOs with any enforced link and always returns **Investigate**. Neither result determines whether enforcement is appropriate.
+Missing link collection or unknown enforcement state causes an error. An incomplete parsed link map cannot prove the absence of configured flags; known configured flags remain findings. This check counts link entries, unlike [AD-GPOREP-14](https://maester.dev/docs/tests/AD-GPOREP-14), which reports distinct GPOs with configured enforcement flags and always returns **Investigate**. Neither result determines whether enforcement is appropriate.
 
 #### Remediation action
 
@@ -26,9 +26,9 @@ Review each enforced link's purpose, owner, target, and settings in **Group Poli
 
 #### Related Tests
 
-- [AD-GPOL-05](https://maester.dev/docs/tests/AD-GPOL-05) reports OUs that block inheritance.
-- [AD-GPOL-02](https://maester.dev/docs/tests/AD-GPOL-02) inventories disabled link entries.
-- [AD-GPOREP-14](https://maester.dev/docs/tests/AD-GPOREP-14) inventories distinct GPOs with enforced links.
+- [AD-GPOL-05 — OUs should not block Group Policy inheritance](https://maester.dev/docs/tests/AD-GPOL-05) (`Test-MtAdGpoBlockedInheritanceCount`) reports OUs whose inheritance blocks may be overridden by enforced links.
+- [AD-GPOL-02 — Disabled GPO link inventory](https://maester.dev/docs/tests/AD-GPOL-02) (`Test-MtCheckADGPOL02`) inventories disabled link entries, a separate link state.
+- [AD-GPOREP-14 — GPOs with enforced links should be investigated](https://maester.dev/docs/tests/AD-GPOREP-14) (`Test-MtAdGpoEnforcementCount`) inventories distinct GPOs with enforced links rather than assessing each link entry for failure.
 
 #### Related links
 

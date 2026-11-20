@@ -45,9 +45,9 @@ before deciding whether collection access is the cause.
 
 #### Related Tests
 
-- `AD-GPOREP-01` checks for permission entries generally.
-- `AD-GPOREP-03` and `AD-GPOREP-06` assess other read-principal entries; they are
-  separate checks and do not calculate effective access.
+- [AD-GPOREP-01 — No GPO should have an empty permissions list](https://maester.dev/docs/tests/AD-GPOREP-01) (`Test-MtAdGpoNoPermissionsCount`) checks for permission entries generally.
+- [AD-GPOREP-03 — GPOs should include Authenticated Users permissions](https://maester.dev/docs/tests/AD-GPOREP-03) (`Test-MtAdGpoNoAuthenticatedUsersCount`) assesses a different read-principal entry.
+- [AD-GPOREP-06 — GPOs should include Domain Computers or Authenticated Users permissions](https://maester.dev/docs/tests/AD-GPOREP-06) (`Test-MtAdGpoNoDomainComputersCount`) assesses other read-principal entries; these are separate checks and do not calculate effective access.
 
 #### Related links
 

@@ -172,6 +172,44 @@ Describe 'Active Directory GPO permissions' {
     }
 
     Context 'GPO version and SYSVOL collection' {
+        It 'treats whitespace-only link attributes as a complete empty map' {
+            $script:testGpos = @(New-TestGpo -PermissionProfile 'Default')
+            Mock Get-MtLdapGpoLink -ModuleName Maester -RemoveParameterType Connection {
+                [pscustomobject]@{ DistinguishedName = 'OU=Empty,DC=contoso,DC=com'; ObjectClass = @('organizationalUnit'); GpLink = '   ' }
+            }
+            $state = Get-MtADGpoState
+            $state.GPOLinksComplete | Should -BeTrue
+            @($state.GPOLinks) | Should -HaveCount 0
+            $state.GPOReports[0].Enforcement | Should -BeFalse
+            $state.GPOReports[0].DisabledLinks | Should -Be 0
+        }
+
+        It 'marks <Location> malformed link data incomplete without losing valid entries: <Malformed>' -ForEach @(
+            @{ Location = 'Domain'; Malformed = '[LDAP://CN=NoGuid,DC=contoso,DC=com;2]' }
+            @{ Location = 'Site'; Malformed = '[LDAP://CN=NoGuid,DC=contoso,DC=com;2]' }
+            @{ Location = 'Domain'; Malformed = 'unparsed non-whitespace' }
+            @{ Location = 'Site'; Malformed = 'unparsed non-whitespace' }
+            @{ Location = 'Domain'; Malformed = '[LDAP://CN={11111111-1111-1111-1111-111111111111},DC=contoso,DC=com;999999999999999999999]' }
+            @{ Location = 'Site'; Malformed = '[LDAP://CN={11111111-1111-1111-1111-111111111111},DC=contoso,DC=com;not-a-number]' }
+            @{ Location = 'Domain'; Malformed = '[LDAP://CN={11111111-1111-1111-1111-111111111111},DC=contoso,DC=com;4]' }
+        ) {
+            $script:testGpos = @((New-TestGpo -PermissionProfile 'Default'), (New-TestGpo -PermissionProfile 'Default'))
+            $script:linkText = "[LDAP://CN={$($script:testGpos[0].Id)},CN=Policies,DC=contoso,DC=com;3]$Malformed"
+            if ($Location -eq 'Domain') {
+                Mock Get-MtLdapGpoLink -ModuleName Maester -RemoveParameterType Connection { [pscustomobject]@{ DistinguishedName = 'OU=Test,DC=contoso,DC=com'; ObjectClass = @('organizationalUnit'); GpLink = $script:linkText } }
+            }
+            else {
+                Mock Get-MtLdapSiteContainer -ModuleName Maester -RemoveParameterType Connection { [pscustomobject]@{ DistinguishedName = 'CN=TestSite,CN=Sites,CN=Configuration,DC=contoso,DC=com'; ObjectClass = @('site'); GpLink = $script:linkText } }
+            }
+            $state = Get-MtADGpoState
+            $state.GPOLinksComplete | Should -BeFalse
+            @($state.GPOLinks) | Should -HaveCount 1
+            $state.GPOReports[0].Enforcement | Should -BeTrue
+            $state.GPOReports[0].DisabledLinks | Should -Be 1
+            $null -eq $state.GPOReports[1].Enforcement | Should -BeTrue
+            $null -eq $state.GPOReports[1].DisabledLinks | Should -BeTrue
+        }
+
         It 'exposes directory and SYSVOL versions' {
             $script:testGpos = @(New-TestGpo -PermissionProfile 'Default')
             Mock Get-MtSysvolContent -ModuleName Maester {
@@ -214,6 +252,7 @@ Describe 'Active Directory GPO permissions' {
         It 'keeps combined links unavailable if site collection fails' {
             Mock Get-MtLdapSiteContainer -ModuleName Maester -RemoveParameterType Connection { throw 'access denied' }
             $null -eq (Get-MtADGpoState).GPOLinks | Should -BeTrue
+            (Get-MtADGpoState).GPOLinksComplete | Should -BeFalse
         }
 
         It 'requires explicit application rights rather than generic administrative grants' -ForEach @(

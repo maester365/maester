@@ -2,16 +2,31 @@
     <#
     .SYNOPSIS
     Inventories disabled user, computer or both GPO settings.
+
     .DESCRIPTION
     Combines category counts and policy details. Numeric and named statuses are
     matched exactly; unknown statuses remain visible and never count as enabled.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPOS-04'
+
+    Inventories disabled settings and unknown statuses for investigation.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOS-04
     #>
     [MaesterTest(
-        Id = 'AD-GPOS-04', Title = 'Disabled GPO settings should be investigated',
-        Product = 'ad', Feature = 'group-policy', Area = 'infrastructure',
-        ResourceType = 'GroupPolicy', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOS-04',
+        Title              = 'Disabled GPO settings should be investigated',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'infrastructure',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Info',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

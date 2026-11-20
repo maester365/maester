@@ -49,7 +49,10 @@ Describe 'Merged AD Group Policy checks' {
         $script:report.CpasswordFound = $true
         $script:report.DefaultPasswordFound = $true
         InModuleScope Maester { Test-MtAdGpoCpasswordFoundCount | Should -BeFalse }
-        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match '1 of 1 GPOs expose passwords' }
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter {
+            $Result -match '1 of 1 GPOs expose passwords' -and
+            [regex]::Matches($Result, '(?m)^\| Example &#124; GPO \|').Count -eq 1
+        }
     }
 
     It 'does not hide a known secret behind another incomplete scan' {

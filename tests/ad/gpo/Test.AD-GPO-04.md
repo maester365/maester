@@ -20,7 +20,7 @@ The test compares each collected GPO identifier with GUID references from collec
 
 Any GPO without a collected link reference fails the test. It passes when all collected GPOs have at least one reference, without asserting that those links are enabled or effective.
 
-Missing GPO or link collection, or a GPO without an identifier, causes an error rather than a clean result. The test does not calculate resultant policy or determine whether any referenced GPO is enabled or effective.
+Missing GPO or link collection, an incomplete parsed link map, or a GPO without an identifier causes an error rather than a clean result. A skipped malformed target could otherwise make a linked policy appear unlinked. The test does not calculate resultant policy or determine whether any referenced GPO is enabled or effective.
 
 #### Remediation action
 
@@ -30,9 +30,9 @@ Missing GPO or link collection, or a GPO without an identifier, causes an error 
 
 #### Related Tests
 
-- [AD-GPO-01](https://maester.dev/docs/tests/AD-GPO-01) reports the total GPO inventory.
-- [AD-GPOL-01](https://maester.dev/docs/tests/AD-GPOL-01) counts distinct GPOs with an enabled link.
-- [AD-GPOL-03](https://maester.dev/docs/tests/AD-GPOL-03) inventories targets without a direct link.
+- [AD-GPO-01 — GPO inventory should be investigated](https://maester.dev/docs/tests/AD-GPO-01) (`Test-MtAdGpoTotalCount`) reports the total GPO inventory for context.
+- [AD-GPOL-01 — GPOs with enabled links should be investigated](https://maester.dev/docs/tests/AD-GPOL-01) (`Test-MtAdGpoLinkedCount`) counts distinct GPOs with an enabled link, unlike this test's reference check.
+- [AD-GPOL-03 — Direct GPO link coverage should be investigated](https://maester.dev/docs/tests/AD-GPOL-03) (`Test-MtAdGpoUnlinkedTargetCount`) inventories targets without a direct link rather than GPOs without any collected link reference.
 
 #### Related links
 

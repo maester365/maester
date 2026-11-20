@@ -22,6 +22,10 @@ exceptions.
 
 #### How the Test Works
 
+When malformed targets make `GPOLinksComplete` false, only observed parsed-link
+counts are reported. The partial inventory remains **Investigate**, and zero known
+disabled links is not presented as proof that all links are enabled.
+
 - Reads the cached GPO link and policy inventory and counts link entries by
   enabled or disabled state.
 - Reports each disabled link with its GPO and linked container. Links that are
@@ -41,9 +45,10 @@ exceptions.
 
 #### Related Tests
 
-- `AD-GPOL-02` reports the same disabled-link inventory with its default outcome.
-- `AD-GPOL-01` inventories enabled links; `AD-GPOL-03` inventories direct link
-  coverage. `AD-GPOREP-14` inventories policies with enforced links.
+- [AD-GPOL-02 — Disabled GPO link inventory](https://maester.dev/docs/tests/AD-GPOL-02) (`Test-MtCheckADGPOL02`) reports the same disabled-link inventory as Passed rather than Investigate.
+- [AD-GPOL-01 — GPOs with enabled links should be investigated](https://maester.dev/docs/tests/AD-GPOL-01) (`Test-MtAdGpoLinkedCount`) inventories enabled links.
+- [AD-GPOL-03 — Direct GPO link coverage should be investigated](https://maester.dev/docs/tests/AD-GPOL-03) (`Test-MtAdGpoUnlinkedTargetCount`) inventories direct link coverage across targets.
+- [AD-GPOREP-14 — GPOs with enforced links should be investigated](https://maester.dev/docs/tests/AD-GPOREP-14) (`Test-MtAdGpoEnforcementCount`) inventories policies with enforced links.
 
 #### Related links
 

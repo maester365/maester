@@ -16,6 +16,10 @@ Link inventory helps administrators understand where policies are configured to 
 
 #### How the Test Works
 
+If a malformed link makes the parsed map incomplete, known enabled-link matches
+are still listed, but the count of GPOs without enabled links is **Unknown**. The
+summary explicitly marks this as a partial inventory rather than a clean result.
+
 The test uses collected GPO and link data, identifies link entries with enabled state, and counts each distinct GPO once when it has at least one enabled link. It reports total GPOs, the count with enabled links, and the count without them; GPOs with enabled links are listed when present.
 
 Missing inventory or link data, an unknown GPO identifier, or an unknown link state causes an error. The test does not evaluate security filtering, WMI query results, inheritance, or resultant policy. An enabled link is not proof of application.
@@ -26,9 +30,9 @@ Review policies with and without enabled links against their intended scope. Bef
 
 #### Related Tests
 
-- [AD-GPO-01](https://maester.dev/docs/tests/AD-GPO-01) reports the total GPO inventory.
-- [AD-GPO-04](https://maester.dev/docs/tests/AD-GPO-04) identifies GPOs without any collected link reference, including disabled references.
-- [AD-GPOL-02](https://maester.dev/docs/tests/AD-GPOL-02) inventories disabled link entries.
+- [AD-GPO-01 — GPO inventory should be investigated](https://maester.dev/docs/tests/AD-GPO-01) (`Test-MtAdGpoTotalCount`) reports the total GPO inventory for context.
+- [AD-GPO-04 — GPOs should have at least one link](https://maester.dev/docs/tests/AD-GPO-04) (`Test-MtAdGpoUnlinkedCount`) identifies GPOs without any collected link reference, including disabled references.
+- [AD-GPOL-02 — Disabled GPO link inventory](https://maester.dev/docs/tests/AD-GPOL-02) (`Test-MtCheckADGPOL02`) inventories disabled link entries rather than distinct GPOs with enabled links.
 
 #### Related links
 

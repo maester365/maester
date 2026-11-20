@@ -2,16 +2,31 @@
     <#
     .SYNOPSIS
     Inventories distinct GPO owners and the policies owned by each.
+
     .DESCRIPTION
     Combines the owner count and grouped details. Unresolved owners are listed
     separately and are not counted as an additional known owner.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPOS-08'
+
+    Inventories GPO owners and unresolved ownership for investigation.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOS-08
     #>
     [MaesterTest(
-        Id = 'AD-GPOS-08', Title = 'GPO owners should be investigated',
-        Product = 'ad', Feature = 'group-policy', Area = 'access-control',
-        ResourceType = 'GroupPolicy', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOS-08',
+        Title              = 'GPO owners should be investigated',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'access-control',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Info',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

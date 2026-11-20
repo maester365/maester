@@ -17,6 +17,10 @@ does not establish risk or justify removing the flag.
 
 #### Security Recommendation
 
+This inventory counts configured enforcement flags, including flags on disabled
+links. Only enabled links actively apply policy and override Block Inheritance;
+review link state before interpreting a configured flag as an active override.
+
 Review each enforced link's owner, target, and policy purpose. Confirm that the
 override matches the intended design and document why it is needed before making
 any change to link enforcement.
@@ -26,7 +30,9 @@ any change to link enforcement.
 - Uses the cached GPO and link inventories to count distinct GPOs with one or more
   enforced links, rather than counting individual links.
 - A policy with no links is known to have no enforced link when the inventory
-  confirms that state. Missing or incomplete link data remains unknown.
+  confirms that state. `GPOLinksComplete = false` prevents an absent parsed match
+  from being treated as conclusive. A known configured flag still proves presence.
+  Missing or incomplete link data otherwise remains unknown.
 - Reports policies with enforced or unknown state. Failed GPO metadata collection
   is an error; unknown enforcement remains visible in the **Investigate** result.
 - `AD-GPOL-04` evaluates individual enforced links and fails when any are found;
@@ -42,10 +48,9 @@ blindly. Investigate any unknown enforcement state.
 
 #### Related Tests
 
-- `AD-GPOL-04` evaluates enforced link entries; `AD-GPOL-05` inventories OUs that
-  block inheritance.
-- `AD-GPOREP-12` inventories disabled links, including links that may also be
-  enforced.
+- [AD-GPOL-04 — GPO links should not use enforcement](https://maester.dev/docs/tests/AD-GPOL-04) (`Test-MtAdGpoEnforcedCount`) evaluates individual enforced link entries and fails when any are found.
+- [AD-GPOL-05 — OUs should not block Group Policy inheritance](https://maester.dev/docs/tests/AD-GPOL-05) (`Test-MtAdGpoBlockedInheritanceCount`) inventories OUs that block inheritance.
+- [AD-GPOREP-12 — Review disabled GPO links](https://maester.dev/docs/tests/AD-GPOREP-12) (`Test-MtCheckADGPOREP12`) inventories disabled links, including links that may also be enforced.
 
 #### Related links
 

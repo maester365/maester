@@ -2,18 +2,33 @@
     <#
     .SYNOPSIS
     Checks for exposed secrets in Group Policy files.
+
     .DESCRIPTION
     Flags either Group Policy Preferences cpassword or default passwords, including cases with only one finding type. Never includes credential values.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPOREP-17'
+
+    Fails when scanned GPO files expose cpassword or default passwords.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-17
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-17', Title = 'No GPO should expose cpassword or default passwords',
-        Product = 'ad', Feature = 'group-policy', Area = 'authentication',
-        ResourceType = 'GroupPolicy', Severity = 'Critical', UserImpact = 'Low',
-        ImplementationCost = 'Medium', Mitre = ('T1552.001', 'T1552.006'),
-        Control = ('nist-800-53-r5:IA-5(1)', 'nist-800-53-r5:SC-28'),
-        Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOREP-17',
+        Title              = 'No GPO should expose cpassword or default passwords',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'authentication',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Critical',
+        UserImpact         = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre              = ('T1552.001', 'T1552.006'),
+        Control            = ('nist-800-53-r5:IA-5(1)', 'nist-800-53-r5:SC-28'),
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

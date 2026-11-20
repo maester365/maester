@@ -69,16 +69,17 @@ jobs:
             exit 0
           }
 
-          $changed = gh api "repos/$env:REPO/pulls/$env:PR_NUMBER/files" --paginate --jq '.[] | select(.status != "removed") | .filename'
+          $changed = @(gh api "repos/$env:REPO/pulls/$env:PR_NUMBER/files" --paginate --jq '.[] | {status, filename, previous_filename} | @json' | ForEach-Object { $_ | ConvertFrom-Json })
           if ($LASTEXITCODE -ne 0) { throw 'Could not list the files of the pull request.' }
 
-          # Test files only, with plain path characters, so a file name cannot point outside the temp folder.
-          $tests = @($changed | Where-Object { $_ -match '^tests/[A-Za-z0-9._/-]+/Test\.[A-Za-z0-9._-]+\.(ps1|md)$' -and $_ -notmatch '\.\.' })
-          if ($tests.Count -gt 400) { throw "The pull request changes $($tests.Count) test files, more than this job downloads. Ask a maintainer to review the attributes." }
+          # Keep deleted and renamed-old paths for the related-test index; download only paths present at head.
+          . ./build/review/Get-MtReviewPullRequestFile.ps1
+          $tests = Get-MtReviewPullRequestFile -Changed $changed
 
           $head = Join-Path $env:RUNNER_TEMP 'pr-head'
+          $null = New-Item -ItemType Directory -Path $head -Force
           $headers = @{ Authorization = "Bearer $env:GH_TOKEN"; Accept = 'application/vnd.github.raw'; 'X-GitHub-Api-Version' = '2022-11-28' }
-          foreach ($path in $tests) {
+          foreach ($path in $tests.Download) {
             $target = Join-Path $head $path
             $null = New-Item -ItemType Directory -Path (Split-Path $target) -Force
             $encoded = ($path -split '/' | ForEach-Object { [uri]::EscapeDataString($_) }) -join '/'
@@ -87,9 +88,9 @@ jobs:
             if ((Get-Item -LiteralPath $target).Length -gt 512KB) { throw "$path is larger than 512 KB." }
           }
 
-          $tests | Set-Content (Join-Path $env:RUNNER_TEMP 'pr-files.txt')
-          "count=$($tests.Count)" >> $env:GITHUB_OUTPUT
-          Write-Host "Downloaded $($tests.Count) test file(s)."
+          $tests.Review | Set-Content (Join-Path $env:RUNNER_TEMP 'pr-files.txt')
+          "count=$($tests.Review.Count)" >> $env:GITHUB_OUTPUT
+          Write-Host "Downloaded $($tests.Download.Count) test file(s); listed $($tests.Review.Count) for review."
 
       - name: Review the attributes against the rubric
         id: review

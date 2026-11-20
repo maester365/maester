@@ -20,6 +20,9 @@
     requirement relates to. Benchmark is null for every other test. Frameworks at the top level gives the Name,
     Version and Url of each framework by Key.
 
+    TestReplacements maps retired native test IDs to surviving checks so the website
+    preserves their historical test-page URLs after consolidation.
+
     Packs lists the packs that ship with Maester (packs/<name>/maester-pack.json) with the tests of their catalog,
     such as the Zero Trust Assessment's, so the site can show them beside the built-in checks. The Taxonomy names
     the keys and techniques that the packs' tests use as well.
@@ -162,7 +165,10 @@ $frameworks = @([System.Linq.Enumerable]::OrderBy([object[]]$declared, [Func[obj
         [ordered]@{ Key = $_.Key; Name = $_.Name; Version = $_.Version; Url = $_.Url }
     })
 
-$json = ConvertTo-Json -InputObject ([ordered]@{ Taxonomy = $taxonomy; Frameworks = $frameworks; Packs = @($packs); Tests = @($catalog) }) -Depth 6
+$replacements = Import-PowerShellDataFile -LiteralPath (Join-Path $repoRoot 'build/golden/native-test-replacements.psd1')
+$orderedReplacements = [ordered]@{}
+foreach ($id in ($replacements.Keys | Sort-Object)) { $orderedReplacements[$id] = $replacements[$id] }
+$json = ConvertTo-Json -InputObject ([ordered]@{ Taxonomy = $taxonomy; Frameworks = $frameworks; Packs = @($packs); Tests = @($catalog); TestReplacements = $orderedReplacements }) -Depth 6
 $json = $json.Replace("`r`n", "`n") + "`n"
 $outDir = Split-Path $OutputPath -Parent
 if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir -Force | Out-Null }

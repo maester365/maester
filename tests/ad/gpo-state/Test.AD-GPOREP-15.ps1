@@ -2,16 +2,32 @@
     <#
     .SYNOPSIS
     Checks for mismatched Active Directory and SYSVOL GPO versions.
+
     .DESCRIPTION
     Lists policies with differing directory and GPT.INI versions; incomplete comparisons are errors.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPOREP-15'
+
+    Fails when directory and SYSVOL versions differ for a GPO.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-15
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-15', Title = 'GPO directory and SYSVOL versions should match',
-        Product = 'ad', Feature = 'group-policy', Area = 'infrastructure',
-        ResourceType = 'GroupPolicy', Severity = 'Low', UserImpact = 'Low',
-        ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOREP-15',
+        Title              = 'GPO directory and SYSVOL versions should match',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'infrastructure',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Low',
+        UserImpact         = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

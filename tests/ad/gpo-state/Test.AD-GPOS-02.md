@@ -26,9 +26,9 @@ Review each reported filter's query and intended scope with its owner. Confirm t
 
 #### Related Tests
 
-- [AD-GPOL-01](https://maester.dev/docs/tests/AD-GPOL-01) inventories GPOs with enabled links.
-- [AD-GPOS-04](https://maester.dev/docs/tests/AD-GPOS-04) inventories disabled user or computer settings.
-- [AD-GPOREP-10](https://maester.dev/docs/tests/AD-GPOREP-10) checks explicit Apply Group Policy entries, another aspect of policy targeting.
+- [AD-GPOL-01 — GPOs with enabled links should be investigated](https://maester.dev/docs/tests/AD-GPOL-01) (`Test-MtAdGpoLinkedCount`) inventories GPOs with enabled links, one part of policy targeting.
+- [AD-GPOS-04 — Disabled GPO settings should be investigated](https://maester.dev/docs/tests/AD-GPOS-04) (`Test-MtAdGpoSettingsDisabledCount`) inventories disabled user or computer settings separately from WMI filter references.
+- [AD-GPOREP-10 — GPOs should have an Apply Group Policy allow entry](https://maester.dev/docs/tests/AD-GPOREP-10) (`Test-MtAdGpoNoApplyGroupPolicyAceCount`) checks explicit Apply Group Policy entries, another aspect of policy targeting.
 
 #### Related links
 

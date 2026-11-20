@@ -16,11 +16,11 @@ Policies that have not changed for a long time may preserve obsolete settings or
 
 #### How the Test Works
 
-The test compares each collected GPO's `ModificationTime` with the current date minus `MaximumAgeYears` (five years by default). A modification exactly on the cutoff is within the limit. It reports the total, stale count, cutoff, and each policy's creation and modification dates and assessment. An old creation date alone does not fail a recently modified GPO.
+The test compares each collected GPO's `ModificationTime` with the current UTC date minus `MaximumModificationAgeYears` (five years by default). A modification exactly on the UTC cutoff is within the limit. It reports the total, stale count, cutoff, and each policy's creation and modification dates and assessment. An old creation date alone does not fail a recently modified GPO.
 
 An empty or unavailable GPO inventory, or a missing modification date, causes an error because age cannot be assessed. The source modification timestamp is LDAP `whenChanged`, which is specific to the queried domain controller and can reflect metadata or ACL changes as well as policy changes. It is not a complete history of policy-setting changes.
 
-Configure `MaximumAgeYears` under `TestSettings` > `Parameters` for `AD-GPO-02` in
+Configure `MaximumModificationAgeYears` under `TestSettings` > `Parameters` for `AD-GPO-02` in
 `maester-config.json`, or pass it through `Invoke-MtTest -Parameter`.
 
 #### Remediation action
@@ -31,9 +31,9 @@ Configure `MaximumAgeYears` under `TestSettings` > `Parameters` for `AD-GPO-02` 
 
 #### Related Tests
 
-- [AD-GPO-01](https://maester.dev/docs/tests/AD-GPO-01) reports the total GPO inventory.
-- [AD-GPO-04](https://maester.dev/docs/tests/AD-GPO-04) identifies GPOs without collected link references.
-- [AD-GPOL-01](https://maester.dev/docs/tests/AD-GPOL-01) inventories GPOs with enabled links.
+- [AD-GPO-01 — GPO inventory should be investigated](https://maester.dev/docs/tests/AD-GPO-01) (`Test-MtAdGpoTotalCount`) reports the total GPO inventory for context.
+- [AD-GPO-04 — GPOs should have at least one link](https://maester.dev/docs/tests/AD-GPO-04) (`Test-MtAdGpoUnlinkedCount`) identifies GPOs without collected link references; it does not assess modification age.
+- [AD-GPOL-01 — GPOs with enabled links should be investigated](https://maester.dev/docs/tests/AD-GPOL-01) (`Test-MtAdGpoLinkedCount`) inventories GPOs with enabled links.
 
 #### Related links
 

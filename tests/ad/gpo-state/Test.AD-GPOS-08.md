@@ -26,9 +26,9 @@ Review each known owner and the policies assigned to them. Resolve unknown owner
 
 #### Related Tests
 
-- [AD-GPO-01](https://maester.dev/docs/tests/AD-GPO-01) reports the total GPO inventory.
-- [AD-GPO-02](https://maester.dev/docs/tests/AD-GPO-02) identifies policies whose last modification exceeds the configured age limit.
-- [AD-GPOREP-09](https://maester.dev/docs/tests/AD-GPOREP-09) checks inherited permission entries, which can affect GPO delegation.
+- [AD-GPO-01 — GPO inventory should be investigated](https://maester.dev/docs/tests/AD-GPO-01) (`Test-MtAdGpoTotalCount`) reports the total GPO inventory for context.
+- [AD-GPO-02 — GPOs should be modified within the configured age limit](https://maester.dev/docs/tests/AD-GPO-02) (`Test-MtAdGpoStale`) identifies policies whose last modification exceeds the configured age limit.
+- [AD-GPOREP-09 — GPOs should not inherit permission entries](https://maester.dev/docs/tests/AD-GPOREP-09) (`Test-MtAdGpoInheritedPermissionsCount`) checks inherited permission entries, which can affect GPO delegation.
 
 #### Related links
 

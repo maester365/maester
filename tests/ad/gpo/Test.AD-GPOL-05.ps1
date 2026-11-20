@@ -2,17 +2,33 @@
     <#
     .SYNOPSIS
     Checks that OUs do not block GPO inheritance.
+
     .DESCRIPTION
     Fails when gpOptions equals 1 on an OU. An unset gpOptions attribute uses the
     default (inheritance enabled); failed container collection is not a clean pass.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPOL-05'
+
+    Fails when a collected OU blocks Group Policy inheritance.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOL-05
     #>
     [MaesterTest(
-        Id = 'AD-GPOL-05', Title = 'OUs should not block Group Policy inheritance',
-        Product = 'ad', Feature = 'group-policy', Area = 'infrastructure',
-        ResourceType = 'OrganizationalUnit', Severity = 'Medium', UserImpact = 'Low',
-        ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOL-05',
+        Title              = 'OUs should not block Group Policy inheritance',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'infrastructure',
+        ResourceType       = 'OrganizationalUnit',
+        Severity           = 'Low',
+        UserImpact         = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

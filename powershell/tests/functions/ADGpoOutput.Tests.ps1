@@ -1,9 +1,9 @@
 ﻿BeforeDiscovery {
     $guideRoot = (Resolve-Path "$PSScriptRoot/../../../tests/ad").Path
-    $guideCases = @(Get-ChildItem "$guideRoot/gpo", "$guideRoot/gpo-state" -Filter 'Test.*.md' -File | ForEach-Object {
-            @{ GuidePath = $_.FullName; GuideName = $_.Name }
+    $script:guideCases = @(Get-ChildItem "$guideRoot/gpo", "$guideRoot/gpo-state" -Filter 'Test.*.md' -File | ForEach-Object {
+            @{ GuidePath = $_.FullName; GuideName = $_.Name; TestPath = [System.IO.Path]::ChangeExtension($_.FullName, '.ps1'); TestId = $_.BaseName.Substring(5) }
         })
-    $checks = @(
+    $script:checks = @(
         @{ Command = 'Test-MtAdGpoTotalCount'; Investigate = $true; Details = $false }
         @{ Command = 'Test-MtAdGpoStale'; Investigate = $false; Details = $true }
         @{ Command = 'Test-MtAdGpoUnlinkedCount'; Investigate = $false; Details = $false }
@@ -34,13 +34,13 @@ BeforeAll {
 }
 
 Describe 'Group Policy guide context' {
-    It 'discovers the complete set of Group Policy guides' -ForEach @(@{ DiscoveredCount = $guideCases.Count }) {
+    It 'discovers the complete set of Group Policy guides' -ForEach @(@{ DiscoveredCount = $script:guideCases.Count }) {
         $DiscoveredCount | Should -Be 22
         $paths = Get-ChildItem "$PSScriptRoot/../../../tests/ad/gpo", "$PSScriptRoot/../../../tests/ad/gpo-state" -Filter 'Test.*.md' -File
         $paths.Count | Should -Be 22
     }
 
-    It '<GuideName> retains explanatory context and the results footer' -ForEach $guideCases {
+    It '<GuideName> retains explanatory context and the results footer' -ForEach $script:guideCases {
         $text = Get-Content -LiteralPath $GuidePath -Raw
         $text.Split([string[]]@('####'), [System.StringSplitOptions]::None)[0].Trim() | Should -Not -BeNullOrEmpty
         foreach ($heading in 'Control Type', 'Why This Test Matters', 'Security Recommendation', 'How the Test Works', 'Remediation action', 'Related Tests', 'Related links') {
@@ -55,6 +55,46 @@ Describe 'Group Policy guide context' {
         $ids = @((Get-ChildItem "$PSScriptRoot/../../../tests/ad/gpo", "$PSScriptRoot/../../../tests/ad/gpo-state" -Filter 'Test.*.md' -File).BaseName | ForEach-Object { $_.Substring(5) })
         foreach ($id in [regex]::Matches($text, 'AD-GPO(?:REP|L|S)?-\d+') | ForEach-Object Value) {
             $ids | Should -Contain $id -Because 'related test references must not point at retired IDs'
+        }
+    }
+
+    It '<GuideName> documents each related test with its name, ID and relationship' -ForEach $script:guideCases {
+        $text = Get-Content -LiteralPath $GuidePath -Raw
+        $related = [regex]::Match($text, '(?ms)^#### Related Tests\s*\r?\n(?<body>.*?)(?=^#### |\z)').Groups['body'].Value
+        $entries = [regex]::Matches($related, '(?ms)^- (?<entry>.*?)(?=^- |\z)')
+        $entries.Count | Should -BeGreaterThan 0
+        foreach ($entry in $entries) {
+            $value = $entry.Groups['entry'].Value.Trim()
+            $ids = [regex]::Matches($value, 'AD-GPO(?:REP|L|S)?-\d+') | ForEach-Object Value | Select-Object -Unique
+            @($ids).Count | Should -Be 1 -Because 'each related test needs its own complete entry'
+            $id = @($ids)[0]
+            $path = Get-ChildItem "$PSScriptRoot/../../../tests/ad/gpo", "$PSScriptRoot/../../../tests/ad/gpo-state" -Filter "Test.$id.ps1" -File | Select-Object -First 1
+            $source = Get-Content -LiteralPath $path.FullName -Raw
+            $name = [regex]::Match($source, '(?m)^function\s+(\S+)\s*\{').Groups[1].Value
+            $title = [regex]::Match($source, "\bTitle\s*=\s*'([^']+)'").Groups[1].Value
+            $value | Should -Match ([regex]::Escape($name))
+            $value | Should -Match ([regex]::Escape($title))
+            $value | Should -Match ([regex]::Escape('`' + $name + '`') + '\)\s+(?:—\s*)?\S.+') -Because 'the reference must explain its relationship after the function name'
+        }
+    }
+
+    It '<TestId> retains examples, a test-page link and readable metadata formatting' -ForEach $script:guideCases {
+        $tokens = $null
+        $errors = $null
+        $ast = [System.Management.Automation.Language.Parser]::ParseFile($TestPath, [ref]$tokens, [ref]$errors)
+        $errors | Should -BeNullOrEmpty
+        $function = $ast.Find({ param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
+        $function.GetHelpContent().Examples.Count | Should -BeGreaterThan 0
+        $source = Get-Content -LiteralPath $TestPath -Raw
+        $source | Should -Match ([regex]::Escape("Invoke-MtTest -Id '$TestId'"))
+        $source | Should -Match '(?im)^\s*\.LINK\s*$'
+        $source | Should -Match ([regex]::Escape("https://maester.dev/docs/tests/$TestId"))
+        $attribute = $ast.Find({ param($node) $node -is [System.Management.Automation.Language.AttributeAst] -and $node.TypeName.FullName -eq 'MaesterTest' }, $true)
+        $lines = @($attribute.NamedArguments | ForEach-Object { $_.Extent.StartLineNumber })
+        @($lines | Select-Object -Unique).Count | Should -Be $lines.Count -Because 'each named attribute must start on its own line'
+        foreach ($argument in $attribute.NamedArguments) {
+            $line = (Get-Content -LiteralPath $TestPath)[$argument.Extent.StartLineNumber - 1]
+            $line | Should -Match '^        \w+\s+=\s+'
         }
     }
 }
@@ -102,7 +142,7 @@ Describe 'Native Group Policy results' {
         }
     }
 
-    It '<Command> uses the common layout without empty detail tables' -ForEach $checks {
+    It '<Command> uses the common layout without empty detail tables' -ForEach $script:checks {
         InModuleScope Maester -Parameters @{ Command = $Command } { param($Command) & $Command | Should -BeTrue }
         $script:detail.Investigate | Should -Be $Investigate
         $script:detail.Result | Should -Match '\| Metric \| Value \|'
@@ -189,7 +229,11 @@ Describe 'Native Group Policy results' {
 
     It 'errors rather than reporting zero when link collection failed' -ForEach @('Test-MtAdGpoLinkedCount', 'Test-MtAdGpoEnforcedCount') {
         $script:state.GPOLinks = $null
-        InModuleScope Maester -Parameters @{ Command = $_ } { param($Command) { & $Command } | Should -Throw '*could not be collected*' }
+        InModuleScope Maester -Parameters @{ Command = $_ } {
+            param($Command)
+            $script:commandUnderTest = $Command
+            { & $script:commandUnderTest } | Should -Throw '*could not be collected*'
+        }
     }
 
     It 'does not treat unknown enforcement as zero in the GPO inventory' {
@@ -233,6 +277,52 @@ Describe 'Native Group Policy results' {
         $script:detail.Result | Should -Match 'GPOs with enforced links \| 1'
     }
 
+    It 'treats incomplete maps as unknown unless a known enforced link proves the finding' {
+        $script:state | Add-Member -NotePropertyName GPOLinksComplete -NotePropertyValue $false
+        InModuleScope Maester { Test-MtAdGpoEnforcementCount | Should -BeTrue }
+        $script:detail.Result | Should -Match 'GPOs with unknown enforcement \| 1'
+        $script:state.GPOLinks[0].IsEnforced = $true
+        InModuleScope Maester { Test-MtAdGpoEnforcementCount | Should -BeTrue }
+        $script:detail.Result | Should -Match 'GPOs with enforced links \| 1'
+        $script:detail.Result | Should -Match 'GPOs with unknown enforcement \| 0'
+    }
+
+    It 'preserves OU metrics when site collection alone failed' {
+        $script:state.SiteContainers = $null
+        InModuleScope Maester { Test-MtAdGpoUnlinkedTargetCount | Should -BeTrue }
+        $script:detail.Investigate | Should -BeTrue
+        $script:detail.Result | Should -Match 'Partial inventory'
+        $script:detail.Result | Should -Match 'OUs with direct links \| 1'
+        $script:detail.Result | Should -Match 'Total sites \| Unknown'
+        $script:detail.Result | Should -Match 'Targets without direct links \| Unknown'
+    }
+
+    It 'distinguishes configured disabled flags from enabled enforcement overrides' -ForEach @(
+        @{ Options = 2; Disabled = $false; State = 'Enabled'; Active = 1 }
+        @{ Options = 3; Disabled = $true; State = 'Disabled'; Active = 0 }
+    ) {
+        $script:state.GPOLinks[0].IsEnforced = $true
+        $script:state.GPOLinks[0].IsDisabled = $Disabled
+        $script:state.GPOLinks[0] | Add-Member -NotePropertyName Options -NotePropertyValue $Options
+        InModuleScope Maester { Test-MtAdGpoEnforcedCount | Should -BeFalse }
+        $script:detail.Result | Should -Match "Enabled enforcement overrides \| $Active"
+        $script:detail.Result | Should -Match "\| $State \|"
+        $script:detail.Result | Should -Match 'Disabled links do not actively override inheritance'
+    }
+
+    It 'does not declare missing links or absent enforcement from incomplete maps' {
+        $script:state | Add-Member -NotePropertyName GPOLinksComplete -NotePropertyValue $false
+        InModuleScope Maester { { Test-MtAdGpoUnlinkedCount } | Should -Throw '*incomplete*' }
+        InModuleScope Maester { { Test-MtAdGpoEnforcedCount } | Should -Throw '*incomplete*' }
+        InModuleScope Maester { Test-MtAdGpoLinkedCount | Should -BeTrue }
+        $script:detail.Result | Should -Match 'Partial link inventory'
+        $script:detail.Result | Should -Match 'GPOs without enabled links \| Unknown'
+        InModuleScope Maester { Test-MtCheckADGPOL02 | Should -BeTrue }
+        $script:detail.Investigate | Should -BeTrue
+        $script:detail.Result | Should -Match 'Partial link inventory'
+        $script:detail.Result | Should -Not -Match 'All 1 collected links are enabled'
+    }
+
     It 'fails blocked inheritance and errors on missing containers' {
         $script:state.LinkContainers[0].GpOptions = 1
         InModuleScope Maester { Test-MtAdGpoBlockedInheritanceCount | Should -BeFalse }
@@ -248,6 +338,25 @@ Describe 'Native Group Policy results' {
 }
 
 Describe 'Group Policy result layout' {
+    It 'requires a Boolean true completeness flag when the field is present' -ForEach @(
+        @{ Value = $true; Expected = $true }
+        @{ Value = $false; Expected = $false }
+        @{ Value = $null; Expected = $false }
+        @{ Value = 'true'; Expected = $false }
+    ) {
+        InModuleScope Maester -Parameters @{ Value = $Value; Expected = $Expected } {
+            param($Value, $Expected)
+            Test-MtAdGpoLinksComplete -State ([ordered]@{ GPOLinksComplete = $Value }) | Should -Be $Expected
+            Test-MtAdGpoLinksComplete -State ([pscustomobject]@{ GPOLinksComplete = $Value }) | Should -Be $Expected
+        }
+    }
+
+    It 'preserves compatibility for state objects without a completeness field' {
+        InModuleScope Maester {
+            Test-MtAdGpoLinksComplete -State ([ordered]@{ GPOs = @() }) | Should -BeTrue
+            Test-MtAdGpoLinksComplete -State ([pscustomobject]@{ GPOs = @() }) | Should -BeTrue
+        }
+    }
     It 'renders zero metrics without an empty detail table' {
         InModuleScope Maester {
             $result = Format-MtAdGpoResult -Summary 'No disabled links found.' -Metrics ([ordered]@{ 'Total links' = 2; 'Disabled links' = 0 }) -Details @() -Properties Name

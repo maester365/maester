@@ -10,11 +10,12 @@ Describe 'AD GPO version normalization' {
     ) {
         InModuleScope Maester -Parameters @{ Raw = $Raw; Expected = $Expected } {
             param($Raw, $Expected)
+            $script:rawVersion = $Raw
             Mock Invoke-MtLdapSearch {
                 [PSCustomObject]@{
                     name = '{11111111-1111-1111-1111-111111111111}'
                     displayName = 'Policy'
-                    versionNumber = $Raw
+                    versionNumber = $script:rawVersion
                     ntSecurityDescriptor = $null
                 }
             }
@@ -35,13 +36,13 @@ Describe 'AD GPO version normalization' {
 
 Describe 'AD GPO modification age and link inventories' {
     BeforeEach {
-        $script:now = [datetime]'2026-11-08T12:00:00'
+        $script:now = [DateTimeOffset]'2026-11-08T12:00:00+00:00'
         $script:state = [pscustomobject]@{
             GPOs = @([pscustomobject]@{
                     Id = '{11111111-1111-1111-1111-111111111111}'
                     DisplayName = 'Policy | pilot'
-                    CreationTime = [datetime]'2000-01-01'
-                    ModificationTime = [datetime]'2026-01-01'
+                    CreationTime = [datetime]::new(2000, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)
+                    ModificationTime = [datetime]::new(2026, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)
                 })
             GPOLinks = @([pscustomobject]@{ GpoGuid = '11111111-1111-1111-1111-111111111111' })
             LinkContainers = @([pscustomobject]@{ ObjectClass = @('organizationalUnit'); DistinguishedName = 'OU=Pilot|test,DC=example,DC=com'; GpLink = '' })
@@ -60,27 +61,36 @@ Describe 'AD GPO modification age and link inventories' {
     }
 
     It 'fails stale modifications using five years by default' {
-        $script:state.GPOs[0].ModificationTime = [datetime]'2021-11-08T11:59:59'
+        $script:state.GPOs[0].ModificationTime = [datetime]::new(2021, 11, 8, 11, 59, 59, [DateTimeKind]::Utc)
         InModuleScope Maester { Test-MtAdGpoStale | Should -BeFalse }
     }
 
     It 'accepts a modification exactly at the cutoff' {
-        $script:state.GPOs[0].ModificationTime = $script:now.AddYears(-5)
+        $script:state.GPOs[0].ModificationTime = $script:now.UtcDateTime.AddYears(-5)
         InModuleScope Maester { Test-MtAdGpoStale | Should -BeTrue }
     }
 
     It 'honors a configurable age limit' {
-        $script:state.GPOs[0].ModificationTime = [datetime]'2022-01-01'
-        InModuleScope Maester { Test-MtAdGpoStale -MaximumAgeYears 3 | Should -BeFalse }
+        $script:state.GPOs[0].ModificationTime = [datetime]::new(2022, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)
+        InModuleScope Maester { Test-MtAdGpoStale -MaximumModificationAgeYears 3 | Should -BeFalse }
     }
 
     It 'rejects invalid age limits' {
-        InModuleScope Maester { { Test-MtAdGpoStale -MaximumAgeYears 0 } | Should -Throw }
+        InModuleScope Maester { { Test-MtAdGpoStale -MaximumModificationAgeYears 0 } | Should -Throw }
     }
 
     It 'errors on missing modification dates' {
         $script:state.GPOs[0].ModificationTime = $null
         InModuleScope Maester { { Test-MtAdGpoStale } | Should -Throw '*no modification date*' }
+    }
+
+    It 'uses the exact UTC cutoff with a non-UTC clock' {
+        $script:now = [DateTimeOffset]'2026-11-20T12:00:00-05:00'
+        $script:state.GPOs[0].ModificationTime = [datetime]::new(2021, 11, 20, 14, 0, 0, [DateTimeKind]::Utc)
+        InModuleScope Maester { Test-MtAdGpoStale | Should -BeFalse }
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match '2021-11-20 17' }
+        $script:state.GPOs[0].ModificationTime = [datetime]::new(2021, 11, 20, 17, 0, 0, [DateTimeKind]::Utc)
+        InModuleScope Maester { Test-MtAdGpoStale | Should -BeTrue }
     }
 
     It 'errors on an empty inventory instead of passing' {

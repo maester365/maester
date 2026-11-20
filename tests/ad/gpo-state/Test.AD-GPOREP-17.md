@@ -44,8 +44,7 @@ not remove legacy `cpassword` values already stored in SYSVOL.
 
 #### Related Tests
 
-- `AD-GPOREP-01` assesses whether GPO permission entries are present. It does not
-  determine which users can effectively read a secret-bearing file.
+- [AD-GPOREP-01 — No GPO should have an empty permissions list](https://maester.dev/docs/tests/AD-GPOREP-01) (`Test-MtAdGpoNoPermissionsCount`) assesses whether GPO permission entries are present; it does not determine which users can effectively read a secret-bearing file.
 
 #### Related links
 

@@ -40,8 +40,7 @@ consistent policy state rather than manually changing a version value in isolati
 
 #### Related Tests
 
-- `AD-GPO-01` inventories the GPO population, which helps contextualize the set
-  compared by this test. It does not assess version consistency.
+- [AD-GPO-01 — GPO inventory should be investigated](https://maester.dev/docs/tests/AD-GPO-01) (`Test-MtAdGpoTotalCount`) inventories the GPO population for context; it does not assess version consistency.
 
 #### Related links
 

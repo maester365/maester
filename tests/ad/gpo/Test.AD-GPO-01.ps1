@@ -2,16 +2,31 @@
     <#
     .SYNOPSIS
     Inventories the total number of GPOs for investigation.
+
     .DESCRIPTION
     Counts cached GPO metadata. An inventory count is not a security verdict;
     missing collection is an error, not an empty successful inventory.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPO-01'
+
+    Inventories GPOs for investigation rather than making a pass/fail security judgement.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPO-01
     #>
     [MaesterTest(
-        Id = 'AD-GPO-01', Title = 'GPO inventory should be investigated',
-        Product = 'ad', Feature = 'group-policy', Area = 'infrastructure',
-        ResourceType = 'GroupPolicy', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPO-01',
+        Title              = 'GPO inventory should be investigated',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'infrastructure',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Info',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

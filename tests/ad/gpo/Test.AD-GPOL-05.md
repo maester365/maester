@@ -26,9 +26,9 @@ Review each listed OU with its owner and confirm the business or technical reaso
 
 #### Related Tests
 
-- [AD-GPOL-03](https://maester.dev/docs/tests/AD-GPOL-03) inventories targets without a direct GPO link.
-- [AD-GPOL-04](https://maester.dev/docs/tests/AD-GPOL-04) reviews enforced links that override inheritance blocking.
-- [AD-GPOL-01](https://maester.dev/docs/tests/AD-GPOL-01) inventories GPOs with enabled links.
+- [AD-GPOL-03 — Direct GPO link coverage should be investigated](https://maester.dev/docs/tests/AD-GPOL-03) (`Test-MtAdGpoUnlinkedTargetCount`) inventories targets without a direct GPO link.
+- [AD-GPOL-04 — GPO links should not use enforcement](https://maester.dev/docs/tests/AD-GPOL-04) (`Test-MtAdGpoEnforcedCount`) reviews enforced links that override inheritance blocking.
+- [AD-GPOL-01 — GPOs with enabled links should be investigated](https://maester.dev/docs/tests/AD-GPOL-01) (`Test-MtAdGpoLinkedCount`) inventories GPOs with enabled links.
 
 #### Related links
 

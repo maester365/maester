@@ -788,9 +788,15 @@ function Get-MtSysvolContent {
     $scanErrors = [Collections.Generic.List[string]]::new()
     foreach ($file in $files) {
         $path = [string]$file.RelativePath
-        if ($path -match '(?i)(^|/)GPT\.INI$') {
+        if ($path -match '(?i)^GPT\.INI$') {
             $adapterParameters['RelativePath'] = $path
-            $gptIni = ConvertFrom-MtSysvolGptIni -Content (& $invokeAdapter 'ReadText' $TimeoutSeconds)
+            try {
+                $gptIni = ConvertFrom-MtSysvolGptIni -Content (& $invokeAdapter 'ReadText' $TimeoutSeconds)
+            }
+            catch {
+                $scanErrors.Add($path)
+                Write-Verbose "Could not scan SYSVOL version file '$path'."
+            }
         }
         elseif ($path -match '(?i)\.xml$') {
             $adapterParameters['RelativePath'] = $path
@@ -822,7 +828,7 @@ function Get-MtSysvolContent {
     }
 
     # Every GPO should have GPT.INI. An empty or incomplete listing cannot establish a clean scan.
-    if ($null -eq $gptIni -or $null -eq $gptIni.Version) {
+    if (($null -eq $gptIni -or $null -eq $gptIni.Version) -and $scanErrors -notcontains 'GPT.INI') {
         $scanErrors.Add('GPT.INI')
     }
     $cpasswordFound = [bool]($gppXml | Where-Object CpasswordFound | Select-Object -First 1)

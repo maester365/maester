@@ -2,18 +2,34 @@
     <#
     .SYNOPSIS
     Checks that GPO permissions include Domain Computers or Authenticated Users.
+
     .DESCRIPTION
     Fails only when both principals are absent. One known-present principal proves
     the condition; absence of one with the other unknown remains inconclusive.
     This principal-presence check does not calculate effective read access.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPOREP-06'
+
+    Fails only when a GPO lacks both Domain Computers and Authenticated Users permissions.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-06
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-06', Title = 'GPOs should include Domain Computers or Authenticated Users permissions',
-        Product = 'ad', Feature = 'group-policy', Area = 'access-control',
-        ResourceType = 'GroupPolicy', Severity = 'Low', UserImpact = 'Low',
-        ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOREP-06',
+        Title              = 'GPOs should include Domain Computers or Authenticated Users permissions',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'access-control',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Low',
+        UserImpact         = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

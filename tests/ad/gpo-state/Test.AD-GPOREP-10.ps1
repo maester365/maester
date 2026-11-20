@@ -2,17 +2,34 @@
     <#
     .SYNOPSIS
     Checks that every GPO has an explicit Apply Group Policy allow entry.
+
     .DESCRIPTION
     Fails when a GPO has no explicit application entry and lists affected policies.
     This does not calculate effective access for every target principal.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPOREP-10'
+
+    Fails when a GPO has no explicit Apply Group Policy allow entry.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-10
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-10', Title = 'GPOs should have an Apply Group Policy allow entry',
-        Product = 'ad', Feature = 'group-policy', Area = 'access-control',
-        ResourceType = 'GroupPolicy', Severity = 'Low', UserImpact = 'Low',
-        ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Platform = 'Windows', Author = 'soulemike'
+        Id                 = 'AD-GPOREP-10',
+        Title              = 'GPOs should have an Apply Group Policy allow entry',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'access-control',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Low',
+        UserImpact         = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Platform           = 'Windows',
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

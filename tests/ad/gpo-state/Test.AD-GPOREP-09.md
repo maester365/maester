@@ -45,9 +45,8 @@ investigate descriptors that could not be read.
 
 #### Related Tests
 
-- `AD-GPOREP-01` checks for permission entries generally.
-- `AD-GPOREP-07` reports deny entries that may affect access alongside inherited
-  entries.
+- [AD-GPOREP-01 — No GPO should have an empty permissions list](https://maester.dev/docs/tests/AD-GPOREP-01) (`Test-MtAdGpoNoPermissionsCount`) checks for permission entries generally.
+- [AD-GPOREP-07 — GPOs should not have deny access entries](https://maester.dev/docs/tests/AD-GPOREP-07) (`Test-MtAdGpoDenyAceCount`) reports deny entries that may affect access alongside inherited entries.
 
 #### Related links
 

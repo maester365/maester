@@ -2,23 +2,40 @@
     <#
     .SYNOPSIS
     Checks that every GPO has a link to a domain, OU or site.
+
     .DESCRIPTION
     Compares GPO identifiers with collected link references, including disabled
     links. Settings status does not establish whether a GPO is linked.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPO-04'
+
+    Fails when a GPO has no link to a domain, OU or site, including disabled links.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPO-04
     #>
     [MaesterTest(
-        Id = 'AD-GPO-04', Title = 'GPOs should have at least one link',
-        Product = 'ad', Feature = 'group-policy', Area = 'infrastructure',
-        ResourceType = 'GroupPolicy', Severity = 'Low', UserImpact = 'Low',
-        ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPO-04',
+        Title              = 'GPOs should have at least one link',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'infrastructure',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Low',
+        UserImpact         = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
     $state = Get-MtADGpoState
     if ($null -eq $state -or $null -eq $state.GPOs -or $null -eq $state.GPOLinks) { throw 'GPO metadata or links were not retrieved; unlinked GPOs cannot be assessed.' }
+    if (-not (Test-MtAdGpoLinksComplete -State $state)) { throw 'GPO link collection is incomplete; missing links cannot be assessed conclusively.' }
     $gpos = @($state.GPOs | Where-Object { $null -ne $_ })
     $linkedIds = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
     foreach ($link in @($state.GPOLinks | Where-Object { $null -ne $_ })) {

@@ -2,16 +2,31 @@
     <#
     .SYNOPSIS
     Inventories GPOs with WMI filters, including their filter references.
+
     .DESCRIPTION
     Combines counts and details for non-empty WMI filter references. The inventory
     requires investigation, not a pass/fail judgement on targeting.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPOS-02'
+
+    Inventories WMI filter references for investigation without judging their targeting.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOS-02
     #>
     [MaesterTest(
-        Id = 'AD-GPOS-02', Title = 'GPO WMI filters should be investigated',
-        Product = 'ad', Feature = 'group-policy', Area = 'infrastructure',
-        ResourceType = 'GroupPolicy', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOS-02',
+        Title              = 'GPO WMI filters should be investigated',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'infrastructure',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Info',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

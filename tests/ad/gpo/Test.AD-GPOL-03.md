@@ -18,7 +18,7 @@ Direct-link coverage provides context for understanding directory policy layout 
 
 The test counts collected OUs, the domain root, and sites, then looks for GPO GUID references in each target's `gPLink` value. A GUID reference counts as a direct link even if the link is disabled or refers to a GPO that is not resolved here. It reports linked and unlinked target counts and lists targets without a direct reference.
 
-The test does not evaluate link state, resolve every reference to an existing policy, or calculate resultant policy. Missing target collection causes an error. A successful inventory always receives **Investigate**, whether or not unlinked targets are found.
+The test does not evaluate link state, resolve every reference to an existing policy, or calculate resultant policy. Missing domain/OU collection causes an error. If only site collection is unavailable, the OU and domain metrics remain available, site counts are **Unknown**, and the result explicitly identifies a partial inventory. The result receives **Investigate**, whether or not unlinked targets are found.
 
 #### Remediation action
 
@@ -26,9 +26,9 @@ Review each target without a direct link against the intended design, including 
 
 #### Related Tests
 
-- [AD-GPO-04](https://maester.dev/docs/tests/AD-GPO-04) identifies GPOs without collected link references.
-- [AD-GPOL-01](https://maester.dev/docs/tests/AD-GPOL-01) inventories distinct GPOs with enabled links.
-- [AD-GPOL-05](https://maester.dev/docs/tests/AD-GPOL-05) reports OUs that block inheritance.
+- [AD-GPO-04 — GPOs should have at least one link](https://maester.dev/docs/tests/AD-GPO-04) (`Test-MtAdGpoUnlinkedCount`) identifies GPOs without collected link references; this test instead inventories targets without direct links.
+- [AD-GPOL-01 — GPOs with enabled links should be investigated](https://maester.dev/docs/tests/AD-GPOL-01) (`Test-MtAdGpoLinkedCount`) inventories distinct GPOs with enabled links.
+- [AD-GPOL-05 — OUs should not block Group Policy inheritance](https://maester.dev/docs/tests/AD-GPOL-05) (`Test-MtAdGpoBlockedInheritanceCount`) reports OUs that block inheritance, which affects how policy can flow to targets.
 
 #### Related links
 

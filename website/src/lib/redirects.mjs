@@ -30,6 +30,11 @@ export function buildRedirects(dist) {
 	const catalog = JSON.parse(readFileSync(join(websiteRoot, 'src/data/test-catalog.json'), 'utf8'));
 	const versions = JSON.parse(readFileSync(join(websiteRoot, 'src/data/versions.json'), 'utf8'));
 	const testByFunction = new Map(catalog.Tests.filter((t) => t.FunctionName).map((t) => [t.FunctionName, t.Id]));
+	// Consolidated native checks retain their historical test URLs, including /docs/next
+	// through the preview-tree rule below. The replacement registry is exported with the catalog.
+	for (const [retired, replacement] of Object.entries(catalog.TestReplacements ?? {})) {
+		add(`/docs/tests/${retired}`, `/docs/tests/${replacement}`);
+	}
 	for (const name of Object.keys(versions.commands)) {
 		if (exists(`/docs/commands/${name}`)) continue;
 		const test = testByFunction.get(name);
@@ -133,4 +138,3 @@ export function redirects() {
 		},
 	};
 }
-

@@ -18410,11 +18410,6 @@
       "tests": 1
     },
     {
-      "name": "MaximumAgeYears",
-      "type": "int",
-      "tests": 1
-    },
-    {
       "name": "MaximumDevicesPerUser",
       "type": "int",
       "tests": 1
@@ -18468,6 +18463,11 @@
       "name": "MaximumLockoutThreshold",
       "type": "int",
       "tests": 4
+    },
+    {
+      "name": "MaximumModificationAgeYears",
+      "type": "int",
+      "tests": 1
     },
     {
       "name": "MaximumPasswordAgeDays",

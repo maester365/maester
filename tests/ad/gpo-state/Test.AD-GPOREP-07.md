@@ -42,9 +42,10 @@ unintended and assessing its effect on policy recipients.
 
 #### Related Tests
 
-- `AD-GPOREP-03`, `AD-GPOREP-05`, and `AD-GPOREP-06` assess selected allowed
-  principal entries; deny entries can affect how those ACLs behave.
-- `AD-GPOREP-09` reports inherited permission entries.
+- [AD-GPOREP-03 — GPOs should include Authenticated Users permissions](https://maester.dev/docs/tests/AD-GPOREP-03) (`Test-MtAdGpoNoAuthenticatedUsersCount`) assesses a selected allowed-principal entry that may be affected by deny entries.
+- [AD-GPOREP-05 — GPOs should include Enterprise Domain Controllers permissions](https://maester.dev/docs/tests/AD-GPOREP-05) (`Test-MtAdGpoNoEnterpriseDcCount`) assesses a selected allowed-principal entry that may be affected by deny entries.
+- [AD-GPOREP-06 — GPOs should include Domain Computers or Authenticated Users permissions](https://maester.dev/docs/tests/AD-GPOREP-06) (`Test-MtAdGpoNoDomainComputersCount`) assesses selected allowed-principal entries that may be affected by deny entries.
+- [AD-GPOREP-09 — GPOs should not inherit permission entries](https://maester.dev/docs/tests/AD-GPOREP-09) (`Test-MtAdGpoInheritedPermissionsCount`) reports inherited permission entries alongside deny entries.
 
 #### Related links
 

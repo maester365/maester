@@ -46,10 +46,9 @@ do not add a broad grant or a generic administrative entry to satisfy the check.
 
 #### Related Tests
 
-- `AD-GPOREP-03` and `AD-GPOREP-06` assess selected read-principal entries; this
-  test checks the explicit application entry separately.
-- `AD-GPOL-01` inventories GPOs with enabled links; a link alone does not establish
-  that a policy applies to every target.
+- [AD-GPOREP-03 — GPOs should include Authenticated Users permissions](https://maester.dev/docs/tests/AD-GPOREP-03) (`Test-MtAdGpoNoAuthenticatedUsersCount`) assesses a selected read-principal entry; this test checks the application entry separately.
+- [AD-GPOREP-06 — GPOs should include Domain Computers or Authenticated Users permissions](https://maester.dev/docs/tests/AD-GPOREP-06) (`Test-MtAdGpoNoDomainComputersCount`) assesses selected read-principal entries; this test checks the explicit application entry separately.
+- [AD-GPOL-01 — GPOs with enabled links should be investigated](https://maester.dev/docs/tests/AD-GPOL-01) (`Test-MtAdGpoLinkedCount`) inventories enabled links; a link alone does not establish that a policy applies to every target.
 
 #### Related links
 

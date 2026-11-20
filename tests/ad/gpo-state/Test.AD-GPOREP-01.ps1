@@ -2,16 +2,32 @@
     <#
     .SYNOPSIS
     Checks that every evaluated GPO has permission entries.
+
     .DESCRIPTION
     Fails on an empty permission list and reports unreadable descriptors separately.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPOREP-01'
+
+    Fails when an evaluated GPO has an empty permissions list.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-01
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-01', Title = 'No GPO should have an empty permissions list',
-        Product = 'ad', Feature = 'group-policy', Area = 'access-control',
-        ResourceType = 'GroupPolicy', Severity = 'Medium', UserImpact = 'Low',
-        ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOREP-01',
+        Title              = 'No GPO should have an empty permissions list',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'access-control',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Medium',
+        UserImpact         = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

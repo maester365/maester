@@ -2,17 +2,33 @@
     <#
     .SYNOPSIS
     Checks that evaluated GPOs include Enterprise Domain Controllers permissions.
+
     .DESCRIPTION
     Passes when the principal is present on all evaluated GPOs, fails when absent,
     and reports unreadable permissions as unknown rather than missing.
+
+    .EXAMPLE
+    Invoke-MtTest -Id 'AD-GPOREP-05'
+
+    Fails when an evaluated GPO lacks Enterprise Domain Controllers permissions.
+
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-05
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-05', Title = 'GPOs should include Enterprise Domain Controllers permissions',
-        Product = 'ad', Feature = 'group-policy', Area = 'access-control',
-        ResourceType = 'GroupPolicy', Severity = 'Medium', UserImpact = 'Low',
-        ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOREP-05',
+        Title              = 'GPOs should include Enterprise Domain Controllers permissions',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'access-control',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Medium',
+        UserImpact         = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

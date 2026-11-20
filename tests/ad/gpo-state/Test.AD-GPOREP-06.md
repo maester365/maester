@@ -51,9 +51,9 @@ finding; investigate unknown assessments by checking the descriptor and ACL.
 
 #### Related Tests
 
-- `AD-GPOREP-03` checks the **Authenticated Users** entry specifically.
-- `AD-GPOREP-01` checks for permission entries generally; `AD-GPOREP-10` checks for
-  an explicit **Apply Group Policy** entry.
+- [AD-GPOREP-03 — GPOs should include Authenticated Users permissions](https://maester.dev/docs/tests/AD-GPOREP-03) (`Test-MtAdGpoNoAuthenticatedUsersCount`) checks the **Authenticated Users** entry specifically.
+- [AD-GPOREP-01 — No GPO should have an empty permissions list](https://maester.dev/docs/tests/AD-GPOREP-01) (`Test-MtAdGpoNoPermissionsCount`) checks for permission entries generally.
+- [AD-GPOREP-10 — GPOs should have an Apply Group Policy allow entry](https://maester.dev/docs/tests/AD-GPOREP-10) (`Test-MtAdGpoNoApplyGroupPolicyAceCount`) checks for an explicit **Apply Group Policy** entry separately from these read-principal checks.
 
 #### Related links
 

@@ -26,9 +26,9 @@ Review the inventory and confirm each policy's owner, purpose, and intended scop
 
 #### Related Tests
 
-- [AD-GPO-02](https://maester.dev/docs/tests/AD-GPO-02) reviews GPO modification age.
-- [AD-GPO-04](https://maester.dev/docs/tests/AD-GPO-04) identifies GPOs without collected link references.
-- [AD-GPOL-01](https://maester.dev/docs/tests/AD-GPOL-01) inventories GPOs with enabled links.
+- [AD-GPO-02 — GPOs should be modified within the configured age limit](https://maester.dev/docs/tests/AD-GPO-02) (`Test-MtAdGpoStale`) reviews modification age for the inventoried GPOs.
+- [AD-GPO-04 — GPOs should have at least one link](https://maester.dev/docs/tests/AD-GPO-04) (`Test-MtAdGpoUnlinkedCount`) identifies inventoried GPOs without collected link references.
+- [AD-GPOL-01 — GPOs with enabled links should be investigated](https://maester.dev/docs/tests/AD-GPOL-01) (`Test-MtAdGpoLinkedCount`) counts inventoried GPOs with enabled links.
 
 #### Related links
 

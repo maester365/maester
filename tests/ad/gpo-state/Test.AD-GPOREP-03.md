@@ -44,9 +44,9 @@ Grant read or application permissions only to the intended principals; do not ad
 
 #### Related Tests
 
-- `AD-GPOREP-01` checks whether permission entries are present.
-- `AD-GPOREP-06` checks for either **Domain Computers** or **Authenticated Users**;
-  `AD-GPOREP-10` checks for an explicit **Apply Group Policy** entry.
+- [AD-GPOREP-01 — No GPO should have an empty permissions list](https://maester.dev/docs/tests/AD-GPOREP-01) (`Test-MtAdGpoNoPermissionsCount`) checks whether permission entries are present generally.
+- [AD-GPOREP-06 — GPOs should include Domain Computers or Authenticated Users permissions](https://maester.dev/docs/tests/AD-GPOREP-06) (`Test-MtAdGpoNoDomainComputersCount`) checks for either **Domain Computers** or **Authenticated Users**, unlike this test's specific principal check.
+- [AD-GPOREP-10 — GPOs should have an Apply Group Policy allow entry](https://maester.dev/docs/tests/AD-GPOREP-10) (`Test-MtAdGpoNoApplyGroupPolicyAceCount`) checks for an explicit **Apply Group Policy** entry.
 
 #### Related links
 

@@ -30,9 +30,9 @@ Review each listed policy with its owner and confirm whether its disabled settin
 
 #### Related Tests
 
-- [AD-GPO-01](https://maester.dev/docs/tests/AD-GPO-01) reports the total GPO inventory.
-- [AD-GPOS-02](https://maester.dev/docs/tests/AD-GPOS-02) inventories GPOs with WMI filter references.
-- [AD-GPOREP-12](https://maester.dev/docs/tests/AD-GPOREP-12) inventories disabled links; link state and disabled policy settings are separate conditions.
+- [AD-GPO-01 — GPO inventory should be investigated](https://maester.dev/docs/tests/AD-GPO-01) (`Test-MtAdGpoTotalCount`) reports the total GPO inventory for context.
+- [AD-GPOS-02 — GPO WMI filters should be investigated](https://maester.dev/docs/tests/AD-GPOS-02) (`Test-MtAdGpoWmiFilterCount`) inventories GPOs with WMI filter references, a separate policy attribute.
+- [AD-GPOREP-12 — Review disabled GPO links](https://maester.dev/docs/tests/AD-GPOREP-12) (`Test-MtCheckADGPOREP12`) inventories disabled links; link state and disabled policy settings are separate conditions.
 
 #### Related links
 

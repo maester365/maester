@@ -4,7 +4,8 @@
     Formats a Group Policy summary, metrics and non-empty detail table.
     .DESCRIPTION
     Uses one report layout for Group Policy checks. Empty detail sets never render
-    table headers. Values are HTML-encoded and normalized to one Markdown cell.
+    table headers. Tenant values are HTML-encoded, pipe-escaped, normalized to
+    one line, then escaped for Markdown autolinks and syntax.
     #>
     [CmdletBinding()]
     [OutputType([string])]
@@ -21,14 +22,20 @@
         [string[]] $Headers = @()
     )
 
-    $result = $Summary
+    $escapeCell = {
+        param([AllowNull()][string] $Text)
+        Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Text).Replace('|', '&#124;') -replace '[\r\n]+', ' ')
+    }
+
+    $result = [System.Text.StringBuilder]::new()
+    [void]$result.Append($Summary)
     if ($null -ne $Metrics -and $Metrics.Count -gt 0) {
-        $result += "`n`n| Metric | Value |`n| --- | --- |`n"
+        [void]$result.Append("`n`n| Metric | Value |`n| --- | --- |`n")
         foreach ($key in $Metrics.Keys) {
-            $label = [System.Net.WebUtility]::HtmlEncode([string]$key).Replace('|', '&#124;') -replace '[\r\n]+', ' '
+            $label = & $escapeCell ([string]$key)
             $value = if ($null -eq $Metrics[$key]) { 'Unknown' } else { [string]$Metrics[$key] }
-            $value = [System.Net.WebUtility]::HtmlEncode($value).Replace('|', '&#124;') -replace '[\r\n]+', ' '
-            $result += "| $label | $value |`n"
+            $value = & $escapeCell $value
+            [void]$result.Append("| $label | $value |`n")
         }
     }
 
@@ -38,16 +45,16 @@
         if ($Headers.Count -eq 0) { $Headers = $Properties }
         if ($Headers.Count -ne $Properties.Count) { throw 'Group Policy table headers and properties must have the same count.' }
         $labels = @($Headers | ForEach-Object {
-                [System.Net.WebUtility]::HtmlEncode($_).Replace('|', '&#124;') -replace '[\r\n]+', ' '
+                & $escapeCell $_
             })
-        $result += "`n`n#### Details`n`n| $($labels -join ' | ') |`n| $((@($Properties | ForEach-Object { '---' })) -join ' | ') |`n"
+        [void]$result.Append("`n`n#### Details`n`n| $($labels -join ' | ') |`n| $((@($Properties | ForEach-Object { '---' })) -join ' | ') |`n")
         foreach ($row in $rows) {
             $cells = foreach ($property in $Properties) {
                 $value = if ($null -eq $row.$property) { 'Unknown' } else { [string]$row.$property }
-                [System.Net.WebUtility]::HtmlEncode($value).Replace('|', '&#124;') -replace '[\r\n]+', ' '
+                & $escapeCell $value
             }
-            $result += "| $($cells -join ' | ') |`n"
+            [void]$result.Append("| $($cells -join ' | ') |`n")
         }
     }
-    return $result
+    return $result.ToString()
 }

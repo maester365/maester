@@ -47,9 +47,11 @@ effective access from the entry count alone.
 
 #### Related Tests
 
-- `AD-GPOREP-03`, `AD-GPOREP-06`, and `AD-GPOREP-10` assess selected principal or
-  application entries; none calculates effective access for every principal.
-- `AD-GPOREP-07` and `AD-GPOREP-09` report deny and inherited entries, respectively.
+- [AD-GPOREP-03 — GPOs should include Authenticated Users permissions](https://maester.dev/docs/tests/AD-GPOREP-03) (`Test-MtAdGpoNoAuthenticatedUsersCount`) assesses a specific principal entry within the permission list checked here.
+- [AD-GPOREP-06 — GPOs should include Domain Computers or Authenticated Users permissions](https://maester.dev/docs/tests/AD-GPOREP-06) (`Test-MtAdGpoNoDomainComputersCount`) checks for either of two specified read-principal entries.
+- [AD-GPOREP-10 — GPOs should have an Apply Group Policy allow entry](https://maester.dev/docs/tests/AD-GPOREP-10) (`Test-MtAdGpoNoApplyGroupPolicyAceCount`) checks for a specific application-right entry; none of these checks calculates effective access for every principal.
+- [AD-GPOREP-07 — GPOs should not have deny access entries](https://maester.dev/docs/tests/AD-GPOREP-07) (`Test-MtAdGpoDenyAceCount`) reports deny entries.
+- [AD-GPOREP-09 — GPOs should not inherit permission entries](https://maester.dev/docs/tests/AD-GPOREP-09) (`Test-MtAdGpoInheritedPermissionsCount`) reports inherited entries.
 
 #### Related links
 
