@@ -210,6 +210,43 @@ Describe 'Active Directory GPO permissions' {
             $null -eq $state.GPOReports[1].DisabledLinks | Should -BeTrue
         }
 
+        It 'parses the valid link after a malformed <Part> prefix independently for <Location>' -ForEach @(
+            @{ Location = 'Domain'; Part = 'Target' }
+            @{ Location = 'Site'; Part = 'Target' }
+            @{ Location = 'Domain'; Part = 'Options' }
+            @{ Location = 'Site'; Part = 'Options' }
+        ) {
+            $script:testGpos = @((New-TestGpo -PermissionProfile 'Default'), (New-TestGpo -PermissionProfile 'Default'))
+            $prefix = "[LDAP://CN={$($script:testGpos[0].Id)},CN=Policies,DC=contoso,DC=com"
+            if ($Part -eq 'Options') { $prefix += ';2' }
+            $script:validLink = "[LDAP://CN={$($script:testGpos[1].Id)},CN=Policies,DC=contoso,DC=com;2]"
+            $script:linkText = $prefix + $script:validLink
+            if ($Location -eq 'Domain') {
+                Mock Get-MtLdapGpoLink -ModuleName Maester -RemoveParameterType Connection {
+                    [pscustomobject]@{ DistinguishedName = 'OU=Test,DC=contoso,DC=com'; ObjectClass = @('organizationalUnit'); GpLink = $script:linkText }
+                }
+            }
+            else {
+                Mock Get-MtLdapSiteContainer -ModuleName Maester -RemoveParameterType Connection {
+                    [pscustomobject]@{ DistinguishedName = 'CN=TestSite,CN=Sites,CN=Configuration,DC=contoso,DC=com'; ObjectClass = @('site'); GpLink = $script:linkText }
+                }
+            }
+            $state = Get-MtADGpoState
+            $state.GPOLinksComplete | Should -BeFalse
+            $null -eq $state.GPOLinks | Should -BeFalse
+            @($state.GPOLinks) | Should -HaveCount 1
+            $state.GPOLinks[0].GpLink | Should -BeExactly $script:validLink
+            $state.GPOLinks[0].GpoGuid | Should -Be ([guid]$script:testGpos[1].Id)
+            $state.GPOLinks[0].Options | Should -Be 2
+            $state.GPOLinks[0].IsDisabled | Should -BeFalse
+            $state.GPOLinks[0].IsEnforced | Should -BeTrue
+            $null -eq $state.GPOReports[0].Enforcement | Should -BeTrue
+            $state.GPOReports[1].Enforcement | Should -BeTrue
+            InModuleScope Maester { Test-MtAdGpoEnforcementCount | Should -BeTrue }
+            $script:resultDetail.Result | Should -Match 'GPOs with unknown enforcement \| 1'
+            $script:resultDetail.Result | Should -Match 'GPOs with enforced links \| 1'
+        }
+
         It 'exposes directory and SYSVOL versions' {
             $script:testGpos = @(New-TestGpo -PermissionProfile 'Default')
             Mock Get-MtSysvolContent -ModuleName Maester {

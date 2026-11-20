@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import test from 'node:test';
 
 test('retired native tests redirect to their surviving checks without removing URL-contract entries', async () => {
@@ -24,7 +23,7 @@ test('retired native tests redirect to their surviving checks without removing U
 			writeFileSync(join(fixture, `dist/docs/tests/${replacement}.html`), 'survivor');
 		}
 		process.chdir(fixture);
-		const { buildRedirects } = await import(pathToFileURL(source.pathname).href + '?retired-test-fixture');
+		const { buildRedirects } = await import(source.href + '?retired-test-fixture');
 		const rules = buildRedirects(join(fixture, 'dist'));
 		assert.ok(rules.includes('/docs/tests/AD-GPOREP-16 /docs/tests/AD-GPOREP-15 301'));
 		assert.ok(rules.includes('/docs/tests/AD-GPOS-01 /docs/tests/AD-GPO-01 301'));

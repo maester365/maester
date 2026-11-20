@@ -117,7 +117,8 @@
             $parsedGpoLinks = [System.Collections.Generic.List[object]]::new()
             $domainLinksFailed = $false
             $siteLinksFailed = $false
-            $linkPattern = '\[(?<target>[^\]]+);\s*(?<options>[^\];]*)\s*\]'
+            # Do not let a malformed prefix consume the opening bracket of the next link.
+            $linkPattern = '\[(?<target>[^\[\]]+);\s*(?<options>[^\[\];]*)\s*\]'
             try {
                 $linkContainers = @(Get-MtLdapGpoLink -Connection $protocolConnection -SearchBase $protocolRootDse.DefaultNamingContext)
                 $gpoState['LinkContainers'] = $linkContainers
