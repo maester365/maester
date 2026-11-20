@@ -78,6 +78,16 @@ Describe 'MT.1286: Test-MtEntraAgentSponsorManager' -Tag 'Unit' {
         $script:TestResult | Should -Match 'Manager Grace Manager is a disabled account\.'
     }
 
+    It 'reports a user sponsor whose manager has no account state, such as a contact' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{ '@odata.type' = '#microsoft.graph.orgContact'; id = 'contact-1'; displayName = 'Grace Contact' }
+        } -ParameterFilter { $RelativeUri -like 'users/*/manager' }
+
+        Test-MtEntraAgentSponsorManager | Should -BeFalse
+
+        $script:TestResult | Should -Match 'Cannot confirm that manager Grace Contact is an enabled account\.'
+    }
+
     It 'does not evaluate group sponsors, and skips as not applicable when no object has a user sponsor' {
         Mock -ModuleName Maester Invoke-MtGraphRequest {
             [pscustomobject]@{ '@odata.type' = '#microsoft.graph.group'; id = 'group-1'; displayName = 'Agent sponsors' }

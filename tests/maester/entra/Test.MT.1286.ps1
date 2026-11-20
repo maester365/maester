@@ -9,8 +9,9 @@
     requires a populated manager attribute: without one, the sponsorship has nowhere to go.
 
     This check reads the sponsors of agent identities, Agent Identity Blueprints and Blueprint
-    Principals, and reports every user sponsor that has no manager or whose manager is a disabled
-    account. Group and service principal sponsors have no manager and are not evaluated.
+    Principals, and reports every user sponsor that has no manager, or whose manager is not
+    confirmed as an enabled account. Group and service principal sponsors have no manager and
+    are not evaluated.
 
     A manager that is set but no longer the right successor still resolves, so the transfer goes
     through. Directory data cannot show that case.
@@ -111,6 +112,9 @@
                         $Issue = 'No manager.'
                     } elseif ($Manager.accountEnabled -eq $false) {
                         $Issue = "Manager $([string]$Manager.displayName) is a disabled account."
+                    } elseif ($Manager.accountEnabled -ne $true) {
+                        # A contact has no accountEnabled, and Graph can leave the property out of a user it returns.
+                        $Issue = "Cannot confirm that manager $([string]$Manager.displayName) is an enabled account."
                     }
 
                     if ($Issue) {

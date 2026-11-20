@@ -2,7 +2,7 @@ User sponsors of Agent ID objects should have a manager.
 
 Agent identities and Agent Identity Blueprints need an accountable sponsor. When a sponsor leaves or changes roles, the Lifecycle Workflows task **Transfer agent identity sponsorships to manager** adds the sponsor's manager as a sponsor and removes the user. The task requires a populated manager attribute. Without a manager, the sponsorship has nowhere to go when that sponsor leaves. With a disabled manager, it goes to an account nobody uses.
 
-This check reads the sponsors of agent identities, Agent Identity Blueprints and Blueprint Principals. It reports every user sponsor that has no manager or whose manager is a disabled account. Group and service principal sponsors have no manager and are not evaluated.
+This check reads the sponsors of agent identities, Agent Identity Blueprints and Blueprint Principals. It reports every user sponsor that has no manager, or whose manager is not confirmed as an enabled account: a disabled account, or a manager with no account state, such as a contact. Group and service principal sponsors have no manager and are not evaluated.
 
 A manager that is set but no longer the right successor still resolves, and the transfer goes through. This check cannot see that case: review who each sponsor's manager is, not only whether one is set.
 
