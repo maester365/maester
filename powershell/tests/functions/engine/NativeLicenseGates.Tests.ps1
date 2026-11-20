@@ -8,6 +8,8 @@
     $p2OrGovernance = @{ License = @('AAD_PREMIUM_P2', 'Entra_Identity_Governance'); Legacy = 'NotLicensedEntraIDP2' }
     $p2AndAgent365 = @{ License = @('AAD_PREMIUM_P2&AGENT_365'); Legacy = 'NotLicensedEntraIDP2' }
     $mdoP1 = @{ License = @('ATP_ENTERPRISE'); Legacy = 'NotLicensedMdoP1' }
+    # CIS.M365.2.1.5 also requires Safe Documents, which neither Defender for Office 365 plan includes (2.x gated it on Plan 1).
+    $safeDocs = @{ License = @('SAFEDOCS'); Legacy = 'Custom' }
     $exoDlp = @{ License = @('EXCHANGE_DLP'); Legacy = 'NotLicensedExoDlp' }
     $intune = @{ License = @('INTUNE_A'); Legacy = 'NotLicensedIntune' }
     $converted = [ordered]@{
@@ -20,7 +22,7 @@
         'CISA.MS.EXO.17.3' = @{ License = @('M365_ADVANCED_AUDITING'); Legacy = 'NotLicensedAdvAudit' }
         'CISA.MS.EXO.8.1'  = $exoDlp; 'CISA.MS.EXO.8.2' = $exoDlp; 'CISA.MS.EXO.8.4' = $exoDlp
         'CIS.M365.1.3.6'   = @{ License = @('LOCKBOX_ENTERPRISE'); Legacy = 'NotLicensedCustomerLockbox' }
-        'CIS.M365.2.1.1'   = $mdoP1; 'CIS.M365.2.1.4' = $mdoP1; 'CIS.M365.2.1.5' = $mdoP1; 'CIS.M365.2.1.7' = $mdoP1
+        'CIS.M365.2.1.1'   = $mdoP1; 'CIS.M365.2.1.4' = $mdoP1; 'CIS.M365.2.1.5' = $safeDocs; 'CIS.M365.2.1.7' = $mdoP1
         'MT.1053'          = $intune; 'MT.1096' = $intune; 'MT.1102' = $intune; 'MT.1105' = $intune
         'MT.1106'          = $p2OrGovernance; 'MT.1107' = $p2OrGovernance; 'MT.1108' = $p2OrGovernance; 'MT.1109' = $p2OrGovernance; 'MT.1110' = $p2OrGovernance
         'MT.1175'          = $exoDlp
@@ -93,6 +95,15 @@ Describe 'Licence gates of converted tests' {
         }
     }
 
+    It 'Skip the Safe Documents checks on a tenant with Defender for Office 365 alone' {
+        # Defender for Office 365 Plan 1, part of Microsoft 365 E3 since July 2026, does not include Safe Documents.
+        foreach ($id in 'ORCA.225', 'ORCA.234', 'CIS.M365.2.1.5') {
+            (@((Get-MtTest -Id $id).License) -join ',') | Should -Be 'SAFEDOCS' -Because "$id checks a Safe Documents setting"
+            $row = Invoke-MtTest -Id $id -Config (New-Config -Licenses 'ATP_ENTERPRISE')
+            $row.ReasonCode | Should -Be 'LicenseNotFound' -Because "$id needs the SAFEDOCS service plan, not only Defender for Office 365"
+        }
+    }
+
     It 'Run MT.1181 on a tenant with both Entra ID P2 and Agent 365' {
         # The mocks return no Conditional Access policy, so the body runs and finds no blocking policy.
         $row = Invoke-MtTest -Id 'MT.1181' -Config (New-Config -Licenses 'AAD_PREMIUM_P2', 'AGENT_365')
@@ -157,6 +168,18 @@ Describe 'Licence skip message' {
             Test-MtLicenseRequirement -Requirement 'AGENT_365' -Licenses ([pscustomobject]@{ ServicePlanIds = @(); SkuIds = @('9a18296a-025f-4e37-9ffa-30bf8d1ce775'); ServicePlanNames = @() })
         }
         $met | Should -BeTrue
+    }
+
+    It 'Counts the SAFEDOCS service plan as Safe Documents, and the Defender for Office 365 plans as not' {
+        $met = InModuleScope Maester {
+            Test-MtLicenseRequirement -Requirement 'SAFEDOCS' -Licenses ([pscustomobject]@{ ServicePlanIds = @('bf6f5520-59e3-4f82-974b-7dbbc4fd27c7'); SkuIds = @(); ServicePlanNames = @() })
+        }
+        $met | Should -BeTrue
+        # ATP_ENTERPRISE (Plan 1) and THREAT_INTELLIGENCE (Plan 2) do not include Safe Documents.
+        $notMet = InModuleScope Maester {
+            Test-MtLicenseRequirement -Requirement 'SAFEDOCS' -Licenses ([pscustomobject]@{ ServicePlanIds = @('f20fedf3-f3c3-43c3-8267-2bfdd51c0939', '8e0c0a52-6a6c-4d40-8370-dd62790dcd70'); SkuIds = @(); ServicePlanNames = @() })
+        }
+        $notMet | Should -BeFalse
     }
 
     It 'Gives every licence token a friendly name, from Microsoft or the table' {

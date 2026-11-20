@@ -33,6 +33,9 @@
         THREAT_INTELLIGENCE       = @{ ServicePlanIds = @('8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '900018f1-0cdb-4ecb-94d4-90281760fdc6'); SkuIds = @('8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '900018f1-0cdb-4ecb-94d4-90281760fdc6'); LegacySkipCode = 'NotLicensedMdo' }
         # Defender for Office 365 Plan 1 or Plan 2 (incl. GOV).
         ATP_ENTERPRISE            = @{ DisplayName = 'Microsoft Defender for Office 365 Plan 1 or Plan 2'; ServicePlanIds = @('f20fedf3-f3c3-43c3-8267-2bfdd51c0939', '493ff600-6a2b-4db6-ad37-a7d4eb214516', '8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '900018f1-0cdb-4ecb-94d4-90281760fdc6'); LegacySkipCode = 'NotLicensedMdoP1' }
+        # Safe Documents: Microsoft 365 A5, E5 and G5, and Microsoft Defender Suite. Neither Defender for Office 365 plan
+        # includes it, so ATP_ENTERPRISE does not cover it. 2.x had no code for it.
+        SAFEDOCS                  = @{ ServicePlanIds = @('bf6f5520-59e3-4f82-974b-7dbbc4fd27c7'); LegacySkipCode = 'Custom' }
         M365_ADVANCED_AUDITING    = @{ ServicePlanIds = @('2f442157-a11c-46b9-ae5b-6e39ff4e5849'); SkuIds = @('2f442157-a11c-46b9-ae5b-6e39ff4e5849'); LegacySkipCode = 'NotLicensedAdvAudit' }
         # Any Exchange Online mailbox licence.
         EXCHANGE_S_STANDARD       = @{
