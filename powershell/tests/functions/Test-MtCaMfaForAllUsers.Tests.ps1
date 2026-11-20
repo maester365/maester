@@ -59,8 +59,11 @@
         Test-MtCaMfaForAllUsers | Should -BeTrue
     }
 
-    It 'Fails for a policy that relies on a custom control, and lists the policy' {
-        $policies = @(Get-TestCaPolicy -DisplayName 'Legacy MFA provider' -CustomAuthenticationFactors 'ContosoMFA')
+    It 'Fails for a policy that relies on a custom control (<Operator>), and lists the policy' -ForEach @(
+        @{ Operator = 'OR' }
+        @{ Operator = 'AND' }
+    ) {
+        $policies = @(Get-TestCaPolicy -DisplayName 'Legacy MFA provider' -CustomAuthenticationFactors 'ContosoMFA' -Operator $Operator)
         Mock Get-MtConditionalAccessPolicy -ModuleName Maester { $policies }
 
         Test-MtCaMfaForAllUsers | Should -BeFalse
@@ -91,10 +94,23 @@
         }
     }
 
-    It 'Passes for a policy that requires MFA, and still lists a separate custom control policy' {
+    It 'Fails for a policy that requires a compliant device and a custom control (AND), and lists the policy' {
+        $policies = @(Get-TestCaPolicy -DisplayName 'Compliant device and legacy provider' -BuiltInControls 'compliantDevice' -CustomAuthenticationFactors 'ContosoMFA' -Operator 'AND')
+        Mock Get-MtConditionalAccessPolicy -ModuleName Maester { $policies }
+
+        Test-MtCaMfaForAllUsers | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Result -like '*- Compliant device and legacy provider*'
+        }
+    }
+
+    It 'Passes for a policy that requires MFA, and still lists a separate custom control policy (<Operator>)' -ForEach @(
+        @{ Operator = 'OR' }
+        @{ Operator = 'AND' }
+    ) {
         $policies = @(
             Get-TestCaPolicy -DisplayName 'Require MFA' -BuiltInControls 'mfa'
-            Get-TestCaPolicy -DisplayName 'Legacy MFA provider' -CustomAuthenticationFactors 'ContosoMFA'
+            Get-TestCaPolicy -DisplayName 'Legacy MFA provider' -CustomAuthenticationFactors 'ContosoMFA' -Operator $Operator
         )
         Mock Get-MtConditionalAccessPolicy -ModuleName Maester { $policies }
 
