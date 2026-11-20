@@ -1,8 +1,8 @@
-At least one IP-based named location with a public address range exists and is marked as trusted.
+At least one IP-based named location with address ranges exists and is marked as trusted.
 
 Named locations give Conditional Access a way to tell your offices and known egress addresses from the rest of the internet. Marked as trusted, they feed Microsoft Entra ID Protection and let policies relax or tighten requirements by network.
 
-The test passes when at least one IP named location has a public range and is trusted. A range in private or other non-routable address space, such as 10.0.0.0/8, 172.16.0.0/12 or 192.168.0.0/16, doesn't count: Microsoft Entra ID evaluates the public address that a network uses to reach the internet, never the address of a device on the intranet, so these ranges never match a sign-in. Country-based locations are not counted. Only mark a network as trusted when it is under your control.
+The test passes when at least one IP named location has ranges and is trusted, as the benchmark asks. The result also lists the trusted locations whose ranges are all private or otherwise non-routable, such as 10.0.0.0/8, 172.16.0.0/12 or 192.168.0.0/16. They meet the benchmark, but they never match a sign-in: Microsoft Entra ID evaluates the public address that a network uses to reach the internet, never the address of a device on the intranet. Country-based locations are not counted. Only mark a network as trusted when it is under your control.
 
 #### Remediation action
 
