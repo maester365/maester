@@ -1,14 +1,38 @@
-Counts distinct GPOs with at least one enabled link and reports them against the GPO inventory. The **Investigate** result is informational: an enabled link does not establish that a policy is effective for every user or computer. Security filtering, WMI filters, inheritance, and policy processing also affect application. Failed collection or links with unknown state are errors.
+Inventories distinct GPOs that have at least one enabled link and reports them against the collected GPO inventory. The **Investigate** result is informational: an enabled link does not establish that a policy is effective for any particular user or computer.
 
-The result reports total GPOs and counts with and without enabled links. It lists GPOs with enabled links when any are present.
+#### Why This Test Matters
+
+Link inventory helps administrators understand where policies are configured to be considered. Comparing enabled-link counts with the full inventory can support scope and lifecycle reviews, but neither a low nor high count proves that policy coverage is deficient or excessive.
+
+#### Control Type
+
+**Operational** — this test provides a view of configured links for investigation; it does not judge policy effectiveness or enforce a control.
+
+#### Security Recommendation
+
+- Review enabled links against intended policy scope and ownership.
+- Evaluate effective policy separately: security filtering, WMI filters, inheritance, and policy processing affect application.
+- Check before enabling or removing links, since either change can alter which users or computers receive settings.
+
+#### How the Test Works
+
+The test uses collected GPO and link data, identifies link entries with enabled state, and counts each distinct GPO once when it has at least one enabled link. It reports total GPOs, the count with enabled links, and the count without them; GPOs with enabled links are listed when present.
+
+Missing inventory or link data, an unknown GPO identifier, or an unknown link state causes an error. The test does not evaluate security filtering, WMI query results, inheritance, or resultant policy. An enabled link is not proof of application.
 
 #### Remediation action
 
-Review linked and unlinked policies against intended scope. Check disabled links, security filtering, inheritance, WMI filters, and ownership before enabling, removing, or consolidating policies.
+Review policies with and without enabled links against their intended scope. Before enabling, removing, or consolidating a link, check the target, disabled links, security filtering, WMI filters, inheritance, ownership, and expected policy processing. Confirm any change in the relevant deployment scope.
+
+#### Related Tests
+
+- [AD-GPO-01](https://maester.dev/docs/tests/AD-GPO-01) reports the total GPO inventory.
+- [AD-GPO-04](https://maester.dev/docs/tests/AD-GPO-04) identifies GPOs without any collected link reference, including disabled references.
+- [AD-GPOL-02](https://maester.dev/docs/tests/AD-GPOL-02) inventories disabled link entries.
 
 #### Related links
 
-* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
+- [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

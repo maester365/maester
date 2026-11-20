@@ -1,12 +1,38 @@
-Inventories the total number of GPOs returned from Active Directory. The **Investigate** result is intentional: the count is a starting point for reviewing policy sprawl, ownership, and purpose, not a security finding. If no GPOs are returned, the summary says so; failed inventory collection is an error.
+Inventories the total number of Group Policy Objects (GPOs) returned from Active Directory. The **Investigate** result is intentional: the count is a starting point for understanding policy inventory, not a security finding.
+
+#### Why This Test Matters
+
+An inventory helps administrators understand how much policy configuration they maintain and gives context for reviews of scope, ownership, and purpose. A large or growing number of GPOs can make policy maintenance and conflict analysis harder, but the count alone does not show that a policy is redundant, unsafe, or effective on a particular computer or user.
+
+#### Control Type
+
+**Operational** — this test reports an inventory metric for review; it does not assess a security requirement or alter configuration.
+
+#### Security Recommendation
+
+- Keep a documented purpose and accountable owner for each GPO.
+- Review scope and settings before consolidating policies; similar names do not mean their scope or contents are interchangeable.
+- Retire a GPO only after confirming it is no longer needed and following the normal backup and change process.
+
+#### How the Test Works
+
+The test reads the collected GPO inventory and counts the returned GPO records. It reports the total and adds an **Investigate** result even when the collection is empty; in that case, the summary explicitly says that no GPOs were returned. If the inventory itself could not be retrieved, the test errors rather than treating missing data as an empty directory.
+
+The result does not inspect policy settings, links, application, or whether two policies can safely be combined.
 
 #### Remediation action
 
-Review the inventory and confirm that each GPO has an owner and purpose. Consolidate only policies with compatible scope and settings. Archive or remove a policy only after confirming it is no longer needed.
+Review the inventory and confirm each policy's owner, purpose, and intended scope. Investigate apparent duplicates with their owners, and consolidate only policies with compatible settings and scope. Archive or remove a policy only after confirming it is no longer needed.
+
+#### Related Tests
+
+- [AD-GPO-02](https://maester.dev/docs/tests/AD-GPO-02) reviews GPO modification age.
+- [AD-GPO-04](https://maester.dev/docs/tests/AD-GPO-04) identifies GPOs without collected link references.
+- [AD-GPOL-01](https://maester.dev/docs/tests/AD-GPOL-01) inventories GPOs with enabled links.
 
 #### Related links
 
-* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
+- [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

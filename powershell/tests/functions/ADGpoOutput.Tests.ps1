@@ -1,4 +1,8 @@
 ﻿BeforeDiscovery {
+    $guideRoot = (Resolve-Path "$PSScriptRoot/../../../tests/ad").Path
+    $guideCases = @(Get-ChildItem "$guideRoot/gpo", "$guideRoot/gpo-state" -Filter 'Test.*.md' -File | ForEach-Object {
+            @{ GuidePath = $_.FullName; GuideName = $_.Name }
+        })
     $checks = @(
         @{ Command = 'Test-MtAdGpoTotalCount'; Investigate = $true; Details = $false }
         @{ Command = 'Test-MtAdGpoStale'; Investigate = $false; Details = $true }
@@ -27,6 +31,32 @@
 
 BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+}
+
+Describe 'Group Policy guide context' {
+    It 'discovers the complete set of Group Policy guides' -ForEach @(@{ DiscoveredCount = $guideCases.Count }) {
+        $DiscoveredCount | Should -Be 22
+        $paths = Get-ChildItem "$PSScriptRoot/../../../tests/ad/gpo", "$PSScriptRoot/../../../tests/ad/gpo-state" -Filter 'Test.*.md' -File
+        $paths.Count | Should -Be 22
+    }
+
+    It '<GuideName> retains explanatory context and the results footer' -ForEach $guideCases {
+        $text = Get-Content -LiteralPath $GuidePath -Raw
+        $text.Split([string[]]@('####'), [System.StringSplitOptions]::None)[0].Trim() | Should -Not -BeNullOrEmpty
+        foreach ($heading in 'Control Type', 'Why This Test Matters', 'Security Recommendation', 'How the Test Works', 'Remediation action', 'Related Tests', 'Related links') {
+            $pattern = '(?ms)^#### ' + [regex]::Escape($heading) + '\s*\r?\n(?<body>.*?)(?=^#### |\z)'
+            $section = [regex]::Match($text, $pattern)
+            $section.Success | Should -BeTrue -Because "the guide must explain $heading, not just the result layout"
+            $section.Groups['body'].Value.Trim() | Should -Not -BeNullOrEmpty
+        }
+        [regex]::Matches($text, '<!--- Results --->').Count | Should -Be 1
+        $text | Should -Match '<!--- Results --->\s*%TestResult%\s*$'
+        $text | Should -Match '\*\*(Detective|Operational)\*\*'
+        $ids = @((Get-ChildItem "$PSScriptRoot/../../../tests/ad/gpo", "$PSScriptRoot/../../../tests/ad/gpo-state" -Filter 'Test.*.md' -File).BaseName | ForEach-Object { $_.Substring(5) })
+        foreach ($id in [regex]::Matches($text, 'AD-GPO(?:REP|L|S)?-\d+') | ForEach-Object Value) {
+            $ids | Should -Contain $id -Because 'related test references must not point at retired IDs'
+        }
+    }
 }
 
 Describe 'Native Group Policy results' {

@@ -1,15 +1,60 @@
-Checks whether each evaluated GPO has permission entries. A readable GPO with no entries is a finding and fails the test. Unreadable permission data is reported as unknown, not as an empty list: if all permissions are unreadable, the test is skipped; if collection is partial and no finding is present, the result is **Investigate**. Failed permission-report collection is an error.
+Checks whether each evaluated GPO has permission entries in its collected permission
+report. A readable GPO with no entries is a finding and fails this test. This is a
+read-only assessment of a preventive ACL setting; it does not change permissions or
+calculate effective access.
 
-The result summarizes evaluated, empty, and unknown permission reports. Details are shown only for findings or unknown reports.
+#### Control Type
+
+**Detective**
+
+#### Why This Test Matters
+
+A GPO with no reported permission entries may not be manageable or accessible to its
+intended policy recipients. An unintentionally empty DACL can prevent policy
+retrieval and stop intended security settings from being applied.
+The entry count alone does not identify every DACL state or determine effective
+access. A NULL DACL grants full access and can expose the GPO to unauthorized
+modification; an empty DACL denies access. Both can produce this entry-count
+finding, so inspect the actual descriptor promptly to distinguish tampering
+exposure from an availability problem.
+
+#### Security Recommendation
+
+Review GPOs reported with no permission entries and verify the intended delegation
+and policy scope. Restore only permissions required by that design; do not infer
+effective access from the entry count alone.
+
+#### How the Test Works
+
+- Reads the cached GPO permission reports and checks `PermissionsPresent`.
+- A readable report with no entries is a finding; a report with entries satisfies
+  this check, without establishing that the entries grant appropriate access.
+- Unreadable permissions are unknown, not an empty list. If all reports are
+  unknown, the test is skipped; partial unknowns with no findings result in
+  **Investigate**. Any known finding still fails.
+- Failed permission-report collection is an error. Details are shown for findings
+  or unknown reports.
+- Security-descriptor parsing currently requires Windows. On other platforms,
+  these permissions are unknown and the test skips when no GPO can be evaluated.
 
 #### Remediation action
 
-1. In **Group Policy Management**, inspect each listed GPO's **Delegation** > **Advanced** security settings.
-2. Restore intended permissions and confirm that authorized administrators and policy recipients retain required access. Investigate descriptors that could not be read before treating the inventory as complete.
+1. In **Group Policy Management**, inspect each listed GPO under **Delegation** >
+   **Advanced** and review its actual security descriptor.
+2. Confirm that authorized administrators and intended policy recipients retain
+   the required access. Investigate unreadable descriptors before treating the
+   inventory as complete.
+
+#### Related Tests
+
+- `AD-GPOREP-03`, `AD-GPOREP-06`, and `AD-GPOREP-10` assess selected principal or
+  application entries; none calculates effective access for every principal.
+- `AD-GPOREP-07` and `AD-GPOREP-09` report deny and inherited entries, respectively.
 
 #### Related links
 
-* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
+- [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
+- [NULL and empty DACLs](https://learn.microsoft.com/windows/win32/secauthz/null-dacls-and-empty-dacls)
 
 <!--- Results --->
 %TestResult%

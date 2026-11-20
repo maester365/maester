@@ -1,17 +1,43 @@
-Checks that each GPO's last modification is no more than `MaximumAgeYears` old, defaulting to five calendar years. A modification exactly at the cutoff passes; only an older modification fails. Creation and modification dates are shown together, so an old creation date alone does not fail a recently maintained policy. An empty inventory, missing modification date, or unavailable inventory is an error.
+Checks whether each GPO's last modification is within the configured age limit, which defaults to five calendar years. The test fails if any modification date is older than that limit. A modification exactly at the cutoff passes. This is a maintenance indicator, not proof that a policy is insecure.
 
-Age is a hygiene indicator, not proof of insecure settings. LDAP `whenChanged` is specific to the queried domain controller and can reflect metadata or permission changes, not just policy settings. The result reports total and stale GPO counts, the cutoff, and each policy's assessment.
+#### Why This Test Matters
 
-Configure `MaximumAgeYears` under `TestSettings` > `Parameters` for `AD-GPO-02` in `maester-config.json`, or pass it through `Invoke-MtTest -Parameter`.
+Policies that have not changed for a long time may preserve obsolete settings or assumptions that no longer match the current security baseline. Stable policies can also be intentional. Reviewing older policies can reveal those settings or undocumented dependencies before a planned change; age by itself does not establish a security or operational defect.
+
+#### Control Type
+
+**Detective** — the test identifies policies outside the configured modification-age limit for review. It does not update or remove them.
+
+#### Security Recommendation
+
+- Review stale policies with their owners and compare their settings and scope with current requirements.
+- Treat the modification date as a review signal, not as a quality score or reason to make an unnecessary edit.
+- Confirm policy dependencies and intended application before changing or retiring a GPO.
+
+#### How the Test Works
+
+The test compares each collected GPO's `ModificationTime` with the current date minus `MaximumAgeYears` (five years by default). A modification exactly on the cutoff is within the limit. It reports the total, stale count, cutoff, and each policy's creation and modification dates and assessment. An old creation date alone does not fail a recently modified GPO.
+
+An empty or unavailable GPO inventory, or a missing modification date, causes an error because age cannot be assessed. The source modification timestamp is LDAP `whenChanged`, which is specific to the queried domain controller and can reflect metadata or ACL changes as well as policy changes. It is not a complete history of policy-setting changes.
+
+Configure `MaximumAgeYears` under `TestSettings` > `Parameters` for `AD-GPO-02` in
+`maester-config.json`, or pass it through `Invoke-MtTest -Parameter`.
 
 #### Remediation action
 
-1. In **Group Policy Management**, review stale policies with their owners and compare their settings with current security baselines.
-2. Update obsolete settings and verify intended scope, or archive and remove policies that are no longer needed. Do not edit a policy merely to refresh its timestamp.
+1. In **Group Policy Management**, review stale policies with their owners and compare their settings and scope with current requirements.
+2. Update a policy only where review identifies a real need, then verify intended scope and behavior. Archive or remove policies only after confirming they are no longer required.
+3. Do not make an unrelated edit merely to refresh the modification timestamp.
+
+#### Related Tests
+
+- [AD-GPO-01](https://maester.dev/docs/tests/AD-GPO-01) reports the total GPO inventory.
+- [AD-GPO-04](https://maester.dev/docs/tests/AD-GPO-04) identifies GPOs without collected link references.
+- [AD-GPOL-01](https://maester.dev/docs/tests/AD-GPOL-01) inventories GPOs with enabled links.
 
 #### Related links
 
-* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
+- [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%
