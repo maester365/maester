@@ -17,14 +17,12 @@ Describe 'MT.1286: Test-MtEntraAgentSponsorManager' -Tag 'Unit' {
     BeforeEach {
         $script:TestResult = $null
         $script:SkippedBecause = $null
-        $script:SkippedCustomReason = $null
 
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Result, $SkippedBecause, $SkippedCustomReason, $SkippedError, $Severity)
+            param($Result, $SkippedBecause)
 
             $script:TestResult = $Result
             $script:SkippedBecause = $SkippedBecause
-            $script:SkippedCustomReason = $SkippedCustomReason
         }
 
         # One object of each kind, all sponsored by the same user.
@@ -80,15 +78,15 @@ Describe 'MT.1286: Test-MtEntraAgentSponsorManager' -Tag 'Unit' {
         $script:TestResult | Should -Match 'Manager Grace Manager is a disabled account\.'
     }
 
-    It 'does not evaluate group sponsors, and skips when no object has a user sponsor' {
+    It 'does not evaluate group sponsors, and skips as not applicable when no object has a user sponsor' {
         Mock -ModuleName Maester Invoke-MtGraphRequest {
             [pscustomobject]@{ '@odata.type' = '#microsoft.graph.group'; id = 'group-1'; displayName = 'Agent sponsors' }
         } -ParameterFilter { $RelativeUri -like '*/sponsors' }
 
         Test-MtEntraAgentSponsorManager | Should -BeNullOrEmpty
 
-        $script:SkippedBecause | Should -Be 'Custom'
-        $script:SkippedCustomReason | Should -Match 'user sponsor'
+        $script:SkippedBecause | Should -Be 'NotApplicable'
+        $script:TestResult | Should -Match 'user sponsor'
         Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 0 -ParameterFilter { $RelativeUri -like 'users/*/manager' }
     }
 

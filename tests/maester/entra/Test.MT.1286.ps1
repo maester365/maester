@@ -128,7 +128,7 @@
         }
 
         if ($UserSponsorships -eq 0) {
-            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'No Agent ID object in this tenant has a user sponsor.'
+            Add-MtTestResultDetail -SkippedBecause NotApplicable -Result 'No Agent ID object in this tenant has a user sponsor.'
             return $null
         }
 
