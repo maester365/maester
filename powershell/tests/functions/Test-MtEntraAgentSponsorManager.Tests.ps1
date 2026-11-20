@@ -112,11 +112,12 @@ Describe 'MT.1286: Test-MtEntraAgentSponsorManager' -Tag 'Unit' {
         $script:SkippedBecause | Should -Be 'NotAuthorized'
     }
 
-    It 'is skipped with the error when a manager read fails for another reason' {
+    It 'leaves any other error to the engine, without reading it as a missing manager' {
         Mock -ModuleName Maester Invoke-MtGraphRequest { throw (Get-HttpError 500) } -ParameterFilter { $RelativeUri -like 'users/*/manager' }
 
-        Test-MtEntraAgentSponsorManager | Should -BeNullOrEmpty
+        { Test-MtEntraAgentSponsorManager } | Should -Throw -ExpectedMessage '*InternalServerError*'
 
-        $script:SkippedBecause | Should -Be 'Error'
+        $script:TestResult | Should -BeNullOrEmpty
+        $script:SkippedBecause | Should -BeNullOrEmpty
     }
 }

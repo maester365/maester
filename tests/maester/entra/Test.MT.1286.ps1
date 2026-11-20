@@ -31,7 +31,7 @@
         Feature = 'agent-identities',
         Area = 'ai',
         ResourceType = 'Agent',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',
@@ -45,30 +45,30 @@
     [OutputType([bool])]
     param()
 
+    $ObjectKinds = @(
+        @{
+            Type     = 'Agent identity'
+            List     = 'servicePrincipals/microsoft.graph.agentIdentity'
+            Sponsors = 'servicePrincipals/{0}/microsoft.graph.agentIdentity/sponsors'
+        }
+        @{
+            Type     = 'Agent blueprint principal'
+            List     = 'servicePrincipals/microsoft.graph.agentIdentityBlueprintPrincipal'
+            Sponsors = 'servicePrincipals/{0}/microsoft.graph.agentIdentityBlueprintPrincipal/sponsors'
+        }
+        @{
+            Type     = 'Agent blueprint'
+            List     = 'applications/microsoft.graph.agentIdentityBlueprint'
+            Sponsors = 'applications/{0}/microsoft.graph.agentIdentityBlueprint/sponsors'
+        }
+    )
+
+    # A user often sponsors several objects: read each manager once.
+    $ManagerBySponsorId = @{}
+    $UserSponsorships = 0
+    $Findings = [System.Collections.Generic.List[pscustomobject]]::new()
+
     try {
-        $ObjectKinds = @(
-            @{
-                Type     = 'Agent identity'
-                List     = 'servicePrincipals/microsoft.graph.agentIdentity'
-                Sponsors = 'servicePrincipals/{0}/microsoft.graph.agentIdentity/sponsors'
-            }
-            @{
-                Type     = 'Agent blueprint principal'
-                List     = 'servicePrincipals/microsoft.graph.agentIdentityBlueprintPrincipal'
-                Sponsors = 'servicePrincipals/{0}/microsoft.graph.agentIdentityBlueprintPrincipal/sponsors'
-            }
-            @{
-                Type     = 'Agent blueprint'
-                List     = 'applications/microsoft.graph.agentIdentityBlueprint'
-                Sponsors = 'applications/{0}/microsoft.graph.agentIdentityBlueprint/sponsors'
-            }
-        )
-
-        # A user often sponsors several objects: read each manager once.
-        $ManagerBySponsorId = @{}
-        $UserSponsorships = 0
-        $Findings = [System.Collections.Generic.List[pscustomobject]]::new()
-
         foreach ($Kind in $ObjectKinds) {
             $Objects = @(
                 Invoke-MtGraphRequest -ApiVersion 'v1.0' -RelativeUri $Kind.List -Select @('id', 'displayName')
@@ -126,44 +126,43 @@
                 }
             }
         }
-
-        if ($UserSponsorships -eq 0) {
-            Add-MtTestResultDetail -SkippedBecause NotApplicable -Result 'No Agent ID object in this tenant has a user sponsor.'
+    } catch {
+        # Graph answers 403 when the signed-in account cannot read Agent ID objects, their sponsors or a manager.
+        # Any other error goes to the engine, which reports it.
+        if ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -eq 403) {
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
             return $null
         }
-
-        if ($Findings.Count -eq 0) {
-            Add-MtTestResultDetail -Result (
-                "Well done. All $UserSponsorships user sponsorship(s) of Agent ID objects belong to users with an enabled manager."
-            )
-            return $true
-        }
-
-        $Result = "Found $($Findings.Count) of $UserSponsorships user sponsorship(s) that cannot be transferred to an enabled manager. "
-        $Result += 'When these sponsors leave or change roles, the Lifecycle Workflows task that transfers their sponsorships has no manager to transfer them to.'
-        $Result += "`n`n| Object type | Object | Sponsor | Issue |"
-        $Result += "`n| --- | --- | --- | --- |"
-        foreach ($Item in $Findings) {
-            $ObjectName = $Item.ObjectName
-            if ([string]::IsNullOrWhiteSpace($ObjectName)) { $ObjectName = "(unnamed) $($Item.ObjectId)" }
-            $SponsorText = $Item.Sponsor
-            if (-not [string]::IsNullOrWhiteSpace($Item.SponsorUpn)) { $SponsorText = "$SponsorText ($($Item.SponsorUpn))" }
-            $ObjectName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($ObjectName))
-            $SponsorText = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($SponsorText))
-            $Issue = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Item.Issue))
-            $Result += "`n| $($Item.ObjectType) | $ObjectName | $SponsorText | $Issue |"
-        }
-
-        Add-MtTestResultDetail -Result $Result -Severity 'Medium'
-        return $false
-    } catch {
-        $ErrorRecord = $_
+        throw
     }
 
-    if ($ErrorRecord.Exception.Message -match '(?i)403|forbidden|authorization') {
-        Add-MtTestResultDetail -SkippedBecause NotAuthorized
-    } else {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $ErrorRecord
+    if ($UserSponsorships -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause NotApplicable -Result 'No Agent ID object in this tenant has a user sponsor.'
+        return $null
     }
-    return $null
+
+    if ($Findings.Count -eq 0) {
+        Add-MtTestResultDetail -Result (
+            "Well done. All $UserSponsorships user sponsorship(s) of Agent ID objects belong to users with an enabled manager."
+        )
+        return $true
+    }
+
+    $Result = "Found $($Findings.Count) of $UserSponsorships user sponsorship(s) that cannot be transferred to an enabled manager. "
+    $Result += 'When these sponsors leave or change roles, the Lifecycle Workflows task that transfers their sponsorships has no manager to transfer them to.'
+    $Result += "`n`n| Object type | Object | Sponsor | Issue |"
+    $Result += "`n| --- | --- | --- | --- |"
+    foreach ($Item in $Findings) {
+        $ObjectName = $Item.ObjectName
+        if ([string]::IsNullOrWhiteSpace($ObjectName)) { $ObjectName = "(unnamed) $($Item.ObjectId)" }
+        $SponsorText = $Item.Sponsor
+        if (-not [string]::IsNullOrWhiteSpace($Item.SponsorUpn)) { $SponsorText = "$SponsorText ($($Item.SponsorUpn))" }
+        $ObjectName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($ObjectName))
+        $SponsorText = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($SponsorText))
+        $Issue = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Item.Issue))
+        $Result += "`n| $($Item.ObjectType) | $ObjectName | $SponsorText | $Issue |"
+    }
+
+    Add-MtTestResultDetail -Result $Result
+    return $false
 }
