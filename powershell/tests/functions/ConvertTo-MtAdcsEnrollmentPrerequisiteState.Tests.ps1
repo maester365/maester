@@ -71,6 +71,18 @@ Describe 'Published AD CS enrollment prerequisite evidence' {
         $config.CertificateTemplates[0].PSObject.Properties.Remove('msPKI-Enrollment-Flag')
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'Inconclusive'
     }
+    It 'keeps the parent regression for an observed null <Flag> inconclusive' -ForEach @(
+        @{ Flag = 'msPKI-Certificate-Name-Flag'; MissingEvidence = 'Subject-supply flag is unavailable or malformed.' },
+        @{ Flag = 'msPKI-Enrollment-Flag'; MissingEvidence = 'Enrollment flag is unavailable or malformed.' }
+    ) {
+        $config = Get-AdcsTestConfiguration
+        $config.CertificateTemplates[0].$Flag = $null
+        $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState $config
+        $result.Templates[0].Disposition | Should -Be 'Inconclusive'
+        $result.PotentiallyEligibleCount | Should -Be 0
+        $result.InconclusiveCount | Should -Be 1
+        $result.Templates[0].MissingEvidence | Should -Contain $MissingEvidence
+    }
     It 'recognizes an explicitly observed empty EKU as unrestricted' {
         foreach ($empty in @($null, @())) {
             $config = Get-AdcsTestConfiguration
