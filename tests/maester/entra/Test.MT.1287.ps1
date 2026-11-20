@@ -85,8 +85,11 @@
         }
     } catch {
         # Graph answers 403 when the signed-in account cannot read the authorization policy, the grants or the apps.
+        # In a batched lookup, Invoke-MtGraphRequest reports that 403 as a PermissionDenied error, with no response.
         # Any other error goes to the engine, which reports it.
-        if ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -eq 403) {
+        $Forbidden = ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -eq 403) -or
+            ($_.FullyQualifiedErrorId -like 'MtGraphBatchRequestFailed*' -and $_.CategoryInfo.Category -eq 'PermissionDenied')
+        if ($Forbidden) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
             return $null
         }

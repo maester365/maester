@@ -147,6 +147,32 @@ Describe 'MT.1287: Test-MtEntraUserConsentGrant' -Tag 'Unit' {
         $script:SkippedBecause | Should -Be 'NotAuthorized'
     }
 
+    It 'is skipped as not authorized when a batched lookup answers 403' {
+        $script:ServicePrincipals += Get-TestServicePrincipal -Id 'crm' -DisplayName 'Contoso CRM'
+        $script:Grants = @(Get-TestGrant -ClientId 'crm' -PrincipalId 'user-1')
+        # The shape Invoke-MtGraphRequest throws for a failed request inside a batch.
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals' } {
+            throw [System.Management.Automation.ErrorRecord]::new(
+                [System.InvalidOperationException]::new("Graph batch request for 'servicePrincipals/crm' failed with status 403"),
+                'MtGraphBatchRequestFailed', [System.Management.Automation.ErrorCategory]::PermissionDenied, 'servicePrincipals/crm')
+        }
+
+        Test-MtEntraUserConsentGrant | Should -BeNullOrEmpty
+        $script:SkippedBecause | Should -Be 'NotAuthorized'
+    }
+
+    It 'lets other batch errors reach the engine' {
+        $script:ServicePrincipals += Get-TestServicePrincipal -Id 'crm' -DisplayName 'Contoso CRM'
+        $script:Grants = @(Get-TestGrant -ClientId 'crm' -PrincipalId 'user-1')
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals' } {
+            throw [System.Management.Automation.ErrorRecord]::new(
+                [System.InvalidOperationException]::new("Graph batch request for 'servicePrincipals/crm' failed with status 500"),
+                'MtGraphBatchRequestFailed', [System.Management.Automation.ErrorCategory]::InvalidResult, 'servicePrincipals/crm')
+        }
+
+        { Test-MtEntraUserConsentGrant } | Should -Throw -ExpectedMessage '*status 500*'
+    }
+
     It 'lets other Graph errors reach the engine' {
         Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'policies/authorizationPolicy' } { throw (Get-HttpError 500) }
 
