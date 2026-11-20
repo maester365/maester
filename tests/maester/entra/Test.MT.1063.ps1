@@ -44,6 +44,15 @@
         # Retrieve all applications with their owners in a single API call
         # The $expand parameter includes owner details to minimize round trips
         $allApps = Invoke-MtGraphRequest -RelativeUri 'applications?$expand=owners' -ErrorAction Stop
+
+        # $expand on a relationship of a directory object returns at most 20 items and no @odata.nextLink
+        # (https://learn.microsoft.com/graph/known-issues#query-parameters). An app that shows 20 owners can
+        # have more, so its owners are read again from the relationship itself, which pages.
+        foreach ($app in @($allApps | Where-Object { $_.owners.Count -ge 20 })) {
+            Write-Verbose "Reading all owners of $($app.displayName): the expanded list stops at 20."
+            $app.owners = @(Invoke-MtGraphRequest -RelativeUri "applications/$($app.id)/owners" -ErrorAction Stop)
+        }
+
         $appsWithOwners = $allApps | Where-Object { $_.owners.Count -gt 0 }
 
         Write-Verbose "Found $($appsWithOwners.Count) app registrations with owners."
