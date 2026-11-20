@@ -5,6 +5,14 @@ sidebar:
   order: 1
 ---
 
+## LDAP Connection Protection
+
+Active Directory LDAP connections use TLS by default. `Auto`, `Ldaps`, and `StartTls` retain their existing behavior. The explicit `None` mode and unencrypted-bind switches are lab-only; see [AD connection troubleshooting](/docs/connect-maester/ad-connection-troubleshooting/) for parameters and examples.
+
+TLS provides connection confidentiality and integrity and authenticates the server certificate. SASL sealing provides confidentiality; SASL signing provides integrity, not encryption. Disabling TLS and SASL sealing exposes LDAP queries and results to observation, while disabling signing also permits in-transit tampering. Basic/simple bind without TLS sends the password on the wire and does not authenticate the server; an explicitly named server is not proof of server identity. Negotiate, Kerberos, and NTLM exchange authentication tokens, not clear-text passwords. NTLM challenge-response material can be relayed or subjected to offline password cracking.
+
+These LDAP settings do not disable SMB/SYSVOL or WSMan protection. A domain controller's stronger-authentication or signing policy may reject an unencrypted bind; Maester does not change client or domain-controller policy to work around that rejection.
+
 # Active Directory Permission Model
 
 - Version: 3.0

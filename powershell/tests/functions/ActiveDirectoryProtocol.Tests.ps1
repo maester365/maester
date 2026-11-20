@@ -294,6 +294,225 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
         }
     }
 
+    Describe 'Unencrypted LDAP mode (TlsMode None)' {
+        BeforeEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+                $__MtSession.ADCredential = $null
+                $__MtSession.ADCache = @{}
+            }
+            Mock Test-MtAdProtocolPrerequisites -ModuleName Maester {
+                [PSCustomObject]@{
+                    IsReady              = $true
+                    AuthModes            = @('Negotiate', 'Kerberos', 'Ntlm', 'Basic')
+                    TlsModes             = @('Ldaps', 'StartTls', 'None')
+                    PlatformProfile      = 'WindowsPS7'
+                    MissingPrerequisites = @()
+                }
+            }
+            Mock New-MtLdapConnection -ModuleName Maester {
+                $id = New-Object System.DirectoryServices.Protocols.LdapDirectoryIdentifier @('localhost', 389, $false, $false)
+                New-Object System.DirectoryServices.Protocols.LdapConnection @($id)
+            }
+            Mock Get-MtLdapRootDse -ModuleName Maester {
+                [PSCustomObject]@{
+                    DefaultNamingContext       = 'DC=contoso,DC=com'
+                    RootDomainNamingContext    = 'DC=contoso,DC=com'
+                    ConfigurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                    DnsHostName                = 'dc01.contoso.com'
+                }
+            }
+            Mock Invoke-MtLdapSearch -ModuleName Maester {
+                [PSCustomObject]@{ dnsRoot = 'contoso.com'; nCName = 'DC=contoso,DC=com'; trustParent = $null }
+            }
+            Mock Write-Warning -ModuleName Maester { }
+        }
+
+        AfterEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+                $__MtSession.ADCredential = $null
+                $__MtSession.ADCache = @{}
+            }
+        }
+
+        It 'Connect-MtAdTarget with -TlsMode None without -ForceUnencrypted should throw' {
+            InModuleScope Maester {
+                { Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -TlsMode 'None' -AuthMode 'Negotiate' } |
+                    Should -Throw -ExpectedMessage "*TLS mode 'None' requires -ForceUnencrypted.*"
+                Should -Invoke New-MtLdapConnection -Times 0 -Exactly
+            }
+        }
+
+        It 'Connect-MtAdTarget with -TlsMode None and -ForceUnencrypted should succeed' {
+            InModuleScope Maester {
+                Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -TlsMode 'None' -AuthMode 'Negotiate' -ForceUnencrypted
+                $__MtSession.ADConnection.TlsMode | Should -Be 'None'
+                $__MtSession.ADConnection.ForceUnencrypted | Should -BeTrue
+                Should -Invoke New-MtLdapConnection -Times 1 -Exactly -ParameterFilter { $Port -eq 389 -and -not $UseStartTls }
+            }
+        }
+
+        It 'Connect-MtAdTarget with -TlsMode None and -AuthMode Basic should throw' {
+            InModuleScope Maester {
+                $cred = [PSCredential]::new('CONTOSO\user', (ConvertTo-SecureString 'pass' -AsPlainText -Force))
+                { Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -TlsMode 'None' -AuthMode 'Basic' -ForceUnencrypted -ActiveDirectoryCredential $cred } |
+                    Should -Throw -ExpectedMessage '*Basic authentication without TLS requires the additional -AllowPlaintextPassword acknowledgement*'
+                Should -Invoke New-MtLdapConnection -Times 0 -Exactly
+            }
+        }
+
+        It 'New-MtAdProtocolConnection with TlsMode None uses port 389 without StartTLS' {
+            InModuleScope Maester {
+                $evidence = [PSCustomObject]@{
+                    ResolvedServer       = 'dc01.contoso.com'
+                    AuthenticationMode   = 'Negotiate'
+                    TlsMode              = 'None'
+                    ForceUnencrypted     = $true
+                    SkipCertificateCheck = $false
+                }
+
+                $connection = New-MtAdProtocolConnection -ProtocolEvidence $evidence
+                $connection.Dispose()
+                Should -Invoke New-MtLdapConnection -Times 1 -Exactly -ParameterFilter { $Port -eq 389 -and -not $UseStartTls }
+            }
+        }
+
+        It 'Preserves the opt-in for domain-state re-probes and reads' {
+            InModuleScope Maester {
+                Mock Get-MtLdapDomain { [PSCustomObject]@{ Name = 'contoso.com' } }
+                Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -TlsMode None -ForceUnencrypted
+                $state = Get-MtADDomainState -Categories Domain -Refresh -ErrorAction Stop
+                $state.Domain.Name | Should -Be 'contoso.com'
+                $state.ProtocolEvidence.TlsMode | Should -Be 'None'
+                $__MtSession.ADConnection.ForceUnencrypted | Should -BeTrue
+                Should -Invoke New-MtLdapConnection -Times 3 -Exactly -ParameterFilter { $Port -eq 389 -and -not $UseStartTls }
+            }
+        }
+
+        It 'Preserves the opt-in for Group Policy re-probes and reads' {
+            InModuleScope Maester {
+                Mock Get-MtLdapGpo { @() }
+                Mock Get-MtLdapGpoLink { @() }
+                Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -TlsMode None -ForceUnencrypted
+                Get-MtADGpoState -Refresh -ErrorAction Stop | Should -Not -BeNullOrEmpty
+                Should -Invoke New-MtLdapConnection -Times 3 -Exactly -ParameterFilter { $Port -eq 389 -and -not $UseStartTls }
+            }
+        }
+
+        It 'Preserves the opt-in for DACL re-probes and reads' -Skip:(-not $IsWindows) {
+            InModuleScope Maester {
+                Mock Get-MtLdapDacl { [PSCustomObject]@{ DistinguishedName = 'DC=contoso,DC=com' } }
+                Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -TlsMode None -ForceUnencrypted
+                Get-MtADDacls -Refresh -ErrorAction Stop | Should -Not -BeNullOrEmpty
+                Should -Invoke New-MtLdapConnection -Times 3 -Exactly -ParameterFilter { $Port -eq 389 -and -not $UseStartTls }
+            }
+        }
+
+        It 'Forwards the public opt-in and TLS mode' {
+            Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryTlsMode None -ActiveDirectoryForceUnencrypted
+            InModuleScope Maester {
+                $__MtSession.ADConnection.Connected | Should -BeTrue
+                $__MtSession.ADConnection.ForceUnencrypted | Should -BeTrue
+                $__MtSession.ADConnection.TlsMode | Should -Be 'None'
+            }
+        }
+
+        It 'Keeps the public default encrypted without an opt-in' {
+            Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer 'dc01.contoso.com'
+            InModuleScope Maester {
+                $__MtSession.ADConnection.ForceUnencrypted | Should -BeFalse
+                $__MtSession.ADConnection.TlsMode | Should -Be 'Ldaps'
+            }
+            Should -Invoke Write-Warning -ModuleName Maester -Times 0 -Exactly
+        }
+
+        It 'Preserves <Protection> opt-ins through the public connection and <Collector> reads' -ForEach @(
+            @{ Protection = 'unsigned'; Collector = 'domain' }
+            @{ Protection = 'unsigned'; Collector = 'gpo' }
+            @{ Protection = 'plaintext-password'; Collector = 'domain' }
+            @{ Protection = 'plaintext-password'; Collector = 'gpo' }
+        ) {
+            InModuleScope Maester -Parameters @{ Protection = $Protection; Collector = $Collector } {
+                param($Protection, $Collector)
+                Mock Get-MtLdapDomain { [PSCustomObject]@{ Name = 'contoso.com' } }
+                Mock Get-MtLdapGpo { @() }
+                Mock Get-MtLdapGpoLink { @() }
+                $parameters = @{ Service = 'ActiveDirectory'; ActiveDirectoryServer = 'dc01.contoso.com'; ActiveDirectoryTlsMode = 'None'; ActiveDirectoryForceUnencrypted = $true }
+                if ($Protection -eq 'unsigned') {
+                    $parameters.ActiveDirectoryForceUnsigned = $true
+                } else {
+                    $parameters.ActiveDirectoryAuthMode = 'Basic'
+                    $parameters.ActiveDirectoryAllowPlaintextPassword = $true
+                    $parameters.ActiveDirectoryCredential = [PSCredential]::new('fixture', (ConvertTo-SecureString 'fake' -AsPlainText -Force))
+                }
+                Connect-Maester @parameters
+                if ($Collector -eq 'domain') {
+                    $state = Get-MtADDomainState -Categories Domain -Refresh -ErrorAction Stop
+                    $state.ProtocolEvidence.ForceUnsigned | Should -Be ($Protection -eq 'unsigned')
+                    $state.ProtocolEvidence.AllowPlaintextPassword | Should -Be ($Protection -eq 'plaintext-password')
+                } else {
+                    Get-MtADGpoState -Refresh -ErrorAction Stop | Should -Not -BeNullOrEmpty
+                }
+                Should -Invoke New-MtLdapConnection -Times 3 -Exactly -ParameterFilter {
+                    $Port -eq 389 -and $ForceUnencrypted -and
+                    ([bool]$ForceUnsigned -eq ($Protection -eq 'unsigned')) -and
+                    ([bool]$AllowPlaintextPassword -eq ($Protection -eq 'plaintext-password'))
+                }
+            }
+        }
+
+        It 'Preserves <Protection> opt-ins through DACL reads' -Skip:(-not $IsWindows) -ForEach @(
+            @{ Protection = 'unsigned' }
+            @{ Protection = 'plaintext-password' }
+        ) {
+            InModuleScope Maester -Parameters @{ Protection = $Protection } {
+                param($Protection)
+                Mock Get-MtLdapDacl { [PSCustomObject]@{ DistinguishedName = 'DC=contoso,DC=com' } }
+                $parameters = @{ ActiveDirectoryServer = 'dc01.contoso.com'; TlsMode = 'None'; ForceUnencrypted = $true }
+                if ($Protection -eq 'unsigned') {
+                    $parameters.ForceUnsigned = $true
+                } else {
+                    $parameters.AuthMode = 'Basic'
+                    $parameters.AllowPlaintextPassword = $true
+                    $parameters.ActiveDirectoryCredential = [PSCredential]::new('fixture', (ConvertTo-SecureString 'fake' -AsPlainText -Force))
+                }
+                Connect-MtAdTarget @parameters
+                Get-MtADDacls -Refresh -ErrorAction Stop | Should -Not -BeNullOrEmpty
+                Should -Invoke New-MtLdapConnection -Times 3 -Exactly -ParameterFilter {
+                    $Port -eq 389 -and $ForceUnencrypted -and
+                    ([bool]$ForceUnsigned -eq ($Protection -eq 'unsigned')) -and
+                    ([bool]$AllowPlaintextPassword -eq ($Protection -eq 'plaintext-password'))
+                }
+            }
+        }
+
+        It 'Rejects incompatible opt-ins before creating a connection' {
+            InModuleScope Maester {
+                { Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -ForceUnsigned } | Should -Throw '*ForceUnsigned requires*'
+                { Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -TlsMode None -ForceUnencrypted -AllowPlaintextPassword } | Should -Throw '*AllowPlaintextPassword requires*'
+                { Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode None -ForceUnencrypted -AuthMode Basic -AllowPlaintextPassword } | Should -Throw '*requires an explicit -ActiveDirectoryServer*'
+                Should -Invoke New-MtLdapConnection -Times 0 -Exactly
+            }
+        }
+
+        It '<Mode> never falls back to LDAP without TLS, even with the force switch' -ForEach @(
+            @{ Mode = 'Auto'; Attempts = 2 }
+            @{ Mode = 'Ldaps'; Attempts = 1 }
+            @{ Mode = 'StartTls'; Attempts = 1 }
+        ) {
+            InModuleScope Maester -Parameters @{ Mode = $Mode; Attempts = $Attempts } {
+                param($Mode, $Attempts)
+                Mock New-MtLdapConnection { throw 'TLS failed' }
+                { Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -TlsMode $Mode -ForceUnencrypted } | Should -Throw
+                Should -Invoke New-MtLdapConnection -Times $Attempts -Exactly
+                Should -Invoke New-MtLdapConnection -Times 0 -Exactly -ParameterFilter { $Port -eq 389 -and -not $UseStartTls }
+                Should -Invoke Write-Warning -Times 0 -Exactly
+            }
+        }
+    }
+
     Describe 'Basic-over-LDAPS success path' {
         BeforeEach {
             $script:bindCalled = $false

@@ -9,7 +9,7 @@ function Get-MtAdSupportedAuthMatrix {
             PSEdition                   = 'Desktop'
             PowerShellVersionFloor      = [version]'5.1'
             SupportedAuthModes          = @('Negotiate', 'Kerberos', 'Ntlm', 'Basic')
-            TlsModes                    = @('Ldaps', 'StartTls')
+            TlsModes                    = @('Ldaps', 'StartTls', 'None')
             TlsRequiredAuthModes        = @('Basic')
             ExplicitCredentialAuthModes = @('Negotiate', 'Kerberos', 'Ntlm', 'Basic')
             IntegratedAuthModes         = @('Negotiate', 'Kerberos', 'Ntlm')
@@ -23,7 +23,7 @@ function Get-MtAdSupportedAuthMatrix {
             PSEdition                   = 'Core'
             PowerShellVersionFloor      = [version]'7.0'
             SupportedAuthModes          = @('Negotiate', 'Kerberos', 'Ntlm', 'Basic')
-            TlsModes                    = @('Ldaps', 'StartTls')
+            TlsModes                    = @('Ldaps', 'StartTls', 'None')
             TlsRequiredAuthModes        = @('Basic')
             ExplicitCredentialAuthModes = @('Negotiate', 'Kerberos', 'Ntlm', 'Basic')
             IntegratedAuthModes         = @('Negotiate', 'Kerberos', 'Ntlm')
@@ -37,7 +37,7 @@ function Get-MtAdSupportedAuthMatrix {
             PSEdition                   = 'Core'
             PowerShellVersionFloor      = [version]'7.2'
             SupportedAuthModes          = @('Negotiate', 'Kerberos', 'Basic')
-            TlsModes                    = @('Ldaps', 'StartTls')
+            TlsModes                    = @('Ldaps', 'StartTls', 'None')
             TlsRequiredAuthModes        = @('Basic')
             ExplicitCredentialAuthModes = @('Negotiate', 'Kerberos', 'Basic')
             IntegratedAuthModes         = @('Negotiate', 'Kerberos')
@@ -53,7 +53,7 @@ function Get-MtAdSupportedAuthMatrix {
             PSEdition                   = 'Core'
             PowerShellVersionFloor      = [version]'7.2'
             SupportedAuthModes          = @('Negotiate', 'Kerberos', 'Basic')
-            TlsModes                    = @('Ldaps', 'StartTls')
+            TlsModes                    = @('Ldaps', 'StartTls', 'None')
             TlsRequiredAuthModes        = @('Basic')
             ExplicitCredentialAuthModes = @('Negotiate', 'Kerberos', 'Basic')
             IntegratedAuthModes         = @('Negotiate', 'Kerberos')
