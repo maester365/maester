@@ -4,7 +4,7 @@ Evaluates whether an enterprise CA publishes certificate templates whose collect
 
 **Operational**
 
-#### Security Recommendation
+#### Remediation action
 
 - Review every published template that supports client authentication and lets the requester supply subject information.
 - Require manager approval or authorized signatures where business workflows permit.
@@ -23,6 +23,10 @@ The test deliberately distinguishes observed prerequisites from exploitability. 
 - **PrerequisitesNotSatisfied**: at least one modeled condition is disproven.
 - **PotentiallyEligible**: dangerous template and publication conditions exist, with ACL evidence available for follow-up.
 - **Inconclusive**: required configuration or authorization evidence is unavailable.
+
+#### Related links
+
+- [AD CS overview](https://learn.microsoft.com/windows-server/identity/ad-cs/active-directory-certificate-services-overview)
 
 <!--- Results --->
 %TestResult%

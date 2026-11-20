@@ -1,4 +1,11 @@
-﻿function Test-MtAdcsPublishedTemplatePrerequisites {
+﻿function Test-MtAdcsPublishedTemplatePrerequisite {
+    <#
+    .SYNOPSIS
+    Reviews published AD CS templates for modeled enrollment prerequisites.
+    .DESCRIPTION
+    Correlates CA publication, authentication EKUs, subject supply, manager approval and available authorization
+    evidence. Candidate results require review and do not establish effective enrollment rights.
+    #>
     [MaesterTest(
         Id = 'AD-CS-01',
         Title = 'Published AD CS templates should not expose dangerous enrollment prerequisites',
@@ -12,7 +19,8 @@
         Mitre = 'T1649',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
-        Author = 'Mario Contestabile'
+        Author = 'rolling-code',
+        Contributor = 'FiraSenax'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
