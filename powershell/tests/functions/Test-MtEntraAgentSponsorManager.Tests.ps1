@@ -7,9 +7,10 @@
 
 Describe 'MT.1286: Test-MtEntraAgentSponsorManager' -Tag 'Unit' {
     BeforeAll {
+        # Graph errors name the status, not its number: "Response status code does not indicate success: NotFound (Not Found)."
         function Get-HttpError ([int]$StatusCode) {
             $response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]$StatusCode)
-            [Microsoft.PowerShell.Commands.HttpResponseException]::new("Response status code does not indicate success: $StatusCode.", $response)
+            [Microsoft.PowerShell.Commands.HttpResponseException]::new("Response status code does not indicate success: $([System.Net.HttpStatusCode]$StatusCode) ($($response.ReasonPhrase)).", $response)
         }
     }
 

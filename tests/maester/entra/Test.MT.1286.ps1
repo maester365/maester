@@ -98,7 +98,9 @@
                                 -RelativeUri "users/$SponsorId/manager" -Select @('id', 'displayName', 'accountEnabled')
                         } catch {
                             # For a user without a manager, Graph answers 404 Request_ResourceNotFound. Anything else is an error.
-                            if ($_.Exception.Message -notmatch '(?i)\b404\b|Request_ResourceNotFound') { throw }
+                            # The exception message only says "NotFound": read the status code, and the error body as a fallback.
+                            $Status = if ($_.Exception.Response) { [int]$_.Exception.Response.StatusCode } else { 0 }
+                            if ($Status -ne 404 -and "$($_.ErrorDetails.Message)" -notmatch 'Request_ResourceNotFound') { throw }
                         }
                         $ManagerBySponsorId[$SponsorId] = $Manager
                     }
