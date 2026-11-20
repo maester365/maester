@@ -8,9 +8,9 @@
     CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.5, L2)
 
     The control also requires Safe Documents, which needs the SAFEDOCS service plan (Microsoft 365 A5, E5 or G5,
-    or Microsoft Defender Suite) and is not part of Defender for Office 365 Plan 1 or Plan 2. The check runs only on
-    a tenant with that plan. ORCA.158 checks the SharePoint, OneDrive and Teams setting on any Defender for Office 365
-    tenant.
+    or Microsoft Defender Suite) and is not part of Defender for Office 365 Plan 1 or Plan 2. When Maester can read
+    the tenant's licences, it skips the check on a tenant without that plan; when it cannot, the check runs.
+    ORCA.158 checks the SharePoint, OneDrive and Teams setting on any Defender for Office 365 tenant.
 
     .EXAMPLE
     Test-MtCisSafeAttachmentsAtpPolicy
