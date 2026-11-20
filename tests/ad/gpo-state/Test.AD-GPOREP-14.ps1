@@ -1,72 +1,60 @@
-﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
-function Test-MtAdGpoEnforcementCount {
+﻿function Test-MtAdGpoEnforcementCount {
     <#
     .SYNOPSIS
-    Counts the number of GPOs that have enforced GPO links.
+    Inventories GPOs that have at least one enforced link.
 
     .DESCRIPTION
-    This test retrieves Active Directory Group Policy state information using Get-MtADGpoState,
-    then counts how many returned GPO reports indicate enforced links.
+    Counts policies, not link entries. Enforcement overrides Block Inheritance;
+    unknown link data remains visible rather than being counted as not enforced.
 
     .EXAMPLE
-    Test-MtAdGpoEnforcementCount
+    Invoke-MtTest -Id 'AD-GPOREP-14'
 
-    Returns $true if GPO report data is accessible, $false otherwise.
-    The test result includes the number of GPOs with enforced links.
+    Inventories GPOs with enforced links and unknown enforcement for investigation.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoEnforcementCount
+    https://maester.dev/docs/tests/AD-GPOREP-14
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-14',
-        Title = 'GPO enforcement count should be investigated',
-        Product = 'ad',
-        Feature = 'group-policy',
-        Area = 'infrastructure',
-        ResourceType = 'GroupPolicy',
-        Severity = 'Info',
-        Mitre = 'None',
-        Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOREP-14',
+        Title              = 'GPOs with enforced links should be investigated',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'infrastructure',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Info',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    Write-Verbose "Starting Test-MtAdGpoEnforcementCount"
-    $gpoState = Get-MtADGpoState
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-    Write-Verbose "Filtering/counting gpo enforcement count"
-
-    $gpoReports = $gpoState.GPOReports
-    if ($null -eq $gpoReports) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory GPO report data from Get-MtADGpoState.'
-        return $false
-    }
-
-    $gpoReportsArray = @($gpoReports | Where-Object { $null -ne $_ })
-    $totalCount = $gpoReportsArray.Count
-    $enforcedCount = @($gpoReportsArray | Where-Object { [int]$_.Enforcement -gt 0 }).Count
-
-    $testResult = $true
-    $enforcedPercentage = if ($totalCount -gt 0) { [Math]::Round(($enforcedCount / $totalCount) * 100, 2) } else { 0 }
-
-    $result = "| Metric | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| Total GPOs | $totalCount |" + "`n"
-    $result += "| GPOs with enforced links | $enforcedCount |" + "`n"
-    $result += "| Enforced ratio | $enforcedPercentage% |" + "`n"
-    Write-Verbose "Counts computed"
-
-    $testResultMarkdown = "Active Directory GPOs have been analyzed for enforced links. $enforcedCount out of $totalCount GPO(s) have enforced link(s).`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-    Write-Verbose "Completed Test-MtAdGpoEnforcementCount"
-    return $testResult
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.GPOs) { throw 'GPO metadata could not be collected; enforcement cannot be inventoried.' }
+    $gpos = @($state.GPOs | Where-Object { $null -ne $_ })
+    $linksComplete = Test-MtAdGpoLinksComplete -State $state
+    # A null aggregate in GPOReports can mean an unlinked GPO, not a failed read.
+    # The cached normalized link collection distinguishes known no-links from unknown.
+    $rows = @(foreach ($gpo in $gpos) {
+            $assessment = 'Unknown'
+            if ($null -ne $state.GPOLinks -and -not [string]::IsNullOrWhiteSpace([string]$gpo.Id)) {
+                $links = @($state.GPOLinks | Where-Object { ([string]$_.GpoGuid).Trim('{}') -eq ([string]$gpo.Id).Trim('{}') })
+                if (@($links | Where-Object { $true -eq $_.IsEnforced }).Count -gt 0) { $assessment = 'Enforced link present' }
+                elseif ($linksComplete -and @($links | Where-Object { $null -eq $_.IsEnforced }).Count -eq 0) { $assessment = 'No enforced links' }
+            }
+            [pscustomobject]@{ Name = $gpo.DisplayName; Enforcement = $assessment }
+        })
+    $enforced = @($rows | Where-Object Enforcement -EQ 'Enforced link present')
+    $unknown = @($rows | Where-Object Enforcement -EQ 'Unknown')
+    $details = @($enforced + $unknown | Sort-Object Name)
+    $summary = if ($enforced.Count -eq 0 -and $unknown.Count -eq 0) { 'No collected GPO has an enforced link.' }
+    elseif ($unknown.Count -eq $gpos.Count) { 'Link enforcement could not be determined for any collected GPO.' }
+    elseif ($enforced.Count -eq 0) { 'No enforced links were found among evaluated GPOs.' }
+    else { "$($enforced.Count) of $($gpos.Count) GPOs have enforced links. Review their scope and inheritance overrides." }
+    if ($unknown.Count -gt 0) { $summary += " Link enforcement is unknown for $($unknown.Count) GPOs." }
+    $result = Format-MtAdGpoResult -Summary $summary -Metrics ([ordered]@{ 'Total GPOs' = $gpos.Count; 'GPOs with enforced links' = $enforced.Count; 'GPOs with unknown enforcement' = $unknown.Count }) -Details $details -Properties Name, Enforcement -Headers GPO, 'Link enforcement'
+    Add-MtTestResultDetail -Result $result -Investigate
+    return $true
 }

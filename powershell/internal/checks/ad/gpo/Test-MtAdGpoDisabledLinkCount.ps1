@@ -1,90 +1,44 @@
 ﻿function Test-MtAdGpoDisabledLinkCount {
     <#
     .SYNOPSIS
-    Counts the number of disabled GPO links in Active Directory.
-
+    Counts disabled GPO links and lists their policies and linked containers.
     .DESCRIPTION
-    This test retrieves the count of disabled GPO links across all organizational units,
-    domains, and sites. Disabled links indicate GPOs that are linked but not applied,
-    which can create confusion and security gaps if not properly managed.
-
-    .EXAMPLE
-    Test-MtAdGpoDisabledLinkCount
-
-    Returns $true if GPO link data is accessible, $false otherwise.
-    The test result includes counts of disabled vs total links.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoDisabledLinkCount
+    Uses normalized cached link states, including links that are both disabled and enforced.
+    .PARAMETER Investigate
+    Marks the inventory for investigation instead of reporting a successful read as Passed.
     #>
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param([switch] $Investigate)
 
-    Write-Verbose "Starting Test-MtAdGpoDisabledLinkCount"
-
-    # Get AD GPO state data (uses cached data if available)
-    $gpoState = Get-MtADGpoState
-
-    # If unable to retrieve GPO data, skip the test
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.GPOLinks -or $null -eq $state.GPOs) {
+        throw 'GPO links or GPO metadata could not be collected; cannot inventory disabled links.'
     }
-
-    $gpoLinks = $gpoState.GPOLinks
-
-    # Parse gPLink attribute to count disabled links
-    # gPLink format: [LDAP://cn={guid},cn=policies,cn=system,DC=domain,DC=com;0]
-    # The number after the semicolon indicates: 0=enabled, 1=disabled, 2=enforced
-    $totalLinks = 0
-    $disabledLinks = 0
-    $enabledLinks = 0
-    $enforcedLinks = 0
-
-    foreach ($link in $gpoLinks) {
-        if ($link.gPLink) {
-            # Split by brackets to get individual links
-            $linkEntries = $link.gPLink -split '\]' | Where-Object { $_ -match 'LDAP://' }
-            foreach ($entry in $linkEntries) {
-                $totalLinks++
-                # Check the suffix after the semicolon
-                if ($entry -match ';(\d)$') {
-                    $linkState = [int]$matches[1]
-                    switch ($linkState) {
-                        0 { $enabledLinks++ }
-                        1 { $disabledLinks++ }
-                        2 { $enforcedLinks++ }
-                    }
-                }
-            }
-        }
+    $links = @($state.GPOLinks | Where-Object { $null -ne $_ })
+    if (@($links | Where-Object { $null -eq $_.IsDisabled }).Count -gt 0) {
+        throw 'One or more GPO link states could not be evaluated.'
     }
-
-    # Test passes if we successfully retrieved GPO link data
-    $testResult = $totalLinks -ge 0
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Links | $totalLinks |" + "`n"
-        $result += "| Enabled Links | $enabledLinks |" + "`n"
-        $result += "| Disabled Links | $disabledLinks |" + "`n"
-        $result += "| Enforced Links | $enforcedLinks |" + "`n"
-
-        if ($totalLinks -gt 0) {
-            $disabledPercentage = [Math]::Round(($disabledLinks / $totalLinks) * 100, 2)
-            $result += "| Disabled Percentage | $disabledPercentage% |" + "`n"
-        }
-
-        $testResultMarkdown = "Active Directory GPO links have been analyzed. $disabledLinks out of $totalLinks links are disabled.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory GPO links. Ensure you have appropriate permissions and the Group Policy Management Console is installed."
+    $disabled = @($links | Where-Object { $true -eq $_.IsDisabled })
+    $linksComplete = Test-MtAdGpoLinksComplete -State $state
+    $gpoIndex = [System.Collections.Generic.Dictionary[string, object]]::new([StringComparer]::OrdinalIgnoreCase)
+    foreach ($gpo in @($state.GPOs | Where-Object { $null -ne $_ })) {
+        $id = ([string]$gpo.Id).Trim('{}')
+        if (-not [string]::IsNullOrWhiteSpace($id) -and -not $gpoIndex.ContainsKey($id)) { $gpoIndex.Add($id, $gpo) }
     }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $details = @(foreach ($link in @($disabled | Sort-Object DistinguishedName, GpoGuid)) {
+        $id = ([string]$link.GpoGuid).Trim('{}')
+        $name = if ($gpoIndex.ContainsKey($id)) { [string]$gpoIndex[$id].DisplayName } else { [string]$link.GpoGuid }
+        [pscustomobject]@{ Name = $name; Container = $link.DistinguishedName }
+    })
+    $summary = if ($links.Count -eq 0) { 'No GPO links were returned in the collected inventory.' }
+    elseif ($disabled.Count -eq 0) { "No disabled GPO links were found. All $($links.Count) collected links are enabled." }
+    else { "$($disabled.Count) of $($links.Count) GPO links are disabled. Review whether these disabled links are intentional." }
+    if (-not $linksComplete) { $summary = "Partial link inventory: $($disabled.Count) known disabled links among $($links.Count) parsed links. Additional links could not be parsed; zero findings would not prove that all links are enabled." }
+    elseif (-not $Investigate -and $disabled.Count -eq 0 -and $links.Count -gt 0) { $summary = "Well done. $summary" }
+    $metrics = if ($linksComplete) { [ordered]@{ 'Total GPO links' = $links.Count; 'Enabled GPO links' = $links.Count - $disabled.Count; 'Disabled GPO links' = $disabled.Count } }
+    else { [ordered]@{ 'Parsed GPO links' = $links.Count; 'Known enabled GPO links' = $links.Count - $disabled.Count; 'Known disabled GPO links' = $disabled.Count; 'Link collection complete' = $false } }
+    $result = Format-MtAdGpoResult -Summary $summary -Metrics $metrics -Details $details -Properties Name, Container -Headers GPO, 'Linked container'
+    Add-MtTestResultDetail -Result $result -Investigate:($Investigate -or -not $linksComplete)
+    return $true
 }

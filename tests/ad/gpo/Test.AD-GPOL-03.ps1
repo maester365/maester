@@ -1,180 +1,57 @@
 ﻿function Test-MtAdGpoUnlinkedTargetCount {
     <#
     .SYNOPSIS
-    Counts AD targets (OUs, domains, sites) that do not have any GPO links.
+    Inventories direct GPO link coverage for investigation.
 
     .DESCRIPTION
-    This test identifies policy deployment gaps by counting Active Directory targets
-    (organizational units, the domain root, and site link objects) that have no GPO links.
-
-    Targets without GPO links may indicate incomplete security policy coverage and can lead
-    to inconsistent enforcement of security baselines.
+    Counts linked and unlinked OUs and lists OUs, the domain root and sites without
+    direct GUID references. Inherited policy can apply without a direct link.
 
     .EXAMPLE
-    Test-MtAdGpoUnlinkedTargetCount
+    Invoke-MtTest -Id 'AD-GPOL-03'
 
-    Returns $true if no unlinked targets were found, $false if targets without any GPO links exist,
-    and $null if AD/GPO data is not accessible.
+    Lists targets without direct links for investigation, not as proof of missing policy.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoUnlinkedTargetCount
+    https://maester.dev/docs/tests/AD-GPOL-03
     #>
     [MaesterTest(
-        Id = 'AD-GPOL-03',
-        Title = 'GPO unlinked target count should be compliant',
-        Product = 'ad',
-        Feature = 'group-policy',
-        Area = 'infrastructure',
-        ResourceType = 'OrganizationalUnit',
-        Severity = 'Low',
-        UserImpact = 'Low',
-        ImplementationCost = 'Medium',
-        Mitre = 'None',
-        Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOL-03',
+        Title              = 'Direct GPO link coverage should be investigated',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'infrastructure',
+        ResourceType       = 'OrganizationalUnit',
+        Severity           = 'Info',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    Write-Verbose "Starting Test-MtAdGpoUnlinkedTargetCount"
-
-    # Get AD GPO state data (uses cached data if available)
-    $gpoState = Get-MtADGpoState
-
-    # If unable to retrieve GPO data, skip the test
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    function Test-MtGpoLinkPresent {
-        param(
-            [Parameter(Mandatory = $false)]
-            [object]$gPLinkValue
-        )
-
-        if ($null -eq $gPLinkValue) {
-            return $false
-        }
-
-        $text = [string]$gPLinkValue
-        if ([string]::IsNullOrWhiteSpace($text)) {
-            return $false
-        }
-
-        # gPLink contains one or more entries like:
-        # LDAP://...CN={GPO-GUID},...;0
-        return [regex]::IsMatch($text, '\{[0-9a-fA-F-]{36}\}')
-    }
-
-    # Collect targets without any GPO links
-    $unlinkedOus = @()
-    $unlinkedDomains = @()
-    $unlinkedSites = @()
-
-    # OUs
-    $ous = @($gpoState.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'organizationalUnit' })
-    foreach ($ou in $ous) {
-        if (-not (Test-MtGpoLinkPresent -gPLinkValue $ou.GpLink)) {
-            $unlinkedOus += $ou
-        }
-    }
-
-    # Domain root
-    $domainObj = $gpoState.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'domainDNS' } | Select-Object -First 1
-    if ($null -ne $domainObj -and -not (Test-MtGpoLinkPresent -gPLinkValue $domainObj.GpLink)) {
-        $unlinkedDomains = @($domainObj)
-    }
-
-    # Sites (siteLink objects)
-    $siteContainers = $gpoState.SiteContainers
-    $siteLinks = @()
-    if ($null -ne $siteContainers) {
-        foreach ($obj in @($siteContainers)) {
-            $objectClass = $obj.ObjectClass
-
-            if ($null -eq $objectClass) {
-                continue
-            }
-
-            if (@($objectClass) -contains 'site') {
-                $siteLinks += $obj
-            }
-        }
-    }
-
-    foreach ($siteLink in @($siteLinks)) {
-        $siteLinkValue = $null
-        if ($siteLink.PSObject.Properties.Match('gPLink')) {
-            $siteLinkValue = $siteLink.gPLink
-        }
-
-        if (-not (Test-MtGpoLinkPresent -gPLinkValue $siteLinkValue)) {
-            $unlinkedSites += $siteLink
-        }
-    }
-
-    $totalOus = if ($null -ne $ous) { ($ous | Measure-Object).Count } else { 0 }
-    $totalDomains = if ($null -ne $domainObj) { 1 } else { 0 }
-    $totalSites = @($siteLinks).Count
-
-    $unlinkedCountOus = @($unlinkedOus).Count
-    $unlinkedCountDomains = @($unlinkedDomains).Count
-    $unlinkedCountSites = @($unlinkedSites).Count
-
-    $totalUnlinkedTargets = $unlinkedCountOus + $unlinkedCountDomains + $unlinkedCountSites
-    $testResult = $totalUnlinkedTargets -eq 0
-
-    # Sample unlinked targets
-    $sampleLimit = 5
-    $sample = @()
-    $sample += @($unlinkedOus | Sort-Object DistinguishedName | Select-Object -First $sampleLimit | ForEach-Object {
-        'OU: ' + [string]$_.DistinguishedName
-    })
-
-    if ($sample.Count -lt $sampleLimit -and $unlinkedDomains.Count -gt 0) {
-        $sample += @('Domain: ' + [string]$unlinkedDomains[0].DistinguishedName)
-    }
-
-    if ($sample.Count -lt $sampleLimit -and $unlinkedSites.Count -gt 0) {
-        $remaining = $sampleLimit - $sample.Count
-        $sample += @($unlinkedSites | Sort-Object DistinguishedName | Select-Object -First $remaining | ForEach-Object {
-            'SiteLink: ' + [string]$_.DistinguishedName
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.LinkContainers) { throw 'Domain or OU GPO link containers were not retrieved.' }
+    $ous = @($state.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'organizationalUnit' })
+    $domain = @($state.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'domainDNS' } | Select-Object -First 1)
+    $sites = @($state.SiteContainers | Where-Object { @($_.ObjectClass) -contains 'site' })
+    $sitesAvailable = $null -ne $state.SiteContainers
+    $withoutLinks = { -not [regex]::IsMatch([string]$_.GpLink, '\{[0-9a-fA-F-]{36}\}') }
+    $unlinkedOus = @($ous | Where-Object $withoutLinks)
+    $unlinkedDomains = @($domain | Where-Object $withoutLinks)
+    $unlinkedSites = @($sites | Where-Object $withoutLinks)
+    $details = @(foreach ($target in @($unlinkedOus) + @($unlinkedDomains) + @($unlinkedSites)) {
+            [pscustomobject]@{ Kind = @($target.ObjectClass)[-1]; DistinguishedName = $target.DistinguishedName }
         })
-    }
-
-    $sampleText = ($sample | Where-Object { $_ }) -join ', '
-    if ($totalUnlinkedTargets -gt $sampleLimit -and $sampleText) {
-        $sampleText += " (showing first $sampleLimit)"
-    }
-
-    $result = "| Metric | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| Total OUs | $totalOus |" + "`n"
-    $result += "| Unlinked OUs | $unlinkedCountOus |" + "`n"
-    $result += "| Total Domains | $totalDomains |" + "`n"
-    $result += "| Unlinked Domains | $unlinkedCountDomains |" + "`n"
-    $result += "| Total Sites (siteLink) | $totalSites |" + "`n"
-    $result += "| Unlinked Sites (siteLink) | $unlinkedCountSites |" + "`n"
-    $result += "| Total Unlinked Targets | $totalUnlinkedTargets |" + "`n"
-    if ($sampleText) {
-        # Avoid breaking markdown tables when DNs contain pipes
-        # Use [regex]::Escape to properly escape the pipe character for regex replacement
-        $safeSampleText = $sampleText -replace '\|', '&#124;'
-        $result += "| Sample Unlinked Targets | $safeSampleText |" + "`n"
-    }
-
-    if ($testResult) {
-        $testResultMarkdown = "✅ All analyzed targets (OUs, domain root, and sites) have at least one GPO link. This indicates consistent GPO-based security policy coverage.`n`n%TestResult%"
-    }
-    else {
-        $testResultMarkdown = "⚠️ One or more Active Directory targets do not have any GPO links ($totalUnlinkedTargets). Unlinked targets can indicate incomplete policy coverage, leading to inconsistent security enforcement across the environment.`n`n%TestResult%"
-    }
-
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    return $testResult
+    $summary = if ($details.Count -eq 0) { 'No collected target lacks a direct GPO link. Review effective policy separately; a direct link is not proof of policy application.' }
+    else { "$($details.Count) target(s) have no direct links. Investigate inherited policy; absence of a direct link is not proof of missing security policy." }
+    $siteCount = if ($sitesAvailable) { $sites.Count } else { $null }
+    $unlinkedSiteCount = if ($sitesAvailable) { $unlinkedSites.Count } else { $null }
+    $totalWithoutLinks = if ($sitesAvailable) { $details.Count } else { $null }
+    if (-not $sitesAvailable) { $summary = "Partial inventory: site data is unavailable. OU and domain metrics remain available; $($details.Count) known targets have no direct links. Review inherited policy separately." }
+    $metrics = [ordered]@{ 'Total OUs' = $ous.Count; 'Unlinked OUs' = $unlinkedOus.Count; 'OUs with direct links' = $ous.Count - $unlinkedOus.Count; 'Total domains' = $domain.Count; 'Domains without direct links' = $unlinkedDomains.Count; 'Total sites' = $siteCount; 'Sites without direct links' = $unlinkedSiteCount; 'Targets without direct links' = $totalWithoutLinks }
+    $result = Format-MtAdGpoResult -Summary $summary -Metrics $metrics -Details @($details | Sort-Object Kind, DistinguishedName) -Properties Kind, DistinguishedName -Headers 'Target type', 'Distinguished name'
+    Add-MtTestResultDetail -Result $result -Investigate
+    return $true
 }

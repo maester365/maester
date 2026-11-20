@@ -785,11 +785,18 @@ function Get-MtSysvolContent {
     $gptIni = $null
     $gppXml = [Collections.Generic.List[object]]::new()
     $securityTemplates = [Collections.Generic.List[object]]::new()
+    $scanErrors = [Collections.Generic.List[string]]::new()
     foreach ($file in $files) {
         $path = [string]$file.RelativePath
-        if ($path -match '(?i)(^|/)GPT\.INI$') {
+        if ($path -match '(?i)^GPT\.INI$') {
             $adapterParameters['RelativePath'] = $path
-            $gptIni = ConvertFrom-MtSysvolGptIni -Content (& $invokeAdapter 'ReadText' $TimeoutSeconds)
+            try {
+                $gptIni = ConvertFrom-MtSysvolGptIni -Content (& $invokeAdapter 'ReadText' $TimeoutSeconds)
+            }
+            catch {
+                $scanErrors.Add($path)
+                Write-Verbose "Could not scan SYSVOL version file '$path'."
+            }
         }
         elseif ($path -match '(?i)\.xml$') {
             $adapterParameters['RelativePath'] = $path
@@ -797,21 +804,38 @@ function Get-MtSysvolContent {
                 $gppXml.Add((ConvertFrom-MtSysvolGppXml -Content (& $invokeAdapter 'ReadText' $TimeoutSeconds) -RelativePath $path))
             }
             catch {
-                Write-Verbose "Could not parse SYSVOL XML file '$path': $($_.Exception.Message)"
+                # Do not expose XML contents or exception text that may include credentials.
+                $scanErrors.Add($path)
+                Write-Verbose "Could not scan SYSVOL XML file '$path'."
             }
         }
         elseif ($path -match '(?i)(^|/)GptTmpl\.inf$') {
             $adapterParameters['RelativePath'] = $path
-            $parsedTemplate = ConvertFrom-MtSysvolSecurityTemplate -Content (& $invokeAdapter 'ReadText' $TimeoutSeconds)
-            $securityTemplates.Add([PSCustomObject][ordered]@{
-                    RelativePath    = $path
-                    RegistryValues  = $parsedTemplate.RegistryValues
-                    PrivilegeRights = $parsedTemplate.PrivilegeRights
-                    DefaultPasswordFound = $parsedTemplate.DefaultPasswordFound
-                })
+            try {
+                $parsedTemplate = ConvertFrom-MtSysvolSecurityTemplate -Content (& $invokeAdapter 'ReadText' $TimeoutSeconds)
+                $securityTemplates.Add([PSCustomObject][ordered]@{
+                        RelativePath    = $path
+                        RegistryValues  = $parsedTemplate.RegistryValues
+                        PrivilegeRights = $parsedTemplate.PrivilegeRights
+                        DefaultPasswordFound = $parsedTemplate.DefaultPasswordFound
+                    })
+            }
+            catch {
+                $scanErrors.Add($path)
+                Write-Verbose "Could not scan SYSVOL security template '$path'."
+            }
         }
     }
 
+    # Every GPO should have GPT.INI. An empty or incomplete listing cannot establish a clean scan.
+    if (($null -eq $gptIni -or $null -eq $gptIni.Version) -and $scanErrors -notcontains 'GPT.INI') {
+        $scanErrors.Add('GPT.INI')
+    }
+    $cpasswordFound = [bool]($gppXml | Where-Object CpasswordFound | Select-Object -First 1)
+    $defaultPasswordFound = [bool](
+        ($gppXml | Where-Object DefaultPasswordFound | Select-Object -First 1) -or
+        ($securityTemplates | Where-Object DefaultPasswordFound | Select-Object -First 1)
+    )
     return [PSCustomObject][ordered]@{
         GpoGuid              = $normalizedGuid
         Server               = $server
@@ -823,10 +847,8 @@ function Get-MtSysvolContent {
         GptIni               = $gptIni
         GppXml               = @($gppXml)
         SecurityTemplates    = @($securityTemplates)
-        CpasswordFound       = [bool]($gppXml | Where-Object CpasswordFound | Select-Object -First 1)
-        DefaultPasswordFound = [bool](
-            ($gppXml | Where-Object DefaultPasswordFound | Select-Object -First 1) -or
-            ($securityTemplates | Where-Object DefaultPasswordFound | Select-Object -First 1)
-        )
+        ScanErrors           = @($scanErrors)
+        CpasswordFound       = if ($cpasswordFound -or $scanErrors.Count -eq 0) { $cpasswordFound } else { $null }
+        DefaultPasswordFound = if ($defaultPasswordFound -or $scanErrors.Count -eq 0) { $defaultPasswordFound } else { $null }
     }
 }

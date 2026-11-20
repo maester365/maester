@@ -9,6 +9,7 @@ Describe 'Attribute review script' {
     BeforeAll {
         $script:repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '../../..')).Path
         . (Join-Path $script:repoRoot 'build/review/Invoke-MtAttributeReview.ps1')
+        . (Join-Path $script:repoRoot 'build/review/Get-MtReviewPullRequestFile.ps1')
 
         function New-TestFileText {
             [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that only builds test data.')]
@@ -122,6 +123,14 @@ function Test-MtReviewSample {
             @(Get-MtReviewTarget -Root $root -HeadRoot $head -File ($script:path -replace '\.ps1$', '.md')).Count | Should -Be 0
         }
 
+        It 'Does not review a deleted or renamed-away test from the trusted base' {
+            $root = New-ReviewTree 'removed-root'
+            $head = New-ReviewTree 'removed-head'
+            $old = 'tests/maester/entra/Test.MT.9002.ps1'
+            New-TestFileText -Id 'MT.9002' | Set-Content (Join-Path $root $old)
+            @(Get-MtReviewTarget -Root $root -HeadRoot $head -File $old).Count | Should -Be 0
+        }
+
         It 'Ignores paths that are not test files and paths that climb out of the tree' {
             $root = New-ReviewTree 'paths-root'
             $head = New-ReviewTree 'paths-head'
@@ -130,6 +139,34 @@ function Test-MtReviewSample {
 
         It 'Does not treat list order as a change' {
             (ConvertTo-MtReviewValue -Value @('T1110', 'T1078.004')) | Should -Be (ConvertTo-MtReviewValue -Value @('T1078.004', 'T1110'))
+        }
+    }
+
+    Context 'Pull request file handoff' {
+        It 'Lists deleted tests and rename-old paths but downloads only current safe files' {
+            $old = 'tests/maester/entra/Test.MT.9002.ps1'
+            $new = 'tests/maester/entra/Test.MT.9003.ps1'
+            $files = Get-MtReviewPullRequestFile -Changed @(
+                [pscustomobject]@{ status = 'modified'; filename = $script:path }
+                [pscustomobject]@{ status = 'removed'; filename = $old }
+                [pscustomobject]@{ status = 'renamed'; filename = $new; previous_filename = $old }
+                [pscustomobject]@{ status = 'modified'; filename = $script:path }
+            )
+            $files.Review | Should -Be @($script:path, $old, $new)
+            $files.Download | Should -Be @($script:path, $new)
+        }
+
+        It 'Validates old and current paths and caps the total distinct review paths' {
+            $files = Get-MtReviewPullRequestFile -Changed @(
+                [pscustomobject]@{ status = 'renamed'; filename = $script:path; previous_filename = 'tests/../secret/Test.MT.9002.ps1' }
+                [pscustomobject]@{ status = 'removed'; filename = 'tests/../secret/Test.MT.9003.ps1' }
+                [pscustomobject]@{ status = 'renamed'; filename = 'tests/../secret/Test.MT.9004.ps1'; previous_filename = 'tests/maester/entra/Test.MT.9005.ps1' }
+            )
+            $files.Review | Should -Be @($script:path, 'tests/maester/entra/Test.MT.9005.ps1')
+            $files.Download | Should -Be @($script:path)
+            { Get-MtReviewPullRequestFile -MaxFiles 1 -Changed @(
+                    [pscustomobject]@{ status = 'renamed'; filename = $script:path; previous_filename = 'tests/maester/entra/Test.MT.9005.ps1' }
+                ) } | Should -Throw '*more than this job downloads*'
         }
     }
 
@@ -312,6 +349,53 @@ function Test-MtReviewSample {
             }
             Get-Content (Join-Path $script:out 'attribute-review.md') -Raw | Should -Match '1 passed'
             (Get-Content (Join-Path $script:out 'attribute-review.json') -Raw | ConvertFrom-Json)[0].Outcome | Should -Be 'Pass'
+        }
+
+        It 'Excludes a deleted related test from the actual request sent for a changed test' {
+            $env:ANTHROPIC_API_KEY = 'test-key'
+            $rep15 = 'tests/maester/entra/Test.REP.15.ps1'
+            $rep16 = 'tests/maester/entra/Test.REP.16.ps1'
+            New-TestFileText -Id 'REP.15' -Severity 'High' | Set-Content (Join-Path $script:root $rep15)
+            New-TestFileText -Id 'REP.15' -Severity 'Low' | Set-Content (Join-Path $script:head $rep15)
+            New-TestFileText -Id 'REP.16' -Severity 'Medium' | Set-Content (Join-Path $script:root $rep16)
+            $files = Get-MtReviewPullRequestFile -Changed @(
+                [pscustomobject]@{ status = 'modified'; filename = $rep15 }
+                [pscustomobject]@{ status = 'removed'; filename = $rep16 }
+            )
+            $script:arguments.File = $files.Review
+            $script:request = $null
+            Mock Invoke-WebRequest {
+                $script:request = [Text.Encoding]::UTF8.GetString($Body) | ConvertFrom-Json -Depth 30
+                New-ApiResponse -Json '{"verdict":"pass","findings":[],"notes":[],"untrusted_instructions":false}'
+            }
+            Invoke-MtAttributeReview @script:arguments | Should -Be 0
+            Should -Invoke Invoke-WebRequest -Times 1 -Exactly
+            $script:request.messages[0].content | Should -Match 'related_tests: none'
+            $script:request.messages[0].content | Should -Not -Match 'REP\.16'
+            (Get-Content (Join-Path $script:out 'attribute-review.json') -Raw | ConvertFrom-Json).Id | Should -Be 'REP.15'
+        }
+
+        It 'Reviews only the new path after a rename and excludes the old path as related' {
+            $env:ANTHROPIC_API_KEY = 'test-key'
+            $old = 'tests/maester/entra/Test.MT.9002.ps1'
+            $new = 'tests/maester/entra/Test.MT.9003.ps1'
+            New-TestFileText -Id 'MT.9002' -Severity 'Medium' | Set-Content (Join-Path $script:root $old)
+            New-TestFileText -Id 'MT.9003' -Severity 'Low' | Set-Content (Join-Path $script:head $new)
+            $files = Get-MtReviewPullRequestFile -Changed @(
+                [pscustomobject]@{ status = 'renamed'; filename = $new; previous_filename = $old }
+            )
+            $files.Review | Should -Be @($new, $old)
+            $files.Download | Should -Be @($new)
+            $script:arguments.File = $files.Review
+            $script:request = $null
+            Mock Invoke-WebRequest {
+                $script:request = [Text.Encoding]::UTF8.GetString($Body) | ConvertFrom-Json -Depth 30
+                New-ApiResponse -Json '{"verdict":"pass","findings":[],"notes":[],"untrusted_instructions":false}'
+            }
+            Invoke-MtAttributeReview @script:arguments | Should -Be 0
+            Should -Invoke Invoke-WebRequest -Times 1 -Exactly
+            $script:request.messages[0].content | Should -Match 'related_tests: none'
+            (Get-Content (Join-Path $script:out 'attribute-review.json') -Raw | ConvertFrom-Json).Id | Should -Be 'MT.9003'
         }
 
         It 'Returns 1 when an attribute does not fit the rubric' {

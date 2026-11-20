@@ -14,14 +14,17 @@
     $entries = @(Invoke-MtLdapSearch -Connection $Connection -SearchBase $SearchBase -Scope Subtree -Filter '(objectClass=groupPolicyContainer)' -Attributes $attributes -SecurityDescriptorFlags $securityDescriptorFlags)
     return @($entries | ForEach-Object {
         $entry = $_
-        $version = [int]$_.versionNumber
+        # LDAP exposes a signed 32-bit value; GPT.INI stores the same bits as unsigned.
+        $version = if ($null -ne $_.versionNumber) { [long]$_.versionNumber -band 0xffffffffL } else { $null }
         $idText = ([string]$_.name).Trim('{}')
         $id = $idText
         try { $id = [guid]$idText } catch { Write-Verbose "GPO '$($entry.name)' does not contain a valid GUID name." }
         [PSCustomObject]@{
             Id = $id; DisplayName = [string]$_.displayName; DistinguishedName = [string]$_.DistinguishedName; Created = $_.whenCreated; Modified = $_.whenChanged
             Flags = $_.flags; Owner = $_.ntSecurityDescriptor.Owner.IdentityReference; ntSecurityDescriptor = $_.ntSecurityDescriptor; WmiFilter = [string]$_.gPCWQLFilter; GpcFileSysPath = [string]$_.gPCFileSysPath
-            VersionNumber = $version; UserVersion = (($version -shr 16) -band 0xffff); ComputerVersion = ($version -band 0xffff)
+            VersionNumber = $version
+            UserVersion = if ($null -ne $version) { ($version -shr 16) -band 0xffff } else { $null }
+            ComputerVersion = if ($null -ne $version) { $version -band 0xffff } else { $null }
         }
     })
 }

@@ -3,9 +3,7 @@
     # profile (see New-TestGpo) that the test must flag.
     $script:permissionTests = @(
         @{ Id = 'AD-GPOREP-01'; Command = 'Test-MtAdGpoNoPermissionsCount'; Finding = 'EmptyDacl' }
-        @{ Id = 'AD-GPOREP-02'; Command = 'Test-MtAdGpoNoPermissionsDetails'; Finding = 'EmptyDacl' }
         @{ Id = 'AD-GPOREP-03'; Command = 'Test-MtAdGpoNoAuthenticatedUsersCount'; Finding = 'DomainComputers' }
-        @{ Id = 'AD-GPOREP-04'; Command = 'Test-MtAdGpoNoAuthenticatedUsersDetails'; Finding = 'DomainComputers' }
         @{ Id = 'AD-GPOREP-05'; Command = 'Test-MtAdGpoNoEnterpriseDcCount'; Finding = 'NoEnterpriseDc' }
         @{ Id = 'AD-GPOREP-06'; Command = 'Test-MtAdGpoNoDomainComputersCount'; Finding = 'NoComputerAccess' }
         @{ Id = 'AD-GPOREP-09'; Command = 'Test-MtAdGpoInheritedPermissionsCount'; Finding = 'Inherited' }
@@ -16,8 +14,8 @@ BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
     . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
     # Check functions that became native tests are not exported.
-    Use-MtModuleFunction -Name Test-MtAdGpoNoPermissionsCount, Test-MtAdGpoNoPermissionsDetails,
-    Test-MtAdGpoNoAuthenticatedUsersCount, Test-MtAdGpoNoAuthenticatedUsersDetails, Test-MtAdGpoNoEnterpriseDcCount,
+    Use-MtModuleFunction -Name Test-MtAdGpoNoPermissionsCount,
+    Test-MtAdGpoNoAuthenticatedUsersCount, Test-MtAdGpoNoEnterpriseDcCount,
     Test-MtAdGpoNoDomainComputersCount, Test-MtAdGpoInheritedPermissionsCount
 
     $script:domainSid = 'S-1-5-21-1111111111-2222222222-3333333333'
@@ -173,6 +171,149 @@ Describe 'Active Directory GPO permissions' {
         }
     }
 
+    Context 'GPO version and SYSVOL collection' {
+        It 'treats whitespace-only link attributes as a complete empty map' {
+            $script:testGpos = @(New-TestGpo -PermissionProfile 'Default')
+            Mock Get-MtLdapGpoLink -ModuleName Maester -RemoveParameterType Connection {
+                [pscustomobject]@{ DistinguishedName = 'OU=Empty,DC=contoso,DC=com'; ObjectClass = @('organizationalUnit'); GpLink = '   ' }
+            }
+            $state = Get-MtADGpoState
+            $state.GPOLinksComplete | Should -BeTrue
+            @($state.GPOLinks) | Should -HaveCount 0
+            $state.GPOReports[0].Enforcement | Should -BeFalse
+            $state.GPOReports[0].DisabledLinks | Should -Be 0
+        }
+
+        It 'marks <Location> malformed link data incomplete without losing valid entries: <Malformed>' -ForEach @(
+            @{ Location = 'Domain'; Malformed = '[LDAP://CN=NoGuid,DC=contoso,DC=com;2]' }
+            @{ Location = 'Site'; Malformed = '[LDAP://CN=NoGuid,DC=contoso,DC=com;2]' }
+            @{ Location = 'Domain'; Malformed = 'unparsed non-whitespace' }
+            @{ Location = 'Site'; Malformed = 'unparsed non-whitespace' }
+            @{ Location = 'Domain'; Malformed = '[LDAP://CN={11111111-1111-1111-1111-111111111111},DC=contoso,DC=com;999999999999999999999]' }
+            @{ Location = 'Site'; Malformed = '[LDAP://CN={11111111-1111-1111-1111-111111111111},DC=contoso,DC=com;not-a-number]' }
+            @{ Location = 'Domain'; Malformed = '[LDAP://CN={11111111-1111-1111-1111-111111111111},DC=contoso,DC=com;4]' }
+        ) {
+            $script:testGpos = @((New-TestGpo -PermissionProfile 'Default'), (New-TestGpo -PermissionProfile 'Default'))
+            $script:linkText = "[LDAP://CN={$($script:testGpos[0].Id)},CN=Policies,DC=contoso,DC=com;3]$Malformed"
+            if ($Location -eq 'Domain') {
+                Mock Get-MtLdapGpoLink -ModuleName Maester -RemoveParameterType Connection { [pscustomobject]@{ DistinguishedName = 'OU=Test,DC=contoso,DC=com'; ObjectClass = @('organizationalUnit'); GpLink = $script:linkText } }
+            }
+            else {
+                Mock Get-MtLdapSiteContainer -ModuleName Maester -RemoveParameterType Connection { [pscustomobject]@{ DistinguishedName = 'CN=TestSite,CN=Sites,CN=Configuration,DC=contoso,DC=com'; ObjectClass = @('site'); GpLink = $script:linkText } }
+            }
+            $state = Get-MtADGpoState
+            $state.GPOLinksComplete | Should -BeFalse
+            @($state.GPOLinks) | Should -HaveCount 1
+            $state.GPOReports[0].Enforcement | Should -BeTrue
+            $state.GPOReports[0].DisabledLinks | Should -Be 1
+            $null -eq $state.GPOReports[1].Enforcement | Should -BeTrue
+            $null -eq $state.GPOReports[1].DisabledLinks | Should -BeTrue
+        }
+
+        It 'parses the valid link after a malformed <Part> prefix independently for <Location>' -ForEach @(
+            @{ Location = 'Domain'; Part = 'Target' }
+            @{ Location = 'Site'; Part = 'Target' }
+            @{ Location = 'Domain'; Part = 'Options' }
+            @{ Location = 'Site'; Part = 'Options' }
+        ) {
+            $script:testGpos = @((New-TestGpo -PermissionProfile 'Default'), (New-TestGpo -PermissionProfile 'Default'))
+            $prefix = "[LDAP://CN={$($script:testGpos[0].Id)},CN=Policies,DC=contoso,DC=com"
+            if ($Part -eq 'Options') { $prefix += ';2' }
+            $script:validLink = "[LDAP://CN={$($script:testGpos[1].Id)},CN=Policies,DC=contoso,DC=com;2]"
+            $script:linkText = $prefix + $script:validLink
+            if ($Location -eq 'Domain') {
+                Mock Get-MtLdapGpoLink -ModuleName Maester -RemoveParameterType Connection {
+                    [pscustomobject]@{ DistinguishedName = 'OU=Test,DC=contoso,DC=com'; ObjectClass = @('organizationalUnit'); GpLink = $script:linkText }
+                }
+            }
+            else {
+                Mock Get-MtLdapSiteContainer -ModuleName Maester -RemoveParameterType Connection {
+                    [pscustomobject]@{ DistinguishedName = 'CN=TestSite,CN=Sites,CN=Configuration,DC=contoso,DC=com'; ObjectClass = @('site'); GpLink = $script:linkText }
+                }
+            }
+            $state = Get-MtADGpoState
+            $state.GPOLinksComplete | Should -BeFalse
+            $null -eq $state.GPOLinks | Should -BeFalse
+            @($state.GPOLinks) | Should -HaveCount 1
+            $state.GPOLinks[0].GpLink | Should -BeExactly $script:validLink
+            $state.GPOLinks[0].GpoGuid | Should -Be ([guid]$script:testGpos[1].Id)
+            $state.GPOLinks[0].Options | Should -Be 2
+            $state.GPOLinks[0].IsDisabled | Should -BeFalse
+            $state.GPOLinks[0].IsEnforced | Should -BeTrue
+            $null -eq $state.GPOReports[0].Enforcement | Should -BeTrue
+            $state.GPOReports[1].Enforcement | Should -BeTrue
+            InModuleScope Maester { Test-MtAdGpoEnforcementCount | Should -BeTrue }
+            $script:resultDetail.Result | Should -Match 'GPOs with unknown enforcement \| 1'
+            $script:resultDetail.Result | Should -Match 'GPOs with enforced links \| 1'
+        }
+
+        It 'exposes directory and SYSVOL versions' {
+            $script:testGpos = @(New-TestGpo -PermissionProfile 'Default')
+            Mock Get-MtSysvolContent -ModuleName Maester {
+                [PSCustomObject]@{ GptIni = [PSCustomObject]@{ Version = 2 }; CpasswordFound = $false; DefaultPasswordFound = $false; ScanErrors = @() }
+            }
+            $report = @((Get-MtADGpoState).GPOReports)[0]
+            $report.DirectoryVersion | Should -Be 1
+            $report.SysvolVersion | Should -Be 2
+            $report.HasVersionMismatch | Should -BeTrue
+        }
+
+        It 'keeps missing directory versions unknown' {
+            $script:testGpos = @(New-TestGpo -PermissionProfile 'Default')
+            $script:testGpos[0].VersionNumber = $null
+            Mock Get-MtSysvolContent -ModuleName Maester {
+                [PSCustomObject]@{ GptIni = [PSCustomObject]@{ Version = 2 }; CpasswordFound = $false; DefaultPasswordFound = $false }
+            }
+            $report = @((Get-MtADGpoState).GPOReports)[0]
+            $null -eq $report.DirectoryVersion | Should -BeTrue
+            $null -eq $report.HasVersionMismatch | Should -BeTrue
+        }
+
+        It 'does not coerce unknown password scan flags to false' {
+            $script:testGpos = @(New-TestGpo -PermissionProfile 'Default')
+            Mock Get-MtSysvolContent -ModuleName Maester {
+                [PSCustomObject]@{ GptIni = $null; CpasswordFound = $null; DefaultPasswordFound = $null; ScanErrors = @('Groups.xml') }
+            }
+            $report = @((Get-MtADGpoState).GPOReports)[0]
+            $null -eq $report.CpasswordFound | Should -BeTrue
+            $null -eq $report.DefaultPasswordFound | Should -BeTrue
+            $report.Errors | Should -HaveCount 1
+        }
+
+        It 'does not report failed metadata collection as an empty clean inventory' {
+            Mock Get-MtLdapGpo -ModuleName Maester -RemoveParameterType Connection { throw 'access denied' }
+            $null -eq (Get-MtADGpoState).GPOs | Should -BeTrue
+            $null -eq (Get-MtADGpoState).GPOReports | Should -BeTrue
+        }
+
+        It 'keeps combined links unavailable if site collection fails' {
+            Mock Get-MtLdapSiteContainer -ModuleName Maester -RemoveParameterType Connection { throw 'access denied' }
+            $null -eq (Get-MtADGpoState).GPOLinks | Should -BeTrue
+            (Get-MtADGpoState).GPOLinksComplete | Should -BeFalse
+        }
+
+        It 'requires explicit application rights rather than generic administrative grants' -ForEach @(
+            @{ Rights = 'GenericAll'; ObjectType = '00000000-0000-0000-0000-000000000000'; AceFlags = ''; Expected = $false }
+            @{ Rights = 'ExtendedRight'; ObjectType = '00000000-0000-0000-0000-000000000000'; AceFlags = ''; Expected = $false }
+            @{ Rights = 'ExtendedRight'; ObjectType = 'edacfd8f-ffb3-11d1-b41d-00a0c968f939'; AceFlags = ''; Expected = $true }
+            @{ Rights = 'ExtendedRight'; ObjectType = 'edacfd8f-ffb3-11d1-b41d-00a0c968f939'; AceFlags = 'InheritOnly'; Expected = $false }
+        ) {
+            $script:testGpos = @(New-TestGpo -PermissionProfile 'EmptyDacl')
+            $script:testGpos[0].ntSecurityDescriptor.Access = @(New-TestAce -Sid 'S-1-5-11' -ActiveDirectoryRights $Rights -ObjectType $ObjectType -AceFlags $AceFlags)
+            @((Get-MtADGpoState).GPOReports)[0].HasApplyGroupPolicyAce | Should -Be $Expected
+        }
+
+        It 'fails the application-right check when only administrative grants exist for <Profile>' -ForEach @(
+            @{ Profile = 'NoComputerAccess' }
+            @{ Profile = 'DomainComputers' }
+        ) {
+            $script:testGpos = @(New-TestGpo -PermissionProfile $Profile)
+            @((Get-MtADGpoState).GPOReports)[0].HasApplyGroupPolicyAce | Should -BeFalse
+            InModuleScope Maester { Test-MtAdGpoNoApplyGroupPolicyAceCount | Should -BeFalse }
+            $script:resultDetail.Investigate | Should -BeFalse
+        }
+    }
+
     Context '<Id> <Command>' -ForEach $permissionTests {
         It 'Passes when every GPO has the default permissions' {
             $script:testGpos = @((New-TestGpo -PermissionProfile 'Default'), (New-TestGpo -PermissionProfile 'Default'))
@@ -181,8 +322,9 @@ Describe 'Active Directory GPO permissions' {
             $script:resultDetail.Investigate | Should -BeFalse
             $script:resultDetail.SkippedBecause | Should -BeNullOrEmpty
             $script:resultDetail.Result | Should -Not -Match 'GPO Default'
-            # The pass is for the two GPOs, not for an empty list. The details tests print no total.
-            if ($Command -like '*Count') { $script:resultDetail.Result | Should -Match 'Total GPO Reports \| 2 \|' }
+            # A pass must be based on the two collected GPOs, not a vacuous empty set.
+            $script:resultDetail.Result | Should -Match 'Total GPOs \| 2 \|'
+            $script:resultDetail.Result | Should -Not -Match '#### Details|GPO Reports'
         }
 
         It 'Fails for the GPO with <Finding> permissions and not for the others' {
@@ -199,7 +341,7 @@ Describe 'Active Directory GPO permissions' {
 
             & $Command | Should -BeTrue
             $script:resultDetail.Investigate | Should -BeTrue
-            $script:resultDetail.Result | Should -Match 'could not be read'
+            $script:resultDetail.Result | Should -Match 'could not be determined'
             $script:resultDetail.Result | Should -Match 'GPO Unreadable'
             $script:resultDetail.Result | Should -Not -Match 'GPO Default'
         }
@@ -210,7 +352,7 @@ Describe 'Active Directory GPO permissions' {
             & $Command | Should -BeFalse
             $script:resultDetail.Investigate | Should -BeFalse
             $script:resultDetail.Result | Should -Match "GPO $Finding"
-            $script:resultDetail.Result | Should -Match 'could not be read'
+            $script:resultDetail.Result | Should -Match 'could not be determined'
         }
 
         It 'Is skipped when <Case>' -ForEach @(
@@ -230,22 +372,22 @@ Describe 'Active Directory GPO permissions' {
             $script:testGpos = @(New-TestGpo -PermissionProfile 'DomainComputers')
 
             Test-MtAdGpoNoDomainComputersCount | Should -BeTrue
-            $script:resultDetail.Result | Should -Match 'GPO Reports Without Domain Computers \| 0 \|'
+            $script:resultDetail.Result | Should -Match 'GPOs without Domain Computers \| 0 \|'
         }
 
         It 'Reports a GPO without Domain Computers as expected when Authenticated Users has access' {
             $script:testGpos = @(New-TestGpo -PermissionProfile 'Default')
 
             Test-MtAdGpoNoDomainComputersCount | Should -BeTrue
-            $script:resultDetail.Result | Should -Match 'GPO Reports Without Domain Computers \| 1 \|'
-            $script:resultDetail.Result | Should -Match 'GPO Reports Without Domain Computers And Without Authenticated Users \| 0 \|'
+            $script:resultDetail.Result | Should -Match 'GPOs without Domain Computers \| 1 \|'
+            $script:resultDetail.Result | Should -Match 'GPOs with neither Domain Computers nor Authenticated Users \| 0 \|'
         }
 
         It 'Passes when one GPO has Default permissions and another has DomainComputers' {
             $script:testGpos = @((New-TestGpo -PermissionProfile 'Default'), (New-TestGpo -PermissionProfile 'DomainComputers'))
 
             Test-MtAdGpoNoDomainComputersCount | Should -BeTrue
-            $script:resultDetail.Result | Should -Match 'GPO Reports Without Domain Computers And Without Authenticated Users \| 0 \|'
+            $script:resultDetail.Result | Should -Match 'GPOs with neither Domain Computers nor Authenticated Users \| 0 \|'
         }
     }
 }

@@ -1,27 +1,56 @@
+Checks whether each evaluated GPO has an access-allowed permission entry for
+**Authenticated Users**. Its absence is a review finding, not proof that the GPO
+is exposed or unusable. This read-only check assesses a preventive ACL setting; it
+does not change permissions or calculate effective access.
+
 #### Control Type
 
 **Detective**
 
-#### Test-MtAdGpoNoAuthenticatedUsersCount
-
- Counts GPO reports that do not include Authenticated Users.
-
 #### Why This Test Matters
-- Detective control: counts GPO reports missing Authenticated Users which could widen access.
+
+The principal's access can be part of how a GPO is read and targeted, but some
+policies intentionally use other groups for security filtering. Treating the
+absence as universally unsafe could broaden policy scope or grant access contrary
+to the design. Review the intended recipients and permissions together.
 
 #### Security Recommendation
-- Review missing Authenticated Users and adjust GPO ACLs as needed.
+
+Verify the policy's security filtering and delegation before changing its ACL.
+Grant read or application permissions only to the intended principals; do not add
+**Authenticated Users** or **Apply Group Policy** solely to clear this finding.
 
 #### How the Test Works
-- Uses Get-MtADGpoState, counts the GPO reports without an access-allowed entry for Authenticated Users (HasAuthenticatedUsers is false), and reports totals.
-- A GPO whose permissions could not be read is reported as not evaluated instead of as a finding. The result is then Investigate, or Skipped when no GPO could be evaluated.
+
+- Checks the cached permission report's `HasAuthenticatedUsers` value for each
+  GPO.
+- A known-present entry satisfies the check; known absence is a finding and fails.
+- Unknown can indicate an unreadable descriptor or conflicting allow and deny
+  entries. If all GPOs are unknown, the test is skipped; partial unknowns without
+  findings result in **Investigate**. Known findings still fail.
+- Failed permission-report collection is an error. Details are shown for findings
+  or unknown reports.
+
+- Security-descriptor parsing currently requires Windows. On other platforms,
+  these permissions are unknown and the test skips when no GPO can be evaluated.
+
+#### Remediation action
+
+1. In **Group Policy Management**, inspect each listed GPO's **Scope** >
+   **Security Filtering** and **Delegation** > **Advanced** settings.
+2. Confirm intended recipients and their read and application permissions. Review
+   both descriptor readability and the ACL when the principal assessment is
+   unknown; do not assume every unknown is a collection-permission failure.
 
 #### Related Tests
-- `Test-MtAdGpoNoAuthenticatedUsersDetails`.
+
+- [AD-GPOREP-01 — No GPO should have an empty permissions list](https://maester.dev/docs/tests/AD-GPOREP-01) (`Test-MtAdGpoNoPermissionsCount`) checks whether permission entries are present generally.
+- [AD-GPOREP-06 — GPOs should include Domain Computers or Authenticated Users permissions](https://maester.dev/docs/tests/AD-GPOREP-06) (`Test-MtAdGpoNoDomainComputersCount`) checks for either **Domain Computers** or **Authenticated Users**, unlike this test's specific principal check.
+- [AD-GPOREP-10 — GPOs should have an Apply Group Policy allow entry](https://maester.dev/docs/tests/AD-GPOREP-10) (`Test-MtAdGpoNoApplyGroupPolicyAceCount`) checks for an explicit **Apply Group Policy** entry.
 
 #### Related links
-- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 
-- ANSSI checkpoint: https://www.anssi.gouv.fr/
+
+- [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

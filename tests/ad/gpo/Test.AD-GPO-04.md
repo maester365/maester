@@ -1,35 +1,42 @@
-Unlinked (or orphaned) Group Policy Objects (GPOs) exist in Active Directory but are not linked to any OU, domain, or site. While they may look harmless, they can still create operational and security risk:
+Identifies GPOs whose identifiers do not appear in collected domain, OU, or site `gPLink` values. It counts references to a GPO whether a link is enabled or disabled; it does not determine whether settings are actively applied. An unlinked GPO may be intentionally retained and is not, by itself, a vulnerability.
 
-- **Resource and operational overhead**: Unused GPOs add clutter and can increase administrative effort.
-- **Accidental exposure**: An unlinked GPO can be mistakenly linked later, suddenly applying unknown settings to users or computers.
-- **Harder incident investigation**: Policy behavior becomes harder to reason about when unused GPOs remain in the environment.
+#### Why This Test Matters
+
+An unlinked policy can add inventory and maintenance overhead. If it is mistakenly linked later, unreviewed or obsolete settings can unexpectedly reach users or computers. Finding one is a prompt to verify its purpose and lifecycle, not evidence that the policy is exploitable or must be removed.
 
 #### Control Type
 
-**Detective**
+**Detective** — the test detects GPOs with no collected link reference and reports them for review; it does not make a configuration change.
 
 #### Security Recommendation
 
-After verification, **remove unlinked GPOs** to reduce risk and simplify policy management:
-
-- Confirm the GPO’s purpose (documentation, change history, owners).
-- Verify it is not required for any special-case deployment path.
-- If you are confident it is unused, remove it (or archive it) and ensure backups/restore requirements are met.
-- Restrict who can create/link GPOs to prevent accidental re-introduction.
+- Keep the purpose and owner of retained, unlinked GPOs documented.
+- Before removal, confirm that the policy is not retained for a planned deployment, recovery, or other approved use.
+- Review link scope and state separately; the presence of a link reference does not establish that the policy applies.
 
 #### How the Test Works
 
-This test retrieves Active Directory Group Policy state data using `Get-MtADGpoState` and:
+The test compares each collected GPO identifier with GUID references from collected domain, OU, and site `gPLink` data. Disabled links count as references, as do references whose policy application is not established by this test. It reports total, linked, and unlinked GPO counts and lists unlinked policies when any are found.
 
-1. Uses the cached list of GPOs (`$gpoState.GPOs`).
-2. Extracts GPO link references from the collected `GPOLinks` (via `gPLink`).
-3. Counts GPOs whose IDs are not referenced by any collected `gPLink` entry.
+Any GPO without a collected link reference fails the test. It passes when all collected GPOs have at least one reference, without asserting that those links are enabled or effective.
+
+Missing GPO or link collection, an incomplete parsed link map, or a GPO without an identifier causes an error rather than a clean result. A skipped malformed target could otherwise make a linked policy appear unlinked. The test does not calculate resultant policy or determine whether any referenced GPO is enabled or effective.
+
+#### Remediation action
+
+1. In **Group Policy Management**, review each listed GPO's owner, purpose, backup, and change history.
+2. If it is no longer needed, archive or remove it under the normal change process. Otherwise document why it is unlinked and retain it.
+3. Do not infer a security gap or remove a policy solely because it has no link.
 
 #### Related Tests
 
-- `Test-MtAdGpoTotalCount` - Counts the total number of GPOs
-- `Test-MtAdGpoLinkedCount` - Identifies GPOs that are actively linked
-- `Test-MtAdGpoCreatedBefore2020Count` - Identifies potentially outdated GPOs
+- [AD-GPO-01 — GPO inventory should be investigated](https://maester.dev/docs/tests/AD-GPO-01) (`Test-MtAdGpoTotalCount`) reports the total GPO inventory for context.
+- [AD-GPOL-01 — GPOs with enabled links should be investigated](https://maester.dev/docs/tests/AD-GPOL-01) (`Test-MtAdGpoLinkedCount`) counts distinct GPOs with an enabled link, unlike this test's reference check.
+- [AD-GPOL-03 — Direct GPO link coverage should be investigated](https://maester.dev/docs/tests/AD-GPOL-03) (`Test-MtAdGpoUnlinkedTargetCount`) inventories targets without a direct link rather than GPOs without any collected link reference.
+
+#### Related links
+
+- [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

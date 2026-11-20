@@ -1,88 +1,62 @@
 ﻿function Test-MtAdGpoEnforcedCount {
     <#
     .SYNOPSIS
-    Counts enforced GPO links (links that block inheritance).
+    Checks that GPO links are not enforced.
 
     .DESCRIPTION
-    This test retrieves Active Directory GPO link state information using Get-MtADGpoState and then counts
-    how many GPO link entries are marked as **Enforced**.
-
-    Enforced GPO links cannot be blocked by child OUs, which means security-related policies can apply
-    everywhere even when lower-level inheritance would normally disable them.
+    Passes when no configured enforcement flags exist, fails when any exist.
+    Enabled enforced links override Block Inheritance; disabled links do not apply.
+    Review intentional enforcement before changing it.
 
     .EXAMPLE
-    Test-MtAdGpoEnforcedCount
+    Invoke-MtTest -Id 'AD-GPOL-04'
 
-    Returns $true when no enforced GPO links are detected, $false when enforced GPO links exist.
+    Fails when any GPO link is enforced; review intended inheritance overrides.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoEnforcedCount
+    https://maester.dev/docs/tests/AD-GPOL-04
     #>
     [MaesterTest(
-        Id = 'AD-GPOL-04',
-        Title = 'Enforced GPO link count should be retrievable',
-        Product = 'ad',
-        Feature = 'group-policy',
-        Area = 'infrastructure',
-        ResourceType = 'GroupPolicy',
-        Severity = 'Info',
-        Mitre = 'None',
-        Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
-        Author = 'soulemike'
+        Id                 = 'AD-GPOL-04',
+        Title              = 'GPO links should not use enforcement',
+        Product            = 'ad',
+        Feature            = 'group-policy',
+        Area               = 'infrastructure',
+        ResourceType       = 'GroupPolicy',
+        Severity           = 'Low',
+        UserImpact         = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre              = 'None',
+        Service            = 'ActiveDirectory',
+        Permission         = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Author             = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    Write-Verbose "Starting Test-MtAdGpoEnforcedCount"
-
-    $gpoState = Get-MtADGpoState
-
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $gpoLinks = $gpoState.GPOLinks
-
-    $totalLinks = if ($null -ne $gpoLinks) { ($gpoLinks | Measure-Object).Count } else { 0 }
-
-    $enforcedCount = 0
-    if ($null -ne $gpoLinks) {
-        foreach ($linkObj in $gpoLinks) {
-            if ($null -eq $linkObj) {
-                continue
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.GPOLinks) { throw 'GPO links could not be collected; enforcement cannot be assessed.' }
+    $links = @($state.GPOLinks | Where-Object { $null -ne $_ })
+    if (@($links | Where-Object { $null -eq $_.IsEnforced }).Count -gt 0) { throw 'One or more GPO link enforcement states are unknown.' }
+    $enforced = @($links | Where-Object { $true -eq $_.IsEnforced } | Sort-Object DistinguishedName, GpoGuid)
+    $linksComplete = Test-MtAdGpoLinksComplete -State $state
+    if ($enforced.Count -eq 0 -and -not $linksComplete) { throw 'GPO link collection is incomplete; absence of enforcement cannot be assessed.' }
+    $active = @($enforced | Where-Object { $false -eq $_.IsDisabled })
+    $disabled = @($enforced | Where-Object { $true -eq $_.IsDisabled })
+    $unknownState = @($enforced | Where-Object { $null -eq $_.IsDisabled })
+    $details = @(foreach ($link in $enforced) {
+            [pscustomobject]@{
+                Id = $link.GpoGuid
+                Container = $link.DistinguishedName
+                State = if ($null -eq $link.IsDisabled) { 'Unknown' } elseif ($link.IsDisabled) { 'Disabled' } else { 'Enabled' }
             }
-
-            # Get-MtADGpoState surfaces an Enforced property on link objects.
-            if ($null -ne $linkObj.Enforced -and [bool]$linkObj.Enforced) {
-                $enforcedCount++
-            }
-        }
-    }
-
-    $enforcedPercentage = if ($totalLinks -gt 0) { [math]::Round(($enforcedCount / $totalLinks) * 100, 2) } else { 0 }
-
-    # Security intent: flag environments that use enforced links (they override inheritance blocking).
-    $testResult = $enforcedCount -eq 0
-
-    $resultTable = "| Metric | Value |" + "`n"
-    $resultTable += "| --- | --- |" + "`n"
-    $resultTable += "| Total GPO link entries | $totalLinks |" + "`n"
-    $resultTable += "| Enforced GPO link entries | $enforcedCount |" + "`n"
-    $resultTable += "| Enforced link ratio | $enforcedPercentage% |" + "`n"
-
-    if ($testResult) {
-        $recommendation = "✅ No enforced GPO links (inheritance-blocking links) were detected. Active Directory Group Policy Objects have been analyzed successfully."
-    }
-    else {
-        $recommendation = "⚠️ Enforced GPO links were detected ($enforcedCount). Enforced links override inheritance blocking at child OUs, so they can significantly impact security posture. Review and use enforced links sparingly for critical policies that must apply everywhere."
-    }
-
-    $testResultMarkdown = "$recommendation`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultTable
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    return $testResult
+        })
+    $pass = $enforced.Count -eq 0
+    $summary = if ($pass) { 'Well done. No configured enforcement flags were found.' }
+    else { "$($enforced.Count) GPO links have configured enforcement flags; $($active.Count) are enabled overrides. Disabled links do not actively override inheritance. Review configured enforcement before changing it." }
+    if ($unknownState.Count -gt 0) { $summary += " Enabled/disabled state is unknown for $($unknownState.Count) flagged links." }
+    if (-not $linksComplete) { $summary += ' Link collection is incomplete; additional enforcement flags may exist.' }
+    $result = Format-MtAdGpoResult -Summary $summary -Metrics ([ordered]@{ 'Collected GPO links' = $links.Count; 'Enforced GPO links' = $enforced.Count; 'Enabled enforcement overrides' = $active.Count; 'Disabled links with enforcement flags' = $disabled.Count; 'Flagged links with unknown state' = $unknownState.Count; 'Link collection complete' = $linksComplete }) -Details $details -Properties Id, Container, State -Headers 'GPO Id', 'Linked container', 'Link state'
+    Add-MtTestResultDetail -Result $result
+    return $pass
 }

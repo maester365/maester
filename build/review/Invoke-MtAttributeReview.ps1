@@ -265,6 +265,11 @@ function Get-MtReviewTarget {
         Sort-Object -Unique
 
     foreach ($path in $testPaths) {
+        # A listed .ps1 absent from the downloaded head was deleted (or renamed). Do not fall back to the
+        # trusted base copy; that fallback is only for a Markdown-only change whose .ps1 was not listed.
+        if ($path -in @($File | Where-Object { $_ } | ForEach-Object { $_ -replace '\\', '/' }) -and
+            -not (Test-Path -LiteralPath (Join-Path $HeadRoot $path) -PathType Leaf) -and
+            (Resolve-Path $HeadRoot).Path -ne (Resolve-Path $Root).Path) { continue }
         $source = Get-MtReviewContent -Root $Root -HeadRoot $HeadRoot -BaseRef $BaseRef -RelativePath $path
         if ($null -eq $source.Head) { continue } # the test was deleted
         $markdown = Get-MtReviewContent -Root $Root -HeadRoot $HeadRoot -BaseRef $BaseRef -RelativePath ($path -replace '\.ps1$', '.md')

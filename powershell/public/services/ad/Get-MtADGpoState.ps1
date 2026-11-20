@@ -13,6 +13,13 @@
     that principal applies to the GPO) and HasInheritedPermissions (an entry is inherited from the parent
     container). These are $null when the security descriptor of the GPO was not returned.
 
+    DirectoryVersion and SysvolVersion expose the versions compared by HasVersionMismatch.
+    Password scan flags are $null when files could not be scanned, unless a secret was found.
+    Errors records incomplete SYSVOL scans. Failed metadata or link collection remains $null.
+    GPOLinksComplete is false when any link target or option could not be parsed,
+    or a link-container query failed. Valid parsed links remain available after a
+    malformed entry; a zero derived link count is then unknown, not proof of absence.
+
     .PARAMETER Refresh
     Forces a refresh of the data from Active Directory, bypassing the cache.
 
@@ -79,6 +86,7 @@
                 CollectionTime = Get-Date
                 GPOReports     = @()
                 GPOLinks       = @()
+                GPOLinksComplete = $true
                 SiteContainers = @()
                 LinkContainers = @()
             }
@@ -103,23 +111,34 @@
             }
             catch {
                 Write-Verbose "Could not collect GPO metadata: $($_.Exception.Message)"
+                $gpoState['GPOs'] = $null
             }
 
             $parsedGpoLinks = [System.Collections.Generic.List[object]]::new()
             $domainLinksFailed = $false
             $siteLinksFailed = $false
+            # Do not let a malformed prefix consume the opening bracket of the next link.
+            $linkPattern = '\[(?<target>[^\[\]]+);\s*(?<options>[^\[\];]*)\s*\]'
             try {
                 $linkContainers = @(Get-MtLdapGpoLink -Connection $protocolConnection -SearchBase $protocolRootDse.DefaultNamingContext)
                 $gpoState['LinkContainers'] = $linkContainers
                 foreach ($container in $linkContainers) {
-                    foreach ($linkMatch in [regex]::Matches([string]$container.GpLink, '\[(?<target>[^\]]+);\s*(?<options>\d+)\s*\]')) {
+                    $linkText = [string]$container.GpLink
+                    if (-not [string]::IsNullOrWhiteSpace([regex]::Replace($linkText, $linkPattern, ''))) { $gpoState['GPOLinksComplete'] = $false }
+                    foreach ($linkMatch in [regex]::Matches($linkText, $linkPattern)) {
                         $guidMatch = [regex]::Match($linkMatch.Groups['target'].Value, '(?i)\{?(?<guid>[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12})\}?')
                         if (-not $guidMatch.Success) {
+                            $gpoState['GPOLinksComplete'] = $false
                             Write-Verbose "Ignoring malformed GPO link on $($container.DistinguishedName): $($linkMatch.Value)"
                             continue
                         }
 
-                        $options = [int]$linkMatch.Groups['options'].Value
+                        $options = 0
+                        if (-not [int]::TryParse($linkMatch.Groups['options'].Value.Trim(), [ref]$options) -or $options -notin 0, 1, 2, 3) {
+                            $gpoState['GPOLinksComplete'] = $false
+                            Write-Verbose "Ignoring unknown GPO link options on $($container.DistinguishedName)."
+                            continue
+                        }
                         $isDisabled = [bool]($options -band 1)
                         $isEnforced = [bool]($options -band 2)
                         $parsedGpoLinks.Add([PSCustomObject]@{
@@ -139,6 +158,7 @@
             catch {
                 Write-Verbose "Could not collect domain and OU GPO links: $($_.Exception.Message)"
                 $domainLinksFailed = $true
+                $gpoState['GPOLinksComplete'] = $false
                 $gpoState['LinkContainers'] = $null
                 $gpoState['GPOLinks'] = $null
             }
@@ -147,14 +167,22 @@
                 $siteContainers = @(Get-MtLdapSiteContainer -Connection $protocolConnection -ConfigurationNamingContext $protocolRootDse.ConfigurationNamingContext)
                 $gpoState['SiteContainers'] = $siteContainers
                 foreach ($container in $siteContainers) {
-                    foreach ($linkMatch in [regex]::Matches([string]$container.GpLink, '\[(?<target>[^\]]+);\s*(?<options>\d+)\s*\]')) {
+                    $linkText = [string]$container.GpLink
+                    if (-not [string]::IsNullOrWhiteSpace([regex]::Replace($linkText, $linkPattern, ''))) { $gpoState['GPOLinksComplete'] = $false }
+                    foreach ($linkMatch in [regex]::Matches($linkText, $linkPattern)) {
                         $guidMatch = [regex]::Match($linkMatch.Groups['target'].Value, '(?i)\{?(?<guid>[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12})\}?')
                         if (-not $guidMatch.Success) {
+                            $gpoState['GPOLinksComplete'] = $false
                             Write-Verbose "Ignoring malformed site GPO link on $($container.DistinguishedName): $($linkMatch.Value)"
                             continue
                         }
 
-                        $options = [int]$linkMatch.Groups['options'].Value
+                        $options = 0
+                        if (-not [int]::TryParse($linkMatch.Groups['options'].Value.Trim(), [ref]$options) -or $options -notin 0, 1, 2, 3) {
+                            $gpoState['GPOLinksComplete'] = $false
+                            Write-Verbose "Ignoring unknown site GPO link options on $($container.DistinguishedName)."
+                            continue
+                        }
                         $isDisabled = [bool]($options -band 1)
                         $isEnforced = [bool]($options -band 2)
                         $parsedGpoLinks.Add([PSCustomObject]@{
@@ -174,7 +202,9 @@
             catch {
                 Write-Verbose "Could not collect site GPO links: $($_.Exception.Message)"
                 $siteLinksFailed = $true
+                $gpoState['GPOLinksComplete'] = $false
                 $gpoState['SiteContainers'] = $null
+                $gpoState['GPOLinks'] = $null
             }
             if (-not $domainLinksFailed -and -not $siteLinksFailed) {
                 $gpoState['GPOLinks'] = @($parsedGpoLinks)
@@ -184,9 +214,10 @@
                 $applyGroupPolicyGuid = 'edacfd8f-ffb3-11d1-b41d-00a0c968f939'
                 $gpoReports = foreach ($gpo in $gpoState.GPOs) {
                     $gpoGuid = ([string]$gpo.Id).Trim('{}')
-                    $gpoLinks = if ($null -ne $gpoState.GPOLinks) {
-                        @($gpoState.GPOLinks | Where-Object { ([string]$_.GpoGuid).Trim('{}') -eq $gpoGuid })
-                    } else { $null }
+                    $gpoLinks = @()
+                    if ($null -ne $gpoState.GPOLinks) {
+                        $gpoLinks = @($gpoState.GPOLinks | Where-Object { ([string]$_.GpoGuid).Trim('{}') -eq $gpoGuid })
+                    }
                     $descriptor = $gpo.ntSecurityDescriptor
                     if ($descriptor -is [byte[]]) {
                         $descriptor = ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $descriptor
@@ -199,9 +230,10 @@
                         $hasDenyAce = [bool]($access | Where-Object { $_.AccessControlType -eq 'Deny' } | Select-Object -First 1)
                         $hasApplyGroupPolicyAce = [bool]($access | Where-Object {
                                 $_.AccessControlType -eq 'Allow' -and
-                                (([string]$_.ObjectType -eq $applyGroupPolicyGuid) -or
-                                    ([string]$_.ActiveDirectoryRights -match 'ApplyGroupPolicy') -or
-                                    (([string]$_.ActiveDirectoryRights -match 'ExtendedRight') -and ([string]$_.ObjectType -eq $applyGroupPolicyGuid)))
+                                [string]$_.AceFlags -notmatch 'InheritOnly' -and
+                                (([string]$_.ActiveDirectoryRights -match 'ApplyGroupPolicy') -or
+                                    (([string]$_.ActiveDirectoryRights -match 'ExtendedRight') -and
+                                        ([string]$_.ObjectType -eq $applyGroupPolicyGuid)))
                             } | Select-Object -First 1)
                     }
 
@@ -234,17 +266,25 @@
                     }
 
                     $hasVersionMismatch = $null
+                    $sysvolVersion = $null
                     $cpasswordFound = $null
                     $defaultPasswordFound = $null
                     $errors = [System.Collections.Generic.List[object]]::new()
                     try {
                         Write-Verbose "Collecting SYSVOL content for GPO '$gpoGuid'"
                         $sysvolContent = Get-MtSysvolContent -Operation Connect -GpoGuid $gpoGuid
+                        if ($null -eq $sysvolContent) { throw 'SYSVOL content scanning returned no result.' }
                         if ($null -ne $sysvolContent.GptIni -and $null -ne $sysvolContent.GptIni.Version) {
-                            $hasVersionMismatch = [long]$gpo.VersionNumber -ne [long]$sysvolContent.GptIni.Version
+                            $sysvolVersion = [long]$sysvolContent.GptIni.Version
+                            if ($null -ne $gpo.VersionNumber) {
+                                $hasVersionMismatch = [long]$gpo.VersionNumber -ne $sysvolVersion
+                            }
                         }
-                        $cpasswordFound = [bool]$sysvolContent.CpasswordFound
-                        $defaultPasswordFound = [bool]$sysvolContent.DefaultPasswordFound
+                        $cpasswordFound = $sysvolContent.CpasswordFound
+                        $defaultPasswordFound = $sysvolContent.DefaultPasswordFound
+                        foreach ($path in @($sysvolContent.ScanErrors | Where-Object { $_ })) {
+                            $errors.Add([PSCustomObject]@{ Transport = 'SYSVOL'; Message = "File could not be scanned: $path" }) | Out-Null
+                        }
                     }
                     catch {
                         $errors.Add([PSCustomObject][ordered]@{
@@ -254,15 +294,19 @@
                         Write-Verbose "Could not collect SYSVOL content for GPO '$gpoGuid': $($_.Exception.Message)"
                     }
 
-                    $enforcementEnabled = if ($null -ne $gpoLinks) {
-                        [bool]($gpoLinks | Where-Object { $_.IsEnforced } | Select-Object -First 1)
-                    } else { $null }
+                    $knownEnforced = [bool]($gpoLinks | Where-Object { $_.IsEnforced } | Select-Object -First 1)
+                    $knownDisabledCount = @($gpoLinks | Where-Object { $_.IsDisabled }).Count
+                    $linksComplete = Test-MtAdGpoLinksComplete -State $gpoState
+                    $enforcementEnabled = if ($knownEnforced) { $true } elseif ($linksComplete) { $false } else { $null }
+                    $disabledLinkCount = if ($knownDisabledCount -gt 0 -or $linksComplete) { $knownDisabledCount } else { $null }
                     [PSCustomObject][ordered]@{
                         GPOId                          = $gpo.Id
                         GPOName                        = $gpo.DisplayName
                         Name                           = $gpo.DisplayName
-                        DisabledLinks                  = if ($null -ne $gpoLinks) { @($gpoLinks | Where-Object { $_.IsDisabled }).Count } else { $null }
+                        DisabledLinks                  = $disabledLinkCount
                         HasVersionMismatch             = $hasVersionMismatch
+                        DirectoryVersion               = $gpo.VersionNumber
+                        SysvolVersion                  = $sysvolVersion
                         CpasswordFound                 = $cpasswordFound
                         DefaultPasswordFound           = $defaultPasswordFound
                         HasApplyGroupPolicyAce         = $hasApplyGroupPolicyAce
@@ -278,11 +322,12 @@
                     }
                 }
                 $gpoState['GPOReports'] = @($gpoReports)
+                if ($null -eq $gpoState.GPOs) { $gpoState['GPOReports'] = $null }
                 Write-Verbose "Collected $($gpoState.GPOReports.Count) GPO reports"
             }
             catch {
                 Write-Verbose "Could not build GPO reports: $($_.Exception.Message)"
-                $gpoState['GPOReports'] = @()
+                $gpoState['GPOReports'] = $null
             }
 
             $__MtSession.ADCache[$cacheKey] = $gpoState

@@ -1,37 +1,38 @@
-Active Directory targets (OUs, the domain root, and sites) without any Group Policy links may indicate incomplete security policy coverage.
+Inventories direct GPO link coverage across collected OUs, the domain root, and sites. It counts and lists targets without a direct link and always returns **Investigate**. A target without a direct link may receive policy through inheritance, so the result does not establish an effective-policy gap.
 
-When a target has no GPO links, security and configuration baselines may not be applied consistently—creating gaps that attackers or misconfigurations can exploit.
+#### Why This Test Matters
+
+Direct-link coverage provides context for understanding directory policy layout and identifying targets whose intended policy path may need explanation. However, an OU, domain, or site without a direct link is not necessarily missing security policy: settings may flow from a parent or another applicable scope.
 
 #### Control Type
 
-**Operational**
+**Operational** — the test reports direct-link inventory for review. It does not determine whether security requirements are effectively met.
 
 #### Security Recommendation
 
-Investigate any unlinked targets and remediate the policy coverage gap:
-
-- Confirm the target should receive baseline policies (security requirements, ownership, and intended design).
-- Add the appropriate GPO links (typically security baselines and auditing policies) to restore consistent enforcement.
-- Review GPO inheritance/blocking design to ensure links are not unintentionally prevented.
-- Maintain a deployment cadence so new OUs/domains/sites do not remain unlinked.
-
-Unlinked targets can represent missing or outdated configurations, so treat results as potential security configuration gaps.
+- Compare the listed targets with the documented policy design and intended scope.
+- Assess inherited policy and resultant application before concluding that a target has a coverage gap.
+- Avoid adding direct links merely to make every target appear linked; unnecessary links can change policy processing.
 
 #### How the Test Works
 
-This test uses `Get-MtADGpoState` (and its cached `GPOLinks`/AD data) and:
+The test counts collected OUs, the domain root, and sites, then looks for GPO GUID references in each target's `gPLink` value. A GUID reference counts as a direct link even if the link is disabled or refers to a GPO that is not resolved here. It reports linked and unlinked target counts and lists targets without a direct reference.
 
-1. Enumerates all OUs using `Get-ADOrganizationalUnit`.
-2. Reads the `gPLink` value for the domain root.
-3. Identifies site link objects from `Get-MtADGpoState` (`$gpoState.SiteContainers`).
-4. Counts each target whose `gPLink` value contains no GPO GUID references (i.e., no GPO links).
+The test does not evaluate link state, resolve every reference to an existing policy, or calculate resultant policy. Missing domain/OU collection causes an error. If only site collection is unavailable, the OU and domain metrics remain available, site counts are **Unknown**, and the result explicitly identifies a partial inventory. The result receives **Investigate**, whether or not unlinked targets are found.
+
+#### Remediation action
+
+Review each target without a direct link against the intended design, including parent links, inheritance blocking, link state, and policy scope. Add a direct link only when that design requires it. If coverage remains unclear, verify effective policy through the appropriate policy assessment rather than inferring a gap from this inventory.
 
 #### Related Tests
 
-- `Test-MtAdGpoUnlinkedCount` - Identifies GPOs that are not linked to any location
-- `Test-MtAdGpoLinkedCount` - Counts distinct GPOs that are actively linked
-- `Test-MtAdGpoUnlinkedDetails` - Returns details of unlinked GPOs
-- `Test-MtAdGpoLinkedOUCount` - (if implemented) OUs with GPO links
+- [AD-GPO-04 — GPOs should have at least one link](https://maester.dev/docs/tests/AD-GPO-04) (`Test-MtAdGpoUnlinkedCount`) identifies GPOs without collected link references; this test instead inventories targets without direct links.
+- [AD-GPOL-01 — GPOs with enabled links should be investigated](https://maester.dev/docs/tests/AD-GPOL-01) (`Test-MtAdGpoLinkedCount`) inventories distinct GPOs with enabled links.
+- [AD-GPOL-05 — OUs should not block Group Policy inheritance](https://maester.dev/docs/tests/AD-GPOL-05) (`Test-MtAdGpoBlockedInheritanceCount`) reports OUs that block inheritance, which affects how policy can flow to targets.
+
+#### Related links
+
+- [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

@@ -1,26 +1,38 @@
-#### Test-MtAdGpoWmiFilterCount
-
- Counts the number of GPOs that have a non-empty WMI filter.
+Inventories GPOs with non-empty WMI filter references and reports those references. The **Investigate** result is informational: WMI filters affect policy targeting, but their presence alone is not a security finding.
 
 #### Why This Test Matters
-- Operational control: counts GPOs that have a non-empty WMI filter to gauge policy scoping across the environment.
+
+WMI filters can constrain which computers receive a linked GPO. A poorly scoped filter can exclude intended computers from required security settings, and an inefficient query can delay policy processing. Reviewing their use and intended scope can help identify those issues. A filter reference by itself does not show that its query is incorrect or that a policy is applied inappropriately.
 
 #### Control Type
 
-**Operational**
+**Operational** — this test inventories filter references for review; it does not evaluate their security or validate policy application.
 
 #### Security Recommendation
-- Review configure WMI filters to ensure correct targeting and minimize unnecessary exposure.
+
+- Review each filter's query and intended scope with its owner.
+- Confirm that linked policies target the intended computers and users.
+- Revise or remove a filter only after checking the effect on policy targeting and following the normal change process.
 
 #### How the Test Works
-- Gets GPO state, computes the number of GPOs with a non-empty WmiFilter, and reports totals and ratios.
+
+The test reads the collected GPO inventory and counts entries whose `WmiFilter` reference is non-empty. It reports the total GPO count and the count with filter references, and lists the associated GPO and reference when filters are found. When none are found, the summary says so without an empty details table. Successful collection returns **Investigate**, whether or not references are found; failed GPO inventory collection is an error.
+
+This check looks only for a non-empty reference. It does not parse or validate the full WMI query, establish whether the referenced filter is available, or determine which systems receive the policy. The collector cannot distinguish an attribute that was not returned from one that was returned blank, so an empty reference is not complete audit proof that no filter exists.
+
+#### Remediation action
+
+Review each reported filter's query and intended scope with its owner. Confirm that linked policies target the intended computers and users, and assess query behavior and performance. Remove or revise filters only through the normal policy change process.
 
 #### Related Tests
-- `Test-MtAdGpoWmiFilterDetails`.
+
+- [AD-GPOL-01 — GPOs with enabled links should be investigated](https://maester.dev/docs/tests/AD-GPOL-01) (`Test-MtAdGpoLinkedCount`) inventories GPOs with enabled links, one part of policy targeting.
+- [AD-GPOS-04 — Disabled GPO settings should be investigated](https://maester.dev/docs/tests/AD-GPOS-04) (`Test-MtAdGpoSettingsDisabledCount`) inventories disabled user or computer settings separately from WMI filter references.
+- [AD-GPOREP-10 — GPOs should have an Apply Group Policy allow entry](https://maester.dev/docs/tests/AD-GPOREP-10) (`Test-MtAdGpoNoApplyGroupPolicyAceCount`) checks explicit Apply Group Policy entries, another aspect of policy targeting.
 
 #### Related links
-- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 
-- ANSSI checkpoint: https://www.anssi.gouv.fr/
+
+- [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%
