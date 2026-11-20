@@ -58,8 +58,8 @@ Describe 'MT.1286: Test-MtEntraAgentSponsorManager' -Tag 'Unit' {
     }
 
     It 'reports a user sponsor without a manager' {
-        # Invoke-MtGraphRequest returns nothing when Graph answers 404, which is how a missing manager reads.
-        Mock -ModuleName Maester Invoke-MtGraphRequest { } -ParameterFilter { $RelativeUri -like 'users/*/manager' }
+        # Graph answers 404 for the manager of a user who has none, and Invoke-MtGraphRequest throws it.
+        Mock -ModuleName Maester Invoke-MtGraphRequest { throw (Get-HttpError 404) } -ParameterFilter { $RelativeUri -like 'users/*/manager' }
 
         Test-MtEntraAgentSponsorManager | Should -BeFalse
 
@@ -96,7 +96,7 @@ Describe 'MT.1286: Test-MtEntraAgentSponsorManager' -Tag 'Unit' {
             [pscustomobject]@{ '@odata.type' = '#microsoft.graph.user'; id = 'sponsor-1'; displayName = 'Ada Sponsor'; userPrincipalName = 'ada@contoso.com'; accountEnabled = $true }
             [pscustomobject]@{ '@odata.type' = '#microsoft.graph.user'; id = 'sponsor-2'; displayName = 'Alan Sponsor'; userPrincipalName = 'alan@contoso.com'; accountEnabled = $true }
         } -ParameterFilter { $RelativeUri -like '*/sponsors' }
-        Mock -ModuleName Maester Invoke-MtGraphRequest { } -ParameterFilter { $RelativeUri -eq 'users/sponsor-2/manager' }
+        Mock -ModuleName Maester Invoke-MtGraphRequest { throw (Get-HttpError 404) } -ParameterFilter { $RelativeUri -eq 'users/sponsor-2/manager' }
 
         Test-MtEntraAgentSponsorManager | Should -BeFalse
 

@@ -92,9 +92,15 @@
                     $UserSponsorships++
 
                     if (-not $ManagerBySponsorId.ContainsKey($SponsorId)) {
-                        # Invoke-MtGraphRequest returns nothing for a 404, which is the answer for a user without a manager.
-                        $ManagerBySponsorId[$SponsorId] = Invoke-MtGraphRequest -ApiVersion 'v1.0' `
-                            -RelativeUri "users/$SponsorId/manager" -Select @('id', 'displayName', 'accountEnabled')
+                        $Manager = $null
+                        try {
+                            $Manager = Invoke-MtGraphRequest -ApiVersion 'v1.0' `
+                                -RelativeUri "users/$SponsorId/manager" -Select @('id', 'displayName', 'accountEnabled')
+                        } catch {
+                            # For a user without a manager, Graph answers 404 Request_ResourceNotFound. Anything else is an error.
+                            if ($_.Exception.Message -notmatch '(?i)\b404\b|Request_ResourceNotFound') { throw }
+                        }
+                        $ManagerBySponsorId[$SponsorId] = $Manager
                     }
                     $Manager = $ManagerBySponsorId[$SponsorId]
 
