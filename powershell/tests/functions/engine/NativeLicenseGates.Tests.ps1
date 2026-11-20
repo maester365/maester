@@ -170,6 +170,18 @@ Describe 'Licence skip message' {
         $met | Should -BeTrue
     }
 
+    It 'Counts the SAFEDOCS service plan as Safe Documents, and the Defender for Office 365 plans as not' {
+        $met = InModuleScope Maester {
+            Test-MtLicenseRequirement -Requirement 'SAFEDOCS' -Licenses ([pscustomobject]@{ ServicePlanIds = @('bf6f5520-59e3-4f82-974b-7dbbc4fd27c7'); SkuIds = @(); ServicePlanNames = @() })
+        }
+        $met | Should -BeTrue
+        # ATP_ENTERPRISE (Plan 1) and THREAT_INTELLIGENCE (Plan 2) do not include Safe Documents.
+        $notMet = InModuleScope Maester {
+            Test-MtLicenseRequirement -Requirement 'SAFEDOCS' -Licenses ([pscustomobject]@{ ServicePlanIds = @('f20fedf3-f3c3-43c3-8267-2bfdd51c0939', '8e0c0a52-6a6c-4d40-8370-dd62790dcd70'); SkuIds = @(); ServicePlanNames = @() })
+        }
+        $notMet | Should -BeFalse
+    }
+
     It 'Gives every licence token a friendly name, from Microsoft or the table' {
         $unnamed = InModuleScope Maester {
             $table = Get-MtLicenseTable
