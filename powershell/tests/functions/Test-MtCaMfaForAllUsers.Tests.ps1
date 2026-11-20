@@ -12,6 +12,8 @@
                 [string[]] $BuiltInControls = @(),
                 [string[]] $CustomAuthenticationFactors = @(),
                 [string] $StrengthRequirementsSatisfied,
+                [ValidateSet('OR', 'AND')]
+                [string] $Operator = 'OR',
                 [switch] $NoGrantControls
             )
             $grantControls = $null
@@ -21,7 +23,7 @@
                     $authenticationStrength = [pscustomobject]@{ requirementsSatisfied = $StrengthRequirementsSatisfied }
                 }
                 $grantControls = [pscustomobject]@{
-                    operator                    = 'OR'
+                    operator                    = $Operator
                     builtInControls             = $BuiltInControls
                     customAuthenticationFactors = $CustomAuthenticationFactors
                     authenticationStrength      = $authenticationStrength
@@ -69,8 +71,18 @@
         }
     }
 
-    It 'Passes for a policy that requires built-in MFA next to a custom control' {
+    It 'Fails for a policy that a custom control satisfies instead of built-in MFA (OR), and lists the policy' {
         $policies = @(Get-TestCaPolicy -DisplayName 'MFA or legacy provider' -BuiltInControls 'mfa' -CustomAuthenticationFactors 'ContosoMFA')
+        Mock Get-MtConditionalAccessPolicy -ModuleName Maester { $policies }
+
+        Test-MtCaMfaForAllUsers | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Result -like '*- MFA or legacy provider*'
+        }
+    }
+
+    It 'Passes for a policy that requires built-in MFA and a custom control (AND)' {
+        $policies = @(Get-TestCaPolicy -DisplayName 'MFA and legacy provider' -BuiltInControls 'mfa' -CustomAuthenticationFactors 'ContosoMFA' -Operator 'AND')
         Mock Get-MtConditionalAccessPolicy -ModuleName Maester { $policies }
 
         Test-MtCaMfaForAllUsers | Should -BeTrue

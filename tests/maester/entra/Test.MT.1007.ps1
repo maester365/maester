@@ -6,8 +6,9 @@
     .Description
     MFA for all users Conditional Access policy can be used to require MFA for all users in the tenant.
 
-    A policy that grants access with a custom control doesn't count: custom controls don't satisfy the
-    multifactor authentication requirement, and Microsoft deprecated them in favor of external MFA.
+    A policy that a custom control alone satisfies doesn't count: custom controls don't satisfy the
+    multifactor authentication requirement, and Microsoft deprecated them in favor of external MFA. A policy
+    that requires MFA and a custom control (AND) still counts.
 
     Learn more:
     https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa
@@ -53,8 +54,8 @@
             -not $_.conditions.signInRiskLevels
         }
         $policiesResult = New-Object System.Collections.ArrayList
-        # Policies that target all users and all resources with a custom control. Custom controls don't
-        # satisfy the multifactor authentication requirement, so these policies don't count.
+        # Policies that target all users and all resources and that a custom control alone satisfies. Custom
+        # controls don't satisfy the multifactor authentication requirement, so these policies don't count.
         $customControlPolicies = New-Object System.Collections.ArrayList
 
         $result = $false
@@ -69,12 +70,15 @@
 
             $targetsAllUsersAndResources = $policy.conditions.users.includeUsers -eq 'All' -and
                 $policy.conditions.applications.includeApplications -eq 'All'
+            # Unless the grant requires every control (AND), a custom control alone satisfies the policy.
+            $customControlSatisfiesPolicy = $hasCustomAuthenticationFactor -and $policy.grantControls.operator -ne 'AND'
 
             if (
                 (
                     $policy.grantControls.builtInControls -contains 'mfa' -or
                     $policy.grantControls.authenticationStrength.requirementsSatisfied -contains 'mfa'
                 ) -and
+                -not $customControlSatisfiesPolicy -and
                 $targetsAllUsersAndResources
             ) {
                 $result = $true
@@ -82,7 +86,7 @@
                 $policiesResult.Add($policy) | Out-Null
             } else {
                 $CurrentResult = $false
-                if ($hasCustomAuthenticationFactor -and $targetsAllUsersAndResources) {
+                if ($customControlSatisfiesPolicy -and $targetsAllUsersAndResources) {
                     $customControlPolicies.Add($policy) | Out-Null
                 }
             }
@@ -98,8 +102,8 @@
         if ($customControlPolicies.Count -gt 0) {
             $customControlList = ($customControlPolicies | ForEach-Object { "- $(Get-MtSafeMarkdown $_.displayName)" }) -join "`n"
             $migrationLink = 'https://learn.microsoft.com/entra/identity/conditional-access/how-to-migrate-custom-controls-external-mfa'
-            $testResult += "`n`nThe following policies target all users with a custom control, which doesn't satisfy the " +
-                "multifactor authentication requirement, so they don't count. Custom controls are deprecated: " +
+            $testResult += "`n`nThe following policies target all users, and a custom control alone satisfies them. A custom control " +
+                "doesn't satisfy the multifactor authentication requirement, so they don't count. Custom controls are deprecated: " +
                 "[migrate them to external MFA]($migrationLink).`n`n$customControlList"
         }
 
