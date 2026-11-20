@@ -24,7 +24,7 @@ function Test-ORCA234 {
         Mitre = 'T1204.002',
         Control = 'nist-800-53-r5:SI-3',
         Service = 'ExchangeOnline',
-        License = 'ATP_ENTERPRISE',
+        License = 'SAFEDOCS',
         Author = 'soulemike'
     )]
     [CmdletBinding()]

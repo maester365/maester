@@ -222,6 +222,7 @@ Reserved names (rejected today): `OptionalService`, `TimeoutSeconds`.
 
 Licence tokens: `AAD_PREMIUM` (Entra ID P1 or better), `AAD_PREMIUM_P2`, `Entra_Identity_Governance`,
 `AAD_WRKLDID_P1`, `AAD_WRKLDID_P2`, `ATP_ENTERPRISE` (MDO P1 or P2), `THREAT_INTELLIGENCE` (MDO P2),
+`SAFEDOCS` (Safe Documents, which neither MDO plan includes),
 `EOP_ENTERPRISE`, `EXCHANGE_S_STANDARD`, `EXCHANGE_DLP`, `M365_ADVANCED_AUDITING`, `DEFENDER_XDR`,
 `LOCKBOX_ENTERPRISE`, `INTUNE_A`. Built-in checks use only these; add a token to the table if you need a new one.
 

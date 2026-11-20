@@ -18,7 +18,8 @@
     tests/orca/Test.ORCA.<n>.ps1 with one [MaesterTest] function, and tests/orca/Test.ORCA.<n>.md.
     Maester metadata that ORCA does not carry (severity, author, contributors and the classification
     attributes RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost and Mitre) is
-    read from build/orca/orca-test-metadata.json. Edit that file, never the generated tests.
+    read from build/orca/orca-test-metadata.json, as is License for a check whose feature Defender for
+    Office 365 does not include. Edit that file, never the generated tests.
 
 .PARAMETER Offline
     Regenerates only the native tests from the committed check files. Nothing is downloaded.
@@ -356,7 +357,9 @@ foreach ($check in $checks) {
     if ($meta.Control) { $attribute.Add("Control = $(Format-OrcaList @($meta.Control))") }
     $attribute.Add("Service = $(Format-OrcaList $services)")
     # Defender for Office 365 Plan 1 or 2. ORCA detects MDO itself and reports 'not completed' without it.
-    if ($check.Services -eq 'MDO') { $attribute.Add("License = 'ATP_ENTERPRISE'") }
+    # A check of a feature that neither plan includes, such as Safe Documents, names its licence in the metadata.
+    if ($meta.License) { $attribute.Add("License = $(Format-OrcaList @($meta.License))") }
+    elseif ($check.Services -eq 'MDO') { $attribute.Add("License = 'ATP_ENTERPRISE'") }
     $attribute.Add("Author = $(Format-OrcaList @($meta.Author))")
     if ($meta.Contributor) { $attribute.Add("Contributor = $(Format-OrcaList @($meta.Contributor))") }
     $attributeText = ($attribute | ForEach-Object { "        $_" }) -join ",`n"

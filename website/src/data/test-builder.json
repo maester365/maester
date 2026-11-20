@@ -1201,6 +1201,7 @@
     "INTUNE_A",
     "LOCKBOX_ENTERPRISE",
     "M365_ADVANCED_AUDITING",
+    "SAFEDOCS",
     "THREAT_INTELLIGENCE"
   ],
   "suites": [

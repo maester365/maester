@@ -8,6 +8,8 @@
     $p2OrGovernance = @{ License = @('AAD_PREMIUM_P2', 'Entra_Identity_Governance'); Legacy = 'NotLicensedEntraIDP2' }
     $p2AndAgent365 = @{ License = @('AAD_PREMIUM_P2&AGENT_365'); Legacy = 'NotLicensedEntraIDP2' }
     $mdoP1 = @{ License = @('ATP_ENTERPRISE'); Legacy = 'NotLicensedMdoP1' }
+    # CIS.M365.2.1.5 also requires Safe Documents, which neither Defender for Office 365 plan includes (2.x gated it on Plan 1).
+    $safeDocs = @{ License = @('SAFEDOCS'); Legacy = 'Custom' }
     $exoDlp = @{ License = @('EXCHANGE_DLP'); Legacy = 'NotLicensedExoDlp' }
     $intune = @{ License = @('INTUNE_A'); Legacy = 'NotLicensedIntune' }
     $converted = [ordered]@{
@@ -20,7 +22,7 @@
         'CISA.MS.EXO.17.3' = @{ License = @('M365_ADVANCED_AUDITING'); Legacy = 'NotLicensedAdvAudit' }
         'CISA.MS.EXO.8.1'  = $exoDlp; 'CISA.MS.EXO.8.2' = $exoDlp; 'CISA.MS.EXO.8.4' = $exoDlp
         'CIS.M365.1.3.6'   = @{ License = @('LOCKBOX_ENTERPRISE'); Legacy = 'NotLicensedCustomerLockbox' }
-        'CIS.M365.2.1.1'   = $mdoP1; 'CIS.M365.2.1.4' = $mdoP1; 'CIS.M365.2.1.5' = $mdoP1; 'CIS.M365.2.1.7' = $mdoP1
+        'CIS.M365.2.1.1'   = $mdoP1; 'CIS.M365.2.1.4' = $mdoP1; 'CIS.M365.2.1.5' = $safeDocs; 'CIS.M365.2.1.7' = $mdoP1
         'MT.1053'          = $intune; 'MT.1096' = $intune; 'MT.1102' = $intune; 'MT.1105' = $intune
         'MT.1106'          = $p2OrGovernance; 'MT.1107' = $p2OrGovernance; 'MT.1108' = $p2OrGovernance; 'MT.1109' = $p2OrGovernance; 'MT.1110' = $p2OrGovernance
         'MT.1175'          = $exoDlp
@@ -90,6 +92,15 @@ Describe 'Licence gates of converted tests' {
             $row = Invoke-MtTest -Id 'MT.1181' -Config (New-Config -Licenses $license)
             $row.Result | Should -Be 'Skipped' -Because "the tenant has only $license"
             $row.ReasonCode | Should -Be 'LicenseNotFound' -Because "the tenant has only $license"
+        }
+    }
+
+    It 'Skip the Safe Documents checks on a tenant with Defender for Office 365 alone' {
+        # Defender for Office 365 Plan 1, part of Microsoft 365 E3 since July 2026, does not include Safe Documents.
+        foreach ($id in 'ORCA.225', 'ORCA.234', 'CIS.M365.2.1.5') {
+            (@((Get-MtTest -Id $id).License) -join ',') | Should -Be 'SAFEDOCS' -Because "$id checks a Safe Documents setting"
+            $row = Invoke-MtTest -Id $id -Config (New-Config -Licenses 'ATP_ENTERPRISE')
+            $row.ReasonCode | Should -Be 'LicenseNotFound' -Because "$id needs the SAFEDOCS service plan, not only Defender for Office 365"
         }
     }
 

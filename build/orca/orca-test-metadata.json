@@ -935,6 +935,7 @@
     },
     "ORCA.225": {
       "Severity": "Medium",
+      "License": "SAFEDOCS",
       "Author": [
         "soulemike"
       ],
@@ -1130,6 +1131,7 @@
     },
     "ORCA.234": {
       "Severity": "Medium",
+      "License": "SAFEDOCS",
       "Author": [
         "soulemike"
       ],
