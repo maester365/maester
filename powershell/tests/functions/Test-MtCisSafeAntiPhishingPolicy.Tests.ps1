@@ -98,4 +98,25 @@
             -not [bool]$Investigate -and $Result.StartsWith('Well done.')
         }
     }
+
+    It 'Names every policy that needs investigation, in the plural when there are several' {
+        $executivePolicy = [pscustomobject](@{ Name = 'Executives'; Identity = 'Executives' } + $script:compliantSettings)
+        $financePolicy = [pscustomobject](@{ Name = 'Finance'; Identity = 'Finance' } + $script:compliantSettings)
+        Mock Get-MtExo -ModuleName Maester {
+            switch ($Request) {
+                'AntiPhishPolicy' { $executivePolicy; $financePolicy }
+                'AntiPhishRule' {
+                    [pscustomobject]@{ AntiPhishPolicy = 'Executives'; State = 'Enabled'; Priority = 0; RecipientDomainIs = @('contoso.com', 'fabrikam.com'); SentTo = @('adele@contoso.com') }
+                    [pscustomobject]@{ AntiPhishPolicy = 'Finance'; State = 'Enabled'; Priority = 1; SentToMemberOf = @('Finance'); SentTo = @('megan@contoso.com') }
+                }
+                'AcceptedDomain' { [pscustomobject]@{ Name = 'contoso.com' }; [pscustomobject]@{ Name = 'fabrikam.com' } }
+            }
+        }
+
+        Test-MtCisSafeAntiPhishingPolicy | Should -BeFalse
+
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            [bool]$Investigate -and $Result.StartsWith("Anti-phishing policies 'Executives', 'Finance' meet the other CIS recommendations, but their rules")
+        }
+    }
 }

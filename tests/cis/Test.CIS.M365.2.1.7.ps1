@@ -118,7 +118,12 @@
     if ($testResult) {
         $testResultMarkdown = "Well done. An enabled anti-phishing policy and matching rule meet CIS recommendations ($portalLink).`n`n%TestResult%"
     } elseif ($investigatePolicies.Count -gt 0) {
-        $testResultMarkdown = "Anti-phishing policy '$($investigatePolicies.Name -join "', '")' meets the other CIS recommendations, but its rule adds users to domain or group targets. If the rule matches all conditions, as rules created before the MC1546447 rollout do until they are edited, it applies only to those users. If it matches any condition, it also covers the domains or groups. The rule does not show which logic applies, so move the users to a separate policy to make the scope explicit ($portalLink).`n`n%TestResult%"
+        $policyList = "'$($investigatePolicies.Name -join "', '")'"
+        $testResultMarkdown = if ($investigatePolicies.Count -eq 1) {
+            "Anti-phishing policy $policyList meets the other CIS recommendations, but its rule adds users to domain or group targets. If the rule matches all conditions, as rules created before the MC1546447 rollout do until they are edited, it applies only to those users. If it matches any condition, it also covers the domains or groups. The rule does not show which logic applies, so move the users to a separate policy to make the scope explicit ($portalLink).`n`n%TestResult%"
+        } else {
+            "Anti-phishing policies $policyList meet the other CIS recommendations, but their rules add users to domain or group targets. If a rule matches all conditions, as rules created before the MC1546447 rollout do until they are edited, it applies only to those users. If it matches any condition, it also covers the domains or groups. The rules do not show which logic applies, so move the users to separate policies to make the scope explicit ($portalLink).`n`n%TestResult%"
+        }
     } else {
         $testResultMarkdown = "No enabled anti-phishing policy and matching rule meet all CIS recommendations ($portalLink).`n`n%TestResult%"
     }
