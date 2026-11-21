@@ -44,7 +44,7 @@ This test counts computers with and without the `dNSHostName` attribute populate
 #### Related Tests
 
 - `Test-MtAdComputerDnsZoneCount` - DNS zone distribution
-- `Test-MtAdComputerDnsZoneDetails` - Detailed DNS zone analysis
+- `AD-DCOMP-08` - DNS suffix distribution and per-zone computer counts
 - `Test-MtAdComputerSpnSetCount` - SPN configuration check
 
 <!--- Results --->

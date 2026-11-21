@@ -43,7 +43,7 @@ This test extracts DNS zones from computer `dNSHostName` attributes and:
 #### Related Tests
 
 - `Test-MtAdComputerDnsHostNameCount` - DNS host name coverage
-- `Test-MtAdComputerDnsZoneDetails` - Detailed zone breakdown
+- Zone counts and percentages are shown in this check; host names with no DNS suffix are counted separately.
 - `Test-MtAdDnsZoneCount` - DNS server zone analysis
 
 <!--- Results --->

@@ -24,7 +24,7 @@ The test returns informational results to help you assess the scope of disabled 
 
 #### Related Tests
 
-- `Test-MtAdComputerDormantCount` - Identifies enabled computers that haven't logged on recently
+- `AD-DCOMP-06` - Identifies enabled computers that haven't logged on recently
 - `Test-MtAdComputerInDefaultContainer` - Finds computers in the default container (another hygiene indicator)
 
 <!--- Results --->

@@ -41,15 +41,12 @@
         "AD-CFG-23",
         "AD-CFG-24",
         "AD-COMP-01",
-        "AD-COMP-02",
         "AD-COMP-03",
         "AD-COMP-04",
         "AD-COMP-05",
         "AD-COMP-06",
         "AD-COMP-07",
         "AD-COMP-08",
-        "AD-COMP-09",
-        "AD-COMP-10",
         "AD-DACL-01",
         "AD-DACL-02",
         "AD-DACL-03",
@@ -81,14 +78,11 @@
         "AD-DCD-03",
         "AD-DCD-04",
         "AD-DCOMP-01",
-        "AD-DCOMP-02",
         "AD-DCOMP-03",
         "AD-DCOMP-04",
-        "AD-DCOMP-05",
         "AD-DCOMP-06",
         "AD-DCOMP-07",
         "AD-DCOMP-08",
-        "AD-DCOMP-09",
         "AD-DFSR-01",
         "AD-DNS-01",
         "AD-DNS-02",
@@ -289,18 +283,54 @@
       ]
     },
     {
+      "Tag": "AD-COMP-02",
+      "Tests": [
+        "AD-DCOMP-06"
+      ]
+    },
+    {
+      "Tag": "AD-COMP-09",
+      "Tests": [
+        "AD-DCOMP-01"
+      ]
+    },
+    {
+      "Tag": "AD-COMP-10",
+      "Tests": [
+        "AD-DCOMP-03"
+      ]
+    },
+    {
+      "Tag": "AD-DCOMP-02",
+      "Tests": [
+        "AD-DCOMP-01"
+      ]
+    },
+    {
+      "Tag": "AD-DCOMP-05",
+      "Tests": [
+        "AD-DCOMP-04"
+      ]
+    },
+    {
+      "Tag": "AD-DCOMP-09",
+      "Tests": [
+        "AD-DCOMP-08"
+      ]
+    },
+    {
       "Tag": "AD.Computer",
       "Tests": [
         "AD-COMP-01",
-        "AD-COMP-02",
         "AD-COMP-03",
         "AD-COMP-04",
         "AD-COMP-05",
         "AD-COMP-06",
         "AD-COMP-07",
         "AD-COMP-08",
-        "AD-COMP-09",
-        "AD-COMP-10"
+        "AD-DCOMP-01",
+        "AD-DCOMP-03",
+        "AD-DCOMP-06"
       ]
     },
     {
@@ -575,14 +605,11 @@
       "Tag": "AD.Security",
       "Tests": [
         "AD-DCOMP-01",
-        "AD-DCOMP-02",
         "AD-DCOMP-03",
         "AD-DCOMP-04",
-        "AD-DCOMP-05",
         "AD-DCOMP-06",
         "AD-DCOMP-07",
         "AD-DCOMP-08",
-        "AD-DCOMP-09",
         "AD-KRBTGT-01",
         "AD-KRBTGT-02",
         "AD-KRBTGT-03",

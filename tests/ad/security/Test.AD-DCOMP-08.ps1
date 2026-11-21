@@ -43,30 +43,17 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
     Write-Verbose "Retrieved AD state"
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Computers) {
+        throw 'Computer inventory is required to review DNS zones.'
     }
     Write-Verbose "Filtering/counting computer dns zone count"
 
     $computers = $adState.Computers
 
-    # Extract DNS zones from dNSHostName
-    $dnsZones = @()
-    foreach ($computer in $computers) {
-        if ($computer.dNSHostName) {
-            $dnsName = $computer.dNSHostName.ToString()
-            # Extract zone (everything after first dot)
-            if ($dnsName -match '\.') {
-                $zone = $dnsName.Substring($dnsName.IndexOf('.') + 1)
-                if ($zone -and $dnsZones -notcontains $zone) {
-                    $dnsZones += $zone
-                }
-            }
-        }
-    }
-
-    $zoneCount = $dnsZones.Count
+    # A host name without a suffix is not a DNS zone; report it separately.
+    $zoneGroups = @($computers | Where-Object { $_.dNSHostName -match '^[^.]+\..+' } |
+            Group-Object -Property { $_.dNSHostName.Substring($_.dNSHostName.IndexOf('.') + 1).TrimEnd('.').ToLowerInvariant() })
+    $zoneCount = $zoneGroups.Count
     $computersWithDns = ($computers | Where-Object { $_.dNSHostName } | Measure-Object).Count
     $totalComputers = ($computers | Measure-Object).Count
 
@@ -77,14 +64,17 @@
     $result += "| Total Computers | $totalComputers |" + "`n"
     $result += "| Computers with DNS Host Name | $computersWithDns |" + "`n"
     $result += "| Unique DNS Zones | $zoneCount |" + "`n"
+    $result += "| Computers without DNS Host Name | $(@($computers | Where-Object { -not $_.dNSHostName }).Count) |`n"
+    $result += "| Host Names without DNS Suffix | $(@($computers | Where-Object { $_.dNSHostName -and $_.dNSHostName -notmatch '^[^.]+\..+' }).Count) |`n"
 
     if ($zoneCount -gt 0) {
         $result += "`n**DNS Zones in Use:**" + "`n" + "`n"
-        $result += "| DNS Zone |" + "`n"
-        $result += "| --- |" + "`n"
+        $result += "| DNS Zone | Computer Count | Percentage of Hosts with Zone |`n| --- | --- | --- |`n"
 
-        foreach ($zone in ($dnsZones | Sort-Object)) {
-            $result += "| $zone |" + "`n"
+        foreach ($group in ($zoneGroups | Sort-Object -Property Count -Descending)) {
+            $zone = [string]$group.Name -replace '\|', '\|' -replace '[\r\n]', ' '
+            $percentage = [Math]::Round(100 * $group.Count / @($computers | Where-Object { $_.dNSHostName -match '^[^.]+\..+' }).Count, 2)
+            $result += "| $zone | $($group.Count) | $percentage% |`n"
         }
     }
     Write-Verbose "Counts computed"

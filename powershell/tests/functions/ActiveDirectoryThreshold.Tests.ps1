@@ -91,7 +91,7 @@ Describe 'Active Directory Threshold Validation' -Tag 'LabOnly', 'ActiveDirector
 
             # Invoke the test through its supported entrypoint and assert investigate outcome
             $testResult = Test-MtAdComputerStaleEnabledCount -MaximumInactiveDays 1
-            $testResult | Should -Be $null -Because 'AD-DCOMP-06 should investigate when stale enabled computers exist'
+            $testResult | Should -BeFalse -Because 'AD-DCOMP-06 returns a false Boolean and reports Investigate when stale enabled computers exist'
 
             # With a 1-day threshold in a fresh lab, most or all computers appear stale
             $staleCount | Should -BeGreaterThan 0 -Because 'a 1-day threshold in a fresh lab should flag at least one computer as stale'

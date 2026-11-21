@@ -39,20 +39,21 @@
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState -Categories @('Computers')
 
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Computers) {
+        throw 'Computer inventory is required to review CreatorSid.'
     }
 
     $computers = $adState.Computers
+    if (@($computers).Count -eq 0 -or @($computers | Where-Object { -not $_.PSObject.Properties['CreatorSid'] }).Count -gt 0) {
+        Add-MtTestResultDetail -Result 'CreatorSid is not collected in the cached computer inventory. This test cannot determine how many accounts have it.' -Investigate
+        return $false
+    }
 
     # Count enabled computers with CreatorSid attribute
     # CreatorSid is optional in the collected computer contract, so check whether it exists.
     $computersWithCreatorSid = $computers | Where-Object {
         $_.Enabled -eq $true -and
-        $_.PSObject.Properties['ms-ds-CreatorSid'] -and
-        $_.'ms-ds-CreatorSid'
+        $_.CreatorSid
     }
 
     $creatorSidCount = ($computersWithCreatorSid | Measure-Object).Count
@@ -83,7 +84,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory computer objects. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

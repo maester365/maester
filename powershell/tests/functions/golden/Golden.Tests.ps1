@@ -56,10 +56,9 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
         BeforeAll {
             # tags-and-blocks.json is the frozen 2.x snapshot. In 3.0 the built-in tests carry no taxonomy
             # tags, and Block and the tags on a result row changed on purpose, so neither is compared any
-            # more. What must hold is that every 2.x tag still selects exactly the tests it selected: not
-            # fewer, and not more, so a new test must not take a 2.x tag as one of its own tags.
-            # MT1060 (drift) became the native family MT.1060: its four 2.x Its are one test.
-            $script:renamedIds = @{ 'MT1060' = 'MT.1060' }
+            # more. Every 2.x tag selects the same tests, except for explicit native replacements.
+            # This registry preserves consolidation intent without filtering out accidental deletions.
+            $script:renamedIds = Import-PowerShellDataFile -LiteralPath (Join-Path $repoRoot 'build/golden/native-test-replacements.psd1')
             $toSet = {
                 param($entries)
                 $byTag = [System.Collections.Generic.Dictionary[string, System.Collections.Generic.SortedSet[string]]]::new([System.StringComparer]::OrdinalIgnoreCase)
@@ -125,6 +124,8 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
             $ids = [System.Collections.Generic.HashSet[string]]::new([string[]]@($script:fresh | ForEach-Object { $_.Id }), [System.StringComparer]::OrdinalIgnoreCase)
             $missing = @($table.Tags | ForEach-Object { $_.Tests } | Where-Object { -not $ids.Contains($_) } | Select-Object -Unique)
             $missing | Should -BeNullOrEmpty
+            @($script:renamedIds.Values | Where-Object { -not $ids.Contains($_) }) | Should -BeNullOrEmpty -Because 'each explicit replacement must have a surviving native test'
+            @($script:renamedIds.Keys | Where-Object { $ids.Contains($_) }) | Should -BeNullOrEmpty -Because 'a replaced ID must no longer have its own test'
             $replacement = @{}
             foreach ($entry in $table.Tags) { if ($entry.PSObject.Properties['Replacement']) { $replacement[$entry.Tag] = $entry.Replacement } }
             $replacement['CA'] | Should -Be '-Feature conditional-access'

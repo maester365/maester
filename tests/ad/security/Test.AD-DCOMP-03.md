@@ -1,4 +1,6 @@
-- Constrained delegation (also known as "protocol transition" or S4U2Proxy) is safer than unconstrained delegation but still carries security risks. It allows a service to impersonate a user to specific services only, rather than any service in the domain.
+This check inventories three separate indicators on non-domain-controller computers and sMSA, gMSA and dMSA accounts: classic Kerberos constrained delegation (KCD) target SPNs from `msDS-AllowedToDelegateTo`, the `TrustedToAuthForDelegation` protocol-transition flag, and **presence** of an `msDS-AllowedToActOnBehalfOfOtherIdentity` resource-based constrained delegation (RBCD) descriptor. One account can have multiple indicators. Descriptor presence neither identifies allowed principals nor proves effective delegation permissions.
+
+LDAP attributes that cannot be read may be indistinguishable from unset attributes; adequate ReadProperty access is needed for a reliable inventory.
 
 **Security Considerations:**
 - **Limited Scope**: Safer than unconstrained but still enables impersonation
@@ -29,14 +31,11 @@
 
 #### How the Test Works
 
-This test counts non-DC computers with the `TrustedToAuthForDelegation` flag enabled, which indicates:
-- Constrained delegation is configured
-- Protocol transition may be enabled
+The test reports device and managed-account populations separately, then combined non-DC account counts for KCD targets, protocol transition and RBCD descriptor presence. Indicator percentages use this combined population. DC identity comes from the DC inventory, not a claimed primary group. A present RBCD descriptor needs a separate permissions review; this test cannot resolve principals or effective access. Delegation on ordinary user accounts remains outside this inventory.
 
 #### Related Tests
 
 - `Test-MtAdComputerUnconstrainedDelegationCount` - Overall unconstrained delegation
-- `Test-MtAdComputerNonDcUnconstrainedDelegationCount` - Critical non-DC unconstrained delegation
 - `Test-MtAdUserDelegationConfiguredCount` - User account delegation settings
 
 #### Related links

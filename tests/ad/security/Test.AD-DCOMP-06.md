@@ -42,9 +42,11 @@ This test identifies enabled computers that:
 
 Provides counts and lists affected computers.
 
+AD-COMP-02 is consolidated into this check. Its former default was 90 days; set `MaximumInactiveDays` to `90` on AD-DCOMP-06 to retain that threshold. The canonical default remains 180 days.
+
 #### Related Tests
 
-- `Test-MtAdComputerDormantCount` - Dormant computer identification
+- This is the canonical stale enabled computer inventory; findings report Investigate, while no findings return Passed.
 - `Test-MtAdComputerDisabledCount` - Disabled computer analysis
 - `Test-MtAdUserDormantEnabledCount` - Stale user account check
 
