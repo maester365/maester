@@ -36,7 +36,7 @@
     ### - add them to the hashtable below
     ### - confirm the command's return type is in OutputType (e.g. (Get-AcceptedDomain).GetType().Name)
     $commands = @{
-        "AcceptedDomain"                 = "Get-AcceptedDomain"
+        "AcceptedDomain"                 = "Get-AcceptedDomain -ResultSize 'Unlimited'"
         "RemoteDomain"                   = "Get-RemoteDomain"
         "TransportConfig"                = "Get-TransportConfig"
         "TransportRule"                  = "Get-TransportRule"
