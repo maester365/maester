@@ -58,7 +58,7 @@
     $defaultContainerComputers = $computers | Where-Object {
         $_.Enabled -eq $true -and
         $_.DistinguishedName -and
-        $_.DistinguishedName -match '^CN=(?:\\.|[^,])+,CN=Computers,DC='
+        $_.DistinguishedName -match '^CN=(?:\\.|[^,\\])+,CN=Computers,DC='
     }
 
     $defaultContainerCount = ($defaultContainerComputers | Measure-Object).Count
