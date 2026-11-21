@@ -115,7 +115,7 @@ export default defineConfig({
 								{ label: 'Automate', items: [{ autogenerate: { directory: 'docs/monitoring' } }] },
 								{ label: 'Alerts', items: [{ autogenerate: { directory: 'docs/alerts' } }] },
 								{ label: 'Many tenants', items: [{ autogenerate: { directory: 'docs/multi-tenant' } }] },
-								{ label: 'Active Directory', items: ['docs/advanced/active-directory'] },
+								{ label: 'Active Directory', items: ['docs/advanced/active-directory', 'docs/advanced/ad-query-collection'] },
 								{
 									label: 'Maester Packs',
 									items: [
@@ -204,4 +204,3 @@ export default defineConfig({
 		redirects(),
 	],
 });
-
