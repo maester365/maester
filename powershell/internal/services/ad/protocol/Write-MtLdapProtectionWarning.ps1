@@ -1,4 +1,4 @@
-function Write-MtLdapProtectionWarning {
+﻿function Write-MtLdapProtectionWarning {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]

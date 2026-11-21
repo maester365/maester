@@ -51,7 +51,7 @@
    Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryCredential $credential -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode None -ActiveDirectoryForceUnencrypted -ActiveDirectoryAllowPlaintextPassword
 
    Explicitly permits a Basic/simple bind that transmits the username and password in plaintext to a server this connection does not authenticate. Queries and results are also plaintext and unsigned. Use only in an isolated test lab. An explicit server is required, but does not authenticate that server. Every reconnect sends the password again and repeats the warning. Do not use ForceUnsigned with Basic; simple binds have no SASL signing.
-   
+
 .EXAMPLE
    Connect-Maester -Service Graph,AzureDevOps -AzureDevOpsOrganization 'contoso'
 

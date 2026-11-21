@@ -1,4 +1,4 @@
-function Get-MtAdLdapProtectionCacheSuffix {
+﻿function Get-MtAdLdapProtectionCacheSuffix {
     [CmdletBinding()]
     [OutputType([string])]
     param(

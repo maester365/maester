@@ -505,7 +505,12 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
             InModuleScope Maester -Parameters @{ Mode = $Mode; Attempts = $Attempts } {
                 param($Mode, $Attempts)
                 Mock New-MtLdapConnection { throw 'TLS failed' }
-                { Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -TlsMode $Mode -ForceUnencrypted } | Should -Throw
+                $connectParameters = @{
+                    ActiveDirectoryServer = 'dc01.contoso.com'
+                    TlsMode               = $Mode
+                    ForceUnencrypted      = $true
+                }
+                { Connect-MtAdTarget @connectParameters } | Should -Throw
                 Should -Invoke New-MtLdapConnection -Times $Attempts -Exactly
                 Should -Invoke New-MtLdapConnection -Times 0 -Exactly -ParameterFilter { $Port -eq 389 -and -not $UseStartTls }
                 Should -Invoke Write-Warning -Times 0 -Exactly
