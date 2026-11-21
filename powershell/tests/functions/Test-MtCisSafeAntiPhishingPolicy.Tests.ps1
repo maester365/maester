@@ -59,6 +59,25 @@
         }
     }
 
+    It 'Fails without investigation when another check also fails' {
+        $policy = [pscustomobject](@{ Name = 'Contoso'; Identity = 'Contoso' } + $script:compliantSettings)
+        $policy.PhishThresholdLevel = 1
+        $rule = [pscustomobject]@{ AntiPhishPolicy = 'Contoso'; State = 'Enabled'; Priority = 0; RecipientDomainIs = @('contoso.com', 'fabrikam.com'); SentTo = @('adele@contoso.com') }
+        Mock Get-MtExo -ModuleName Maester {
+            switch ($Request) {
+                'AntiPhishPolicy' { $policy }
+                'AntiPhishRule' { $rule }
+                'AcceptedDomain' { [pscustomobject]@{ Name = 'contoso.com' }; [pscustomobject]@{ Name = 'fabrikam.com' } }
+            }
+        }
+
+        Test-MtCisSafeAntiPhishingPolicy | Should -BeFalse
+
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            -not [bool]$Investigate -and $Result.StartsWith('No enabled anti-phishing policy')
+        }
+    }
+
     It 'Passes without investigation when another policy meets every check' {
         $executivePolicy = [pscustomobject](@{ Name = 'Executives'; Identity = 'Executives' } + $script:compliantSettings)
         $tenantPolicy = [pscustomobject](@{ Name = 'Contoso'; Identity = 'Contoso' } + $script:compliantSettings)

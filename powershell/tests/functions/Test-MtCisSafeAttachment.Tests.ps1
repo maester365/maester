@@ -38,4 +38,22 @@
             ($Expected -ne 'Investigate' -or $Result -match 'MC1546447')
         }
     }
+
+    It 'Fails without investigation when another check also fails' {
+        $policy = [pscustomobject]@{ Name = 'Contoso'; Identity = 'Contoso'; Enable = $false; Action = 'Block'; QuarantineTag = 'AdminOnlyAccessPolicy' }
+        $rule = [pscustomobject]@{ Identity = 'Contoso'; SafeAttachmentPolicy = 'Contoso'; State = 'Enabled'; Priority = 0; RecipientDomainIs = @('contoso.com', 'fabrikam.com'); SentTo = @('adele@contoso.com') }
+        Mock Get-MtExo -ModuleName Maester {
+            switch ($Request) {
+                'SafeAttachmentPolicy' { $policy }
+                'SafeAttachmentRule' { $rule }
+                'AcceptedDomain' { [pscustomobject]@{ Name = 'contoso.com' }; [pscustomobject]@{ Name = 'fabrikam.com' } }
+            }
+        }
+
+        Test-MtCisSafeAttachment | Should -BeFalse
+
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            -not [bool]$Investigate -and $Result -match 'does not match CIS recommendations'
+        }
+    }
 }
