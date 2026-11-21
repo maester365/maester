@@ -10,7 +10,7 @@
     .EXAMPLE
     Test-MtCisSafeAntiPhishingPolicy
 
-    Returns true if at least one anti-phishing policy and its highest-priority enabled matching rule meet all CIS checks. Recipient scope passes with no targets, coverage of every accepted domain, or at least one group target, when the rule names no users; group membership and exclusions are not validated. When users are added to domain or group targets, the scope depends on whether the rule matches all or any of its conditions, which the rule does not show (MC1546447), so the result is Investigate.
+    Returns true if at least one anti-phishing policy and its highest-priority enabled matching rule meet all CIS checks. Recipient scope passes with no targets, coverage of every accepted domain, or at least one group target, when the rule names no users; group membership and exclusions are not validated. When no policy passes and a policy fails only on a rule that adds users to every accepted domain or to a group, the result is Investigate: the scope depends on whether the rule matches all or any of its conditions, which the rule does not show (MC1546447). Users alone, or users with only some accepted domains, fail.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisSafeAntiPhishingPolicy
