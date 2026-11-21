@@ -21,7 +21,7 @@
     Returns $true if computer data is accessible.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerUnconstrainedDelegationCount
+    https://maester.dev/docs/tests/AD-DCOMP-01
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-01',
@@ -110,7 +110,7 @@
     Write-Verbose "Counts computed"
 
     $summary = if ($testResult) { 'Well done. No non-DC computers or managed service accounts have unconstrained delegation.' } else { 'Non-DC computers or managed service accounts with unconstrained delegation were found. Migrate their services to constrained delegation and remove unconstrained delegation.' }
-    if ($unverifiedDcGroups.Count -gt 0) { $summary += " $($unverifiedDcGroups.Count) computer(s) claim a DC primary group without inventory evidence; review AD-COMP-04. They were not excluded." }
+    if ($unverifiedDcGroups.Count -gt 0) { $summary += " $($unverifiedDcGroups.Count) computer(s) claim a DC primary group without inventory evidence; review [AD-COMP-04: Enabled computers should use standard primary groups](https://maester.dev/docs/tests/AD-COMP-04) to assess unexpected primary-group assignments. They were not excluded." }
     $testResultMarkdown = "$summary`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 

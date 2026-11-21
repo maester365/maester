@@ -18,7 +18,7 @@
     The test result includes the count of computers with SID History.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerSidHistoryCount
+    https://maester.dev/docs/tests/AD-COMP-05
     #>
     [MaesterTest(
         Id = 'AD-COMP-05',

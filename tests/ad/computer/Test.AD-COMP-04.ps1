@@ -21,7 +21,7 @@
     The test result includes the count of computers with non-standard primary groups.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerNonStandardGroup
+    https://maester.dev/docs/tests/AD-COMP-04
     #>
     [MaesterTest(
         Id = 'AD-COMP-04',
@@ -92,11 +92,14 @@
         $result += "| Non-Standard Primary Group | $nonStandardCount |" + "`n"
         $result += "| Non-Standard Percentage | $percentage% |" + "`n" + "`n"
         $result += "**Standard Primary Group IDs:** 515 (Domain Computers), 516 (Domain Controllers), 521 (Read-only Domain Controllers)" + "`n" + "`n"
-        $result += "DC groups are accepted only for accounts verified in the DC inventory.`n`n| Computer | Primary group | Distinguished name |`n| --- | --- | --- |`n"
-        foreach ($computer in $nonStandardGroupComputers) {
-            $name = ([string]$computer.Name).Replace('|', '&#124;') -replace '[\r\n]+', ' '
-            $dn = ([string]$computer.DistinguishedName).Replace('|', '&#124;') -replace '[\r\n]+', ' '
-            $result += "| $name | $($computer.PrimaryGroupId) | $dn |`n"
+        $result += "DC groups are accepted only for accounts verified in the DC inventory.`n"
+        if ($nonStandardCount -gt 0) {
+            $result += "`n| Computer | Primary group | Distinguished name |`n| --- | --- | --- |`n"
+            foreach ($computer in $nonStandardGroupComputers) {
+                $name = ([string]$computer.Name).Replace('|', '&#124;') -replace '[\r\n]+', ' '
+                $dn = ([string]$computer.DistinguishedName).Replace('|', '&#124;') -replace '[\r\n]+', ' '
+                $result += "| $name | $($computer.PrimaryGroupId) | $dn |`n"
+            }
         }
 
         $testResultMarkdown = "Active Directory computer objects have been analyzed. $nonStandardCount out of $enabledCount enabled computers ($percentage%) have non-standard primary group IDs.`n`n%TestResult%"

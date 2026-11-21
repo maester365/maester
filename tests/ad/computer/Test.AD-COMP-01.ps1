@@ -15,7 +15,7 @@
     The test result includes counts of disabled and total computers.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerDisabledCount
+    https://maester.dev/docs/tests/AD-COMP-01
     #>
     [MaesterTest(
         Id = 'AD-COMP-01',

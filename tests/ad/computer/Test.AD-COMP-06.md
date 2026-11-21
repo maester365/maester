@@ -25,8 +25,8 @@ This test fails when an enabled computer is an immediate child of the domain's d
 
 #### Related Tests
 
-- `Test-MtAdComputerOUCount` - Shows the distribution of computers across OUs
-- `Test-MtAdComputerPerOUAverage` - Analyzes OU structure effectiveness
+- [AD-COMP-07 — Computer OU count should be retrievable](https://maester.dev/docs/tests/AD-COMP-07): Counts containers with enabled computers, giving broader context for this check of the default container.
+- [AD-COMP-08 — Computer per OU average should be retrievable](https://maester.dev/docs/tests/AD-COMP-08): Shows computer distribution across containers and complements this check for computers in the default container.
 
 <!--- Results --->
 %TestResult%

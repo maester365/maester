@@ -20,7 +20,7 @@
     Returns $true if computer data is accessible.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerOperatingSystemCount
+    https://maester.dev/docs/tests/AD-DCOMP-04
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-04',

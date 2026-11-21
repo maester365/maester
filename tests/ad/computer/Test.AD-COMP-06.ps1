@@ -19,7 +19,7 @@
     The test result includes the count of computers in the default Computers container.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerInDefaultContainer
+    https://maester.dev/docs/tests/AD-COMP-06
     #>
     [MaesterTest(
         Id = 'AD-COMP-06',

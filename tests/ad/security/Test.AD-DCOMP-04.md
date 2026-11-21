@@ -43,8 +43,8 @@ OS service pack and patch state are not available in the current collector. This
 
 #### Related Tests
 
-- `Test-MtAdComputerStaleEnabledCount` - Identifies stale computer accounts
-- `Test-MtAdDcOperatingSystemDetails` - Domain Controller OS distribution
+- [AD-DCOMP-06 — No enabled computers should be stale beyond the configured threshold](https://maester.dev/docs/tests/AD-DCOMP-06): Identifies enabled computer accounts with old or missing logon data for lifecycle review alongside this OS inventory.
+- [AD-DC-08 — DC operating system details should be retrievable](https://maester.dev/docs/tests/AD-DC-08): Provides OS details specifically for domain controllers, whereas this check inventories computers across the domain.
 
 <!--- Results --->
 %TestResult%

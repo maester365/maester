@@ -24,7 +24,7 @@
     Returns the count of stale enabled computers and lists details for review.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerStaleEnabledCount
+    https://maester.dev/docs/tests/AD-DCOMP-06
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-06',

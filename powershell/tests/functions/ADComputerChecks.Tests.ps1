@@ -65,6 +65,7 @@
             Test-MtAdComputerUnconstrainedDelegationCount | Should -BeFalse
             $script:Details.Text | Should -BeLike '*| Non-DC Computers Claiming DC Primary Groups | 1 |*'
             $script:Details.Text | Should -BeLike '*| Total Non-DC Computers | 2 |*'
+            $script:Details.Text | Should -BeLike '*AD-COMP-04: Enabled computers should use standard primary groups*assess unexpected primary-group assignments*'
         }
     }
 
@@ -136,9 +137,11 @@
     It 'enforces primary groups using verified DC identity, not a claimed group' {
         Test-MtAdComputerNonStandardGroup | Should -BeTrue
         $script:Details.Investigate | Should -BeFalse
+        $script:Details.Text | Should -Not -Match '\| Computer \| Primary group \| Distinguished name \|'
         foreach ($group in 516, 521) {
             $script:AdComputerState.Computers[2].PrimaryGroupId = $group
             Test-MtAdComputerNonStandardGroup | Should -BeFalse
+            $script:Details.Text | Should -Match '\| Computer \| Primary group \| Distinguished name \|'
             $script:Details.Text | Should -Match 'client'
         }
     }

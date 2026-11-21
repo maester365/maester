@@ -35,8 +35,8 @@ The test reports device and managed-account populations separately, then combine
 
 #### Related Tests
 
-- `Test-MtAdComputerUnconstrainedDelegationCount` - Overall unconstrained delegation
-- `Test-MtAdUserDelegationConfiguredCount` - User account delegation settings
+- [AD-DCOMP-01 — Non-DC computers and managed service accounts should not have unconstrained delegation](https://maester.dev/docs/tests/AD-DCOMP-01): Checks the distinct risk of unconstrained delegation on non-DC computers and managed accounts.
+- [AD-USER-28 — User delegation configured count should be investigated](https://maester.dev/docs/tests/AD-USER-28): Covers delegation settings on user accounts, outside this check's computer and managed-account inventory.
 
 #### Related links
 

@@ -27,8 +27,8 @@ Note: Not all computer accounts will have this attribute, depending on how they 
 
 #### Related Tests
 
-- `Test-MtAdComputerNonStandardGroup` - Identifies computers with unusual primary group assignments
-- `Test-MtAdComputerInDefaultContainer` - Finds computers that may have been auto-created
+- [AD-COMP-04 — Enabled computers should use standard primary groups](https://maester.dev/docs/tests/AD-COMP-04): Reviews a separate computer-account attribute that can reveal unexpected configuration.
+- [AD-COMP-06 — Enabled computers should be moved out of the default Computers container](https://maester.dev/docs/tests/AD-COMP-06): Identifies computers left in the default container, which can provide context when reviewing how accounts were provisioned.
 
 <!--- Results --->
 %TestResult%

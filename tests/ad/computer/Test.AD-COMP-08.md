@@ -31,8 +31,8 @@ This test groups all enabled computers by their parent container and calculates:
 
 #### Related Tests
 
-- `Test-MtAdComputerOUCount` - Counts the total number of OUs with computers
-- `Test-MtAdComputerInDefaultContainer` - Identifies potential OU structure gaps
+- [AD-COMP-07 — Computer OU count should be retrievable](https://maester.dev/docs/tests/AD-COMP-07): Counts containers with computers and complements this check's average, minimum, and maximum distribution measures.
+- [AD-COMP-06 — Enabled computers should be moved out of the default Computers container](https://maester.dev/docs/tests/AD-COMP-06): Identifies enabled computers in the default container, a specific placement issue that can inform review of the overall distribution.
 
 <!--- Results --->
 %TestResult%

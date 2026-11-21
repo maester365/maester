@@ -22,8 +22,8 @@ This test counts computer objects where the `SIDHistory` attribute is populated.
 
 #### Related Tests
 
-- `Test-MtAdComputerNonStandardGroup` - Identifies other migration or configuration anomalies
-- `AD-DCOMP-06` - Finds stale accounts that may be migration remnants
+- [AD-COMP-04 — Enabled computers should use standard primary groups](https://maester.dev/docs/tests/AD-COMP-04): Reviews primary-group assignments as a separate computer-account configuration check.
+- [AD-DCOMP-06 — No enabled computers should be stale beyond the configured threshold](https://maester.dev/docs/tests/AD-DCOMP-06): Identifies stale enabled accounts that may warrant lifecycle review, including possible migration remnants.
 
 #### Related links
 

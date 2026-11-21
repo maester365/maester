@@ -27,8 +27,8 @@ This test examines the `primaryGroupId` attribute of all enabled computer accoun
 
 #### Related Tests
 
-- `Test-MtAdComputerSidHistoryCount` - Identifies computers with migration artifacts
-- `Test-MtAdComputerOUCount` - Shows the distribution of computers across OUs
+- [AD-COMP-05 — Computer SID History count should be retrievable](https://maester.dev/docs/tests/AD-COMP-05): Reviews SID History as a separate computer-account security attribute.
+- [AD-COMP-07 — Computer OU count should be retrievable](https://maester.dev/docs/tests/AD-COMP-07): Shows where enabled computers are organized, complementing this check of their primary-group assignments.
 
 <!--- Results --->
 %TestResult%

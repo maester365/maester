@@ -17,7 +17,7 @@
     The test result includes the count of distinct OUs with computers.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerOUCount
+    https://maester.dev/docs/tests/AD-COMP-07
     #>
     [MaesterTest(
         Id = 'AD-COMP-07',

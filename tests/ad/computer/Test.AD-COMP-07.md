@@ -27,8 +27,8 @@ This test analyzes all enabled computer accounts and counts the distinct organiz
 
 #### Related Tests
 
-- `Test-MtAdComputerPerOUAverage` - Calculates the average computers per OU
-- `Test-MtAdComputerInDefaultContainer` - Identifies computers in the unmanaged default container
+- [AD-COMP-08 — Computer per OU average should be retrievable](https://maester.dev/docs/tests/AD-COMP-08): Measures computer density across containers, complementing this count of containers in use.
+- [AD-COMP-06 — Enabled computers should be moved out of the default Computers container](https://maester.dev/docs/tests/AD-COMP-06): Identifies enabled computers in the default container, one specific placement issue within the broader OU inventory.
 
 <!--- Results --->
 %TestResult%

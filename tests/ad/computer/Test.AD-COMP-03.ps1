@@ -15,7 +15,7 @@
     The test result includes the count of computers with CreatorSid set.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerCreatorSidCount
+    https://maester.dev/docs/tests/AD-COMP-03
     #>
     [MaesterTest(
         Id = 'AD-COMP-03',

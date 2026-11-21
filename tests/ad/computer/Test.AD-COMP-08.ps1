@@ -16,7 +16,7 @@
     The test result includes the average computers per OU and distribution details.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerPerOUAverage
+    https://maester.dev/docs/tests/AD-COMP-08
     #>
     [MaesterTest(
         Id = 'AD-COMP-08',

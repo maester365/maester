@@ -22,7 +22,7 @@
     Reports an Investigate inventory when the required computer fields are available.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerNonDcConstrainedDelegationCount
+    https://maester.dev/docs/tests/AD-DCOMP-03
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-03',

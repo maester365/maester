@@ -1,6 +1,6 @@
 Unconstrained delegation on non-domain-controller computers or managed service accounts exposes users' Kerberos tickets. This check fails when a non-DC computer, sMSA, gMSA or dMSA has the `TrustedForDelegation` flag. Managed accounts are reported separately; the device percentage still uses only non-DC computers as its denominator.
 
-Only the collected DC server inventory establishes DC identity: `serverReference` DN, or DNS fallback when that reference is unavailable. Primary groups 516 and 521 alone never exclude a computer. Unexpected DC primary-group claims are counted for review under AD-COMP-04.
+Only the collected DC server inventory establishes DC identity: `serverReference` DN, or DNS fallback when that reference is unavailable. Primary groups 516 and 521 alone never exclude a computer. Unexpected DC primary-group claims are counted for review by [AD-COMP-04 — Enabled computers should use standard primary groups](https://maester.dev/docs/tests/AD-COMP-04), which flags non-DC computers claiming a DC primary group.
 
 **Security Risks:**
 - **Complete Impersonation**: Attackers can impersonate any user who authenticates to the computer
@@ -38,8 +38,8 @@ This test counts accounts with the `TrustedForDelegation` flag enabled and repor
 
 #### Related Tests
 
-- `AD-DCOMP-03` - Reviews KCD, protocol transition and RBCD descriptor presence on non-DC computers and managed accounts
-- `Test-MtAdUserDelegationConfiguredCount` - Reviews user account delegation
+- [AD-DCOMP-03 — Non-DC computer and managed account constrained delegation should be investigated](https://maester.dev/docs/tests/AD-DCOMP-03): Reviews constrained delegation indicators on non-DC computers and managed accounts, distinct from this check of unconstrained delegation.
+- [AD-USER-28 — User delegation configured count should be investigated](https://maester.dev/docs/tests/AD-USER-28): Reviews delegation settings on user accounts, which this computer and managed-account check does not cover.
 
 #### Related links
 
