@@ -595,6 +595,7 @@
     } elseif ($__MtSession.ADConnection.ResolvedDomain) {
         ":$($__MtSession.ADConnection.ResolvedDomain)"
     } else { '' }
+    $targetSuffix += Get-MtAdLdapProtectionCacheSuffix -ConnectionState $__MtSession.ADConnection
     $metadataCacheKey = "DomainState:Metadata$targetSuffix$computerSuffix"
 
     # Initialize domain state with safe defaults for all properties
@@ -700,10 +701,13 @@
         }
 
         $protocolTargetParameters = @{
-            AuthMode             = $__MtSession.ADConnection.RequestedAuthMode
-            TlsMode              = $effectiveTlsMode
-            SkipCertificateCheck = [bool]$__MtSession.ADConnection.SkipCertificateCheck
-            PassThru             = $true
+            AuthMode               = $__MtSession.ADConnection.RequestedAuthMode
+            TlsMode                = $effectiveTlsMode
+            SkipCertificateCheck   = [bool]$__MtSession.ADConnection.SkipCertificateCheck
+            ForceUnencrypted       = [bool]$__MtSession.ADConnection.ForceUnencrypted
+            ForceUnsigned          = [bool]$__MtSession.ADConnection.ForceUnsigned
+            AllowPlaintextPassword = [bool]$__MtSession.ADConnection.AllowPlaintextPassword
+            PassThru               = $true
         }
         if ($ComputerName) {
             $protocolTargetParameters['ActiveDirectoryServer'] = $ComputerName
@@ -725,14 +729,18 @@
         $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $protocolConnectionState
         $protocolRootDse = Get-MtLdapRootDse -Connection $protocolConnection
         $protocolEvidence = [PSCustomObject]@{
-            ResolvedServer       = $protocolConnectionState.ResolvedServer
-            ResolvedDomain       = $protocolConnectionState.ResolvedDomain
-            ResolvedForest       = $protocolConnectionState.ResolvedForest
-            AuthenticationMode   = $protocolConnectionState.AuthenticationMode
-            TlsMode              = $protocolConnectionState.TlsMode
-            SkipCertificateCheck = [bool]$protocolConnectionState.SkipCertificateCheck
-            DefaultNamingContext = $protocolRootDse.DefaultNamingContext
-            VerifiedAt           = Get-Date
+            RequestedServer        = $protocolConnectionState.RequestedServer
+            ResolvedServer         = $protocolConnectionState.ResolvedServer
+            ResolvedDomain         = $protocolConnectionState.ResolvedDomain
+            ResolvedForest         = $protocolConnectionState.ResolvedForest
+            AuthenticationMode     = $protocolConnectionState.AuthenticationMode
+            TlsMode                = $protocolConnectionState.TlsMode
+            SkipCertificateCheck   = [bool]$protocolConnectionState.SkipCertificateCheck
+            ForceUnencrypted       = [bool]$protocolConnectionState.ForceUnencrypted
+            ForceUnsigned          = [bool]$protocolConnectionState.ForceUnsigned
+            AllowPlaintextPassword = [bool]$protocolConnectionState.AllowPlaintextPassword
+            DefaultNamingContext   = $protocolRootDse.DefaultNamingContext
+            VerifiedAt             = Get-Date
         }
 
         $collectionTime = Get-Date

@@ -31,10 +31,27 @@
         Server   = $ProtocolEvidence.ResolvedServer
         AuthType = $ProtocolEvidence.AuthenticationMode
     }
+    if ($ProtocolEvidence.TlsMode -eq 'None') {
+        if (-not [bool]$ProtocolEvidence.ForceUnencrypted) {
+            throw 'Cached LDAP evidence for TLS mode None requires the explicit ForceUnencrypted opt-in.'
+        }
+        $ldapConnectionParameters['ForceUnencrypted'] = [bool]$ProtocolEvidence.ForceUnencrypted
+        $ldapConnectionParameters['ForceUnsigned'] = [bool]$ProtocolEvidence.ForceUnsigned
+        $ldapConnectionParameters['AllowPlaintextPassword'] = [bool]$ProtocolEvidence.AllowPlaintextPassword
+        if ($ldapConnectionParameters['AllowPlaintextPassword']) {
+            if ([string]::IsNullOrWhiteSpace($ProtocolEvidence.RequestedServer)) {
+                throw 'Plaintext password reuse requires an explicitly requested server in the cached LDAP evidence.'
+            }
+            # Do not redirect a plaintext password to a name supplied by an unauthenticated RootDSE.
+            $ldapConnectionParameters['Server'] = $ProtocolEvidence.RequestedServer
+        }
+    }
 
     if ($ProtocolEvidence.TlsMode -eq 'StartTls') {
         $ldapConnectionParameters['Port'] = 389
         $ldapConnectionParameters['UseStartTls'] = $true
+    } elseif ($ProtocolEvidence.TlsMode -eq 'None') {
+        $ldapConnectionParameters['Port'] = 389
     } else {
         $ldapConnectionParameters['Port'] = 636
     }

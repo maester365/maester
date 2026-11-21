@@ -37,6 +37,22 @@
    Validates connectivity to the current Active Directory domain. Active Directory must be explicitly selected and is not included in -Service All.
 
 .EXAMPLE
+   Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryTlsMode None -ActiveDirectoryForceUnencrypted
+
+   Disables LDAP TLS and SASL sealing for an isolated test lab only, exposing directory queries and results. Both options are required; Auto never falls back to LDAP without TLS. Kerberos/NTLM exchange authentication tokens, not the plaintext password. Signing is left to platform policy and, if negotiated, protects integrity, not confidentiality. Unsupported protection opt-outs fail before a directory query.
+
+.EXAMPLE
+   Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryTlsMode None -ActiveDirectoryForceUnencrypted -ActiveDirectoryForceUnsigned
+
+   Additionally disables SASL signing for an isolated test lab. Queries and results have neither confidentiality nor message integrity protection. The connection fails if client or DC policy prevents the requested opt-outs. Maester does not change host or DC policy. These settings affect LDAP, not SMB/SYSVOL or WinRM.
+
+.EXAMPLE
+   $credential = Get-Credential
+   Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryCredential $credential -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode None -ActiveDirectoryForceUnencrypted -ActiveDirectoryAllowPlaintextPassword
+
+   Explicitly permits a Basic/simple bind that transmits the username and password in plaintext to a server this connection does not authenticate. Queries and results are also plaintext and unsigned. Use only in an isolated test lab. An explicit server is required, but does not authenticate that server. Every reconnect sends the password again and repeats the warning. Do not use ForceUnsigned with Basic; simple binds have no SASL signing.
+
+.EXAMPLE
    Connect-Maester -Service Graph,AzureDevOps -AzureDevOpsOrganization 'contoso'
 
    Connects to Microsoft Graph and the Azure DevOps organization 'contoso' for the Azure DevOps (AZDO) tests. The Azure DevOps connection needs the community ADOPS module (Install-Module ADOPS -Scope CurrentUser), which Maester does not install. When an Az context exists (for example after Connect-Maester -Service Azure), its access token is passed to Connect-ADOPS; otherwise Connect-ADOPS signs in interactively. The organization can also be set with AzureDevOpsOrganization in maester-config.json.
@@ -211,10 +227,19 @@
       [ValidateSet('Negotiate', 'Kerberos', 'Ntlm', 'Basic')]
       [string]$ActiveDirectoryAuthMode = 'Negotiate',
 
-      # The TLS mode used for the Active Directory LDAP connection. Auto tries LDAPS before StartTLS.
+      # The TLS mode used for Active Directory LDAP. Auto tries LDAPS before StartTLS and never falls back to plaintext. None requires -ActiveDirectoryForceUnencrypted and disables TLS and SASL sealing for isolated test environments only.
       [Alias('TlsMode')]
-      [ValidateSet('Auto', 'Ldaps', 'StartTls')]
+      [ValidateSet('Auto', 'Ldaps', 'StartTls', 'None')]
       [string]$ActiveDirectoryTlsMode = 'Auto',
+
+      # Acknowledge disabling both LDAP TLS and SASL sealing with -ActiveDirectoryTlsMode None. Queries and results lose confidentiality; SASL signing remains platform-dependent unless -ActiveDirectoryForceUnsigned is also given. Unsupported opt-outs fail closed. Intended for isolated test environments only.
+      [switch]$ActiveDirectoryForceUnencrypted,
+
+      # Explicitly disable SASL signing (message integrity). Requires TLS mode None and ForceUnencrypted, and is not valid with Basic. Fails if the provider or policy re-enables signing; Maester never changes host policy. Intended for isolated test environments only.
+      [switch]$ActiveDirectoryForceUnsigned,
+
+      # Additionally acknowledge sending the actual Basic/simple-bind username and password in plaintext, with unsigned queries and results. Requires TLS mode None, ForceUnencrypted, Basic authentication, an explicit server and a credential. Repeated binds transmit the password again. Intended for isolated test environments only.
+      [switch]$ActiveDirectoryAllowPlaintextPassword,
 
       # Skip certificate validation for the Active Directory LDAP connection. Intended for test environments only.
       [switch]$ActiveDirectorySkipCertificateCheck
@@ -757,6 +782,16 @@
              }
           }
 
+          if ($ActiveDirectoryForceUnencrypted.IsPresent) {
+             $connectAdParameters['ForceUnencrypted'] = $true
+          }
+          if ($ActiveDirectoryForceUnsigned.IsPresent) {
+             $connectAdParameters['ForceUnsigned'] = $true
+          }
+          if ($ActiveDirectoryAllowPlaintextPassword.IsPresent) {
+             $connectAdParameters['AllowPlaintextPassword'] = $true
+          }
+
           if ($ActiveDirectorySkipCertificateCheck.IsPresent) {
              $connectAdParameters['SkipCertificateCheck'] = $true
           }
@@ -768,7 +803,17 @@
                 $__MtSession.ADConnection.ResolvedForest,
                 $__MtSession.ADConnection.AuthenticationMode,
                 $__MtSession.ADConnection.TlsMode)
-          Add-ConnectionResult -Name 'Active Directory' -Status 'Connected' -Details ("{0} ({1})" -f $__MtSession.ADConnection.ResolvedDomain, $__MtSession.ADConnection.ResolvedServer)
+          $adDetails = "{0} ({1})" -f $__MtSession.ADConnection.ResolvedDomain, $__MtSession.ADConnection.ResolvedServer
+          if ($__MtSession.ADConnection.TlsMode -eq 'None') {
+             $adDetails += ' - TLS/sealing disabled (test lab only)'
+             if ($__MtSession.ADConnection.ForceUnsigned -or $__MtSession.ADConnection.AuthenticationMode -eq 'Basic') {
+                $adDetails += ', unsigned'
+             }
+             if ($__MtSession.ADConnection.AllowPlaintextPassword) {
+                $adDetails += ', plaintext password'
+             }
+          }
+          Add-ConnectionResult -Name 'Active Directory' -Status 'Connected' -Details $adDetails
        } catch {
           Write-Verbose "Failed to connect to Active Directory: $($_.Exception.Message)"
           Add-ConnectionResult -Name 'Active Directory' -Status 'Failed' -Details (Get-ErrorSummary $_)

@@ -17,7 +17,13 @@
 
         [timespan] $Timeout = [timespan]::FromSeconds(30),
 
-        [switch] $SkipCertificateCheck
+        [switch] $SkipCertificateCheck,
+
+        [switch] $ForceUnencrypted,
+
+        [switch] $ForceUnsigned,
+
+        [switch] $AllowPlaintextPassword
     )
 
     $effectivePort = if ($UseStartTls.IsPresent -and -not $PSBoundParameters.ContainsKey('Port')) {
@@ -27,8 +33,24 @@
         $Port
     }
 
-    if ($AuthType -eq 'Basic' -and -not $UseStartTls.IsPresent -and $effectivePort -ne 636) {
+    $usesTls = $UseStartTls.IsPresent -or $effectivePort -eq 636
+    if ($AuthType -eq 'Basic' -and -not $usesTls -and -not ($ForceUnencrypted.IsPresent -and $AllowPlaintextPassword.IsPresent)) {
         throw 'Basic authentication requires LDAPS on port 636 or StartTLS.'
+    }
+    if (-not $usesTls -and -not $ForceUnencrypted.IsPresent) {
+        throw 'LDAP without TLS requires -ForceUnencrypted.'
+    }
+    if ($ForceUnsigned.IsPresent -and ($usesTls -or -not $ForceUnencrypted.IsPresent -or $AuthType -eq 'Basic')) {
+        throw '-ForceUnsigned requires LDAP without TLS, -ForceUnencrypted, and Negotiate, Kerberos, or Ntlm authentication.'
+    }
+    if ($AllowPlaintextPassword.IsPresent -and ($usesTls -or -not $ForceUnencrypted.IsPresent -or $AuthType -ne 'Basic')) {
+        throw '-AllowPlaintextPassword requires Basic authentication without TLS and -ForceUnencrypted.'
+    }
+    if ($AllowPlaintextPassword.IsPresent -and $null -eq $Credential) {
+        throw '-AllowPlaintextPassword requires an explicit credential.'
+    }
+    if (-not $usesTls) {
+        Write-MtLdapProtectionWarning -Server $Server -Port $effectivePort -AuthType $AuthType -ForceUnsigned:$ForceUnsigned
     }
 
     $identifier = $null
@@ -84,6 +106,25 @@
             }
         }
 
+        # Explicit opt-outs must be honored, not silently left to provider defaults.
+        # Basic/simple bind has no SASL layer; do not write SASL options on it or TLS.
+        if (-not $usesTls -and $AuthType -ne 'Basic') {
+            try {
+                $connection.SessionOptions.Sealing = $false
+                if ($connection.SessionOptions.Sealing) {
+                    throw 'The provider did not disable SASL sealing.'
+                }
+                if ($ForceUnsigned.IsPresent) {
+                    $connection.SessionOptions.Signing = $false
+                    if ($connection.SessionOptions.Signing) {
+                        throw 'The provider did not disable SASL signing.'
+                    }
+                }
+            } catch {
+                throw "The LDAP platform/provider cannot honor the requested SASL protection opt-outs. No bind was attempted. Use TLS or a supported client platform. $($_.Exception.Message)"
+            }
+        }
+
         if ($PSBoundParameters.ContainsKey('Credential')) {
             $networkCredential = $Credential.GetNetworkCredential()
 
@@ -113,6 +154,18 @@
 
         Write-Verbose "Attempting LDAP bind to '$Server' on port $effectivePort with AuthType '$AuthType'"
         $connection.Bind()
+        if (-not $usesTls -and $AuthType -ne 'Basic') {
+            try {
+                if ($connection.SessionOptions.Sealing) {
+                    throw 'SASL sealing was re-enabled by the client platform or policy.'
+                }
+                if ($ForceUnsigned.IsPresent -and $connection.SessionOptions.Signing) {
+                    throw 'SASL signing was re-enabled by the client platform or policy.'
+                }
+            } catch {
+                throw "The LDAP platform/provider did not honor the requested protection opt-outs. The bind completed, but Maester did not issue a directory query after the bind. Maester does not change host or DC policy. $($_.Exception.Message)"
+            }
+        }
         Write-Verbose "LDAP bind to '$Server' on port $effectivePort succeeded"
         return $connection
     }

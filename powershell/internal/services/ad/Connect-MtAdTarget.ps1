@@ -12,10 +12,16 @@
         [ValidateSet('Negotiate', 'Kerberos', 'Ntlm', 'Basic')]
         [string]$AuthMode = 'Negotiate',
 
-        [ValidateSet('Auto', 'Ldaps', 'StartTls')]
+        [ValidateSet('Auto', 'Ldaps', 'StartTls', 'None')]
         [string]$TlsMode = 'Auto',
 
         [switch]$SkipCertificateCheck,
+
+        [switch]$ForceUnencrypted,
+
+        [switch]$ForceUnsigned,
+
+        [switch]$AllowPlaintextPassword,
 
         [switch]$PassThru
     )
@@ -144,6 +150,9 @@
             TlsMode                    = $SelectedTlsMode
             AuthenticationMode         = $AuthenticationMode
             SkipCertificateCheck       = $SkipCertificateCheck.IsPresent
+            ForceUnencrypted           = $TlsMode -eq 'None' -and $ForceUnencrypted.IsPresent
+            ForceUnsigned              = $TlsMode -eq 'None' -and $ForceUnsigned.IsPresent
+            AllowPlaintextPassword     = $TlsMode -eq 'None' -and $AllowPlaintextPassword.IsPresent
             Capabilities               = [ordered]@{
                 SupportsPaging             = $true
                 SupportsRangeRetrieval     = $true
@@ -300,7 +309,9 @@
             [Parameter(Mandatory)]
             [string]$RequestedTlsMode,
 
-            [switch]$SkipCertificateCheck
+            [switch]$SkipCertificateCheck,
+
+            [switch]$ForceUnencrypted
         )
 
     $lastException = $null
@@ -309,25 +320,33 @@
 
     $isWindowsRuntime = $adPrerequisites.PlatformProfile -like 'Windows*'
 
-    # Wrap in @() so a single attempt stays an array; otherwise .Count returns the hashtable key count
-    $tlsAttempts = @(switch ($RequestedTlsMode) {
-            'Ldaps' { @(@{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }) }
-            'StartTls' { @(@{ Name = 'StartTls'; Port = 389; UseStartTls = $true }) }
-            default {
-                if ($isWindowsRuntime) {
-                    Write-Verbose 'Windows runtime detected. TLS fallback order: LDAPS (636), StartTLS (389).'
-                    @(
-                        @{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }
-                        @{ Name = 'StartTls'; Port = 389; UseStartTls = $true }
-                    )
-                } else {
-                    Write-Verbose 'Non-Windows runtime detected. Skipping StartTLS in Auto mode due to known upstream .NET bug. Only LDAPS (636) will be attempted.'
-                    @(
-                        @{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }
-                    )
+    # Handle explicit unencrypted mode
+    if ($RequestedTlsMode -eq 'None') {
+        if (-not $ForceUnencrypted.IsPresent) {
+            throw "TLS mode 'None' requires -ForceUnencrypted. This disables TLS and is intended for isolated test environments only."
+        }
+        $tlsAttempts = @(@{ Name = 'None'; Port = 389; UseStartTls = $false })
+    } else {
+        # Wrap in @() so a single attempt stays an array; otherwise .Count returns the hashtable key count
+        $tlsAttempts = @(switch ($RequestedTlsMode) {
+                'Ldaps' { @(@{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }) }
+                'StartTls' { @(@{ Name = 'StartTls'; Port = 389; UseStartTls = $true }) }
+                default {
+                    if ($isWindowsRuntime) {
+                        Write-Verbose 'Windows runtime detected. TLS fallback order: LDAPS (636), StartTLS (389).'
+                        @(
+                            @{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }
+                            @{ Name = 'StartTls'; Port = 389; UseStartTls = $true }
+                        )
+                    } else {
+                        Write-Verbose 'Non-Windows runtime detected. Skipping StartTLS in Auto mode due to known upstream .NET bug. Only LDAPS (636) will be attempted.'
+                        @(
+                            @{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }
+                        )
+                    }
                 }
-            }
-        })
+            })
+    }
 
         foreach ($tlsAttempt in $tlsAttempts) {
             Write-Verbose "Attempting TLS mode '$($tlsAttempt.Name)' to '$Server' on port $($tlsAttempt.Port) with AuthType '$AuthenticationMode'"
@@ -337,6 +356,11 @@
                     Server   = $Server
                     Port     = $tlsAttempt.Port
                     AuthType = $AuthenticationMode
+                }
+                if ($tlsAttempt.Name -eq 'None') {
+                    $connectionParameters['ForceUnencrypted'] = $true
+                    $connectionParameters['ForceUnsigned'] = $ForceUnsigned.IsPresent
+                    $connectionParameters['AllowPlaintextPassword'] = $AllowPlaintextPassword.IsPresent
                 }
 
                 if ($tlsAttempt.UseStartTls) {
@@ -479,6 +503,27 @@
             throw "TLS mode '$TlsMode' is not supported on this platform profile."
         }
 
+        if ($TlsMode -eq 'None' -and -not $ForceUnencrypted.IsPresent) {
+            throw "TLS mode 'None' requires -ForceUnencrypted. This disables TLS and is intended for isolated test environments only."
+        }
+
+        if ($ForceUnencrypted.IsPresent -and $TlsMode -ne 'None') {
+            Write-Verbose '-ForceUnencrypted has no effect unless -TlsMode None is selected. TLS remains enabled.'
+        }
+
+        if ($ForceUnsigned.IsPresent -and ($TlsMode -ne 'None' -or -not $ForceUnencrypted.IsPresent -or $authenticationMode -eq 'Basic')) {
+            throw '-ForceUnsigned requires -TlsMode None, -ForceUnencrypted, and Negotiate, Kerberos, or Ntlm authentication.'
+        }
+        if ($AllowPlaintextPassword.IsPresent -and ($TlsMode -ne 'None' -or -not $ForceUnencrypted.IsPresent -or $authenticationMode -ne 'Basic')) {
+            throw '-AllowPlaintextPassword requires -TlsMode None, -ForceUnencrypted, and Basic authentication.'
+        }
+        if ($authenticationMode -eq 'Basic' -and $TlsMode -eq 'None' -and -not $AllowPlaintextPassword.IsPresent) {
+            throw 'Basic authentication without TLS requires the additional -AllowPlaintextPassword acknowledgement together with -ForceUnencrypted.'
+        }
+        if ($AllowPlaintextPassword.IsPresent -and [string]::IsNullOrWhiteSpace($ActiveDirectoryServer)) {
+            throw '-AllowPlaintextPassword requires an explicit -ActiveDirectoryServer. DNS-based or ambient target discovery is not permitted for plaintext password binds.'
+        }
+
         if ($authenticationMode -eq 'Basic' -and $null -eq $ActiveDirectoryCredential) {
             throw 'Basic authentication requires -ActiveDirectoryCredential.'
         }
@@ -498,7 +543,7 @@
         }
 
         Write-Verbose "Resolved target server: '$targetServer'. Attempting AD connection with AuthMode '$authenticationMode' and TlsMode '$TlsMode'."
-        $resolvedConnection = Connect-MtAdResolvedTarget -Server $targetServer -Credential $ActiveDirectoryCredential -AuthenticationMode $authenticationMode -RequestedTlsMode $TlsMode -SkipCertificateCheck:$SkipCertificateCheck
+        $resolvedConnection = Connect-MtAdResolvedTarget -Server $targetServer -Credential $ActiveDirectoryCredential -AuthenticationMode $authenticationMode -RequestedTlsMode $TlsMode -SkipCertificateCheck:$SkipCertificateCheck -ForceUnencrypted:$ForceUnencrypted
         $adConnectionState = Get-MtAdSessionState -Connected $true `
             -ResolvedForest $resolvedConnection.Metadata.ResolvedForest `
             -ResolvedDomain $resolvedConnection.Metadata.ResolvedDomain `

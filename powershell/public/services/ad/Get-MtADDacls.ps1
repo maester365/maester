@@ -59,6 +59,7 @@
     } elseif ($__MtSession.ADConnection.ResolvedDomain) {
         ":$($__MtSession.ADConnection.ResolvedDomain)"
     } else { '' }
+    $targetSuffix += Get-MtAdLdapProtectionCacheSuffix -ConnectionState $__MtSession.ADConnection
     $cacheKey = "Dacls$targetSuffix"
 
     if ($Refresh -or -not $__MtSession.ADCache.ContainsKey($cacheKey)) {
@@ -67,10 +68,13 @@
         $protocolConnection = $null
         try {
             $protocolTargetParameters = @{
-                AuthMode             = $__MtSession.ADConnection.RequestedAuthMode
-                TlsMode              = $__MtSession.ADConnection.RequestedTlsMode
-                SkipCertificateCheck = [bool]$__MtSession.ADConnection.SkipCertificateCheck
-                PassThru             = $true
+                AuthMode               = $__MtSession.ADConnection.RequestedAuthMode
+                TlsMode                = $__MtSession.ADConnection.RequestedTlsMode
+                SkipCertificateCheck   = [bool]$__MtSession.ADConnection.SkipCertificateCheck
+                ForceUnencrypted       = [bool]$__MtSession.ADConnection.ForceUnencrypted
+                ForceUnsigned          = [bool]$__MtSession.ADConnection.ForceUnsigned
+                AllowPlaintextPassword = [bool]$__MtSession.ADConnection.AllowPlaintextPassword
+                PassThru               = $true
             }
             if ($__MtSession.ADConnection.RequestedServer) {
                 $protocolTargetParameters['ActiveDirectoryServer'] = $__MtSession.ADConnection.RequestedServer
