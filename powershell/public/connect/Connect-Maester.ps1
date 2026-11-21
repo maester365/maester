@@ -51,6 +51,8 @@
    Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryCredential $credential -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode None -ActiveDirectoryForceUnencrypted -ActiveDirectoryAllowPlaintextPassword
 
    Explicitly permits a Basic/simple bind that transmits the username and password in plaintext to a server this connection does not authenticate. Queries and results are also plaintext and unsigned. Use only in an isolated test lab. An explicit server is required, but does not authenticate that server. Every reconnect sends the password again and repeats the warning. Do not use ForceUnsigned with Basic; simple binds have no SASL signing.
+   
+.EXAMPLE
    Connect-Maester -Service Graph,AzureDevOps -AzureDevOpsOrganization 'contoso'
 
    Connects to Microsoft Graph and the Azure DevOps organization 'contoso' for the Azure DevOps (AZDO) tests. The Azure DevOps connection needs the community ADOPS module (Install-Module ADOPS -Scope CurrentUser), which Maester does not install. When an Az context exists (for example after Connect-Maester -Service Azure), its access token is passed to Connect-ADOPS; otherwise Connect-ADOPS signs in interactively. The organization can also be set with AzureDevOpsOrganization in maester-config.json.
