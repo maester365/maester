@@ -35,7 +35,12 @@
 
         [scriptblock] $ProcessPage,
 
-        [object] $PageState
+        [object] $PageState,
+
+        # Opt-in contract for the modular query API. Legacy conversion remains the default.
+        [switch] $AsAttributeBag,
+
+        [switch] $RequireComplete
     )
 
     function ConvertTo-LdapFilterLiteral {
@@ -65,6 +70,10 @@
 
     function Convert-SearchEntry {
         param($Entry)
+
+        if ($AsAttributeBag) {
+            return ConvertFrom-MtADQueryEntry -Entry $Entry -Attributes $Attributes
+        }
 
         $properties = [ordered]@{
             DistinguishedName = [string]$Entry.DistinguishedName
@@ -169,6 +178,12 @@
         return $null
     }
 
+    if (($AsAttributeBag -or $RequireComplete) -and ($ReturnDirectoryEntry -or $null -ne $ProcessPage)) {
+        throw 'The modular query contract cannot be combined with DirectoryEntry output or page callbacks.'
+    }
+    if ($AsAttributeBag -and (-not $Attributes -or $Attributes.Count -eq 0)) {
+        throw 'Attribute-bag conversion requires explicit Attributes.'
+    }
     $results = [System.Collections.Generic.List[object]]::new()
     $requestedAttributes = [string[]]$Attributes
     if ($null -eq $requestedAttributes -or $requestedAttributes.Count -eq 0) {
@@ -204,6 +219,11 @@
             [void]$request.Controls.Add($securityDescriptorControl)
         }
 
+        if ($RequireComplete) {
+            # Bound this query to one naming context instead of silently chasing other partitions.
+            [void]$request.Controls.Add([System.DirectoryServices.Protocols.DomainScopeControl]::new())
+        }
+
         try {
             $overrideProperty = $Connection.PSObject.Properties['MtSendRequestOverride']
             if ($null -ne $overrideProperty) {
@@ -230,6 +250,14 @@
             throw "LDAP search failed. $($_.Exception.Message)"
         }
 
+        if ($RequireComplete -and ($null -eq $response.ResultCode -or
+            $response.ResultCode -ne [System.DirectoryServices.Protocols.ResultCode]::Success)) {
+            throw 'LDAP did not return a successful, complete query response.'
+        }
+        if ($RequireComplete -and @($response.References).Where({ $null -ne $_ }).Count -gt 0) {
+            throw 'LDAP returned continuation references despite domain-scoped collection.'
+        }
+
         if ($null -ne $ProcessPage) {
             $pageEntries = [System.Collections.Generic.List[object]]::new()
             foreach ($entry in @($response.Entries)) {
@@ -243,6 +271,9 @@
         }
 
         $pageResponseControl = Get-PageControlFromResponse -Response $response
+        if ($RequireComplete -and $PageSize -gt 0 -and $null -eq $pageResponseControl) {
+            throw 'LDAP did not return the required paging response control.'
+        }
         $pageCookie = if ($null -ne $pageResponseControl -and $null -ne $pageResponseControl.Cookie) {
             [byte[]]@($pageResponseControl.Cookie)
         }
