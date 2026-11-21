@@ -8,11 +8,13 @@ Describe 'AD query LDAP transport and range completion' {
         $script:ADDn = 'CN=User,DC=contoso,DC=com'
 
         function New-ADEntry {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in-memory LDAP entry fixture; no directory or system state is changed.')]
             param([System.Collections.IDictionary] $Attributes = ([ordered]@{}), [string] $Dn = $script:ADDn)
             [pscustomobject]@{ DistinguishedName = $Dn; Attributes = $Attributes }
         }
 
         function New-ADResponse {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in-memory LDAP response fixture; no directory or system state is changed.')]
             param([object[]] $Entries = @(), [object[]] $Controls = @(),
                 [object[]] $References = @(),
                 [object] $ResultCode = [System.DirectoryServices.Protocols.ResultCode]::Success)
@@ -25,13 +27,15 @@ Describe 'AD query LDAP transport and range completion' {
         }
 
         function New-ADFixture {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an unbound in-memory LDAP client with a fixture response hook; no connection is established.')]
             param([object[]] $Responses)
-            $state = @{ Responses = $Responses; Index = 0; Requests = [System.Collections.Generic.List[object]]::new() }
+            $state = @{ Responses = $Responses; Index = 0; Requests = [System.Collections.Generic.List[object]]::new(); Timeouts = [System.Collections.Generic.List[object]]::new() }
             $connection = [System.DirectoryServices.Protocols.LdapConnection]::new('ldap.mock')
             $script:FixtureConnections.Add($connection)
             $hook = {
                 param($request, $timeout)
                 $state.Requests.Add($request)
+                $state.Timeouts.Add($timeout)
                 $index = $state.Index
                 $state.Index++
                 if ($index -ge $state.Responses.Count) { throw 'Unexpected LDAP request.' }
@@ -228,7 +232,7 @@ Describe 'AD query LDAP transport and range completion' {
                     $fixture = New-ADFixture @()
                     $arguments = @{ Connection = $fixture.Connection; SearchBase = $script:ADBase; Attributes = @('cn'); PageSize = 0 }
                     $arguments[$option] = $true
-                    $arguments[$incompatible] = if ($incompatible -eq 'ProcessPage') { { param($page, $state) } } else { $true }
+                    $arguments[$incompatible] = if ($incompatible -eq 'ProcessPage') { {} } else { $true }
                     { $script:MaesterModule.Invoke({ param($p) Invoke-MtLdapSearch @p }, $arguments) } | Should -Throw '*modular query contract*'
                     $fixture.State.Index | Should -Be 0
                 }
@@ -237,6 +241,36 @@ Describe 'AD query LDAP transport and range completion' {
     }
 
     Context 'ranged attribute completion' {
+        It 'accepts an empty base placeholder with a populated <Range> response' -ForEach @(
+            @{ Range = 'member;range=0-1'; Continuation = $true }
+            @{ Range = 'member;range=0-*'; Continuation = $false }
+        ) {
+            $base = [System.DirectoryServices.Protocols.DirectoryAttribute]::new()
+            $base.Name = 'member'
+            $ranged = [System.DirectoryServices.Protocols.DirectoryAttribute]::new()
+            $ranged.Name = $Range
+            [void]$ranged.Add([Text.Encoding]::UTF8.GetBytes('CN=Alice'))
+            [void]$ranged.Add([Text.Encoding]::UTF8.GetBytes('CN=Bob'))
+            $attributes = [ordered]@{ member = $base }
+            $attributes[$Range] = $ranged
+            $responses = @((New-ADResponse -Entries @((New-ADEntry $attributes))))
+            if ($Continuation) {
+                $responses += New-ADResponse -Entries @((New-ADEntry ([ordered]@{ 'member;range=2-*' = @('CN=Carol') })))
+            }
+            $fixture = New-ADFixture $responses
+            $result = $script:MaesterModule.Invoke({ param($c, $b)
+                $entry = Invoke-MtLdapSearch -Connection $c -SearchBase $b -Attributes member -PageSize 0 -AsAttributeBag -RequireComplete
+                Complete-MtADQueryRange -Connection $c -Entry $entry -Timeout ([timespan]::FromSeconds(5))
+            }, $fixture.Connection, $script:ADBase)
+            $expected = @('CN=Alice', 'CN=Bob')
+            if ($Continuation) { $expected += 'CN=Carol' }
+            $result.Attributes['member'] | Should -Be $expected
+            ($result.Attributes['member'] -is [object[]]) | Should -BeTrue
+            @($result.Attributes.Keys | Where-Object { $_ -match ';range=' }) | Should -HaveCount 0
+            $fixture.State.Index | Should -Be $(if ($Continuation) { 2 } else { 1 })
+            if ($Continuation) { $fixture.State.Timeouts[1] | Should -Be ([timespan]::FromSeconds(5)) }
+        }
+
         It 'decodes ranged membership from server byte values on initial and continuation responses' {
             $first = [System.DirectoryServices.Protocols.DirectoryAttribute]::new()
             [void]$first.Add([Text.Encoding]::UTF8.GetBytes('CN=Alice'))
@@ -273,6 +307,7 @@ Describe 'AD query LDAP transport and range completion' {
             @($fixture.State.Requests[1].Attributes) | Should -HaveCount 1
             $fixture.State.Requests[0].Attributes[0] | Should -Be 'member;range=2-*'
             $fixture.State.Requests[1].Attributes[0] | Should -Be 'member;range=4-*'
+            $fixture.State.Timeouts | Should -Be @([timespan]::FromSeconds(5), [timespan]::FromSeconds(5))
         }
 
         It 'normalizes an initially final range without requesting another page' {

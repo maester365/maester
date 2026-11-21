@@ -71,9 +71,19 @@ function Invoke-MtADQueryCached {
             RequireComplete = $true
         }
         if ($null -ne $request.SecurityDescriptorFlags) { $parameters.SecurityDescriptorFlags = $Query.SecurityDescriptorFlags }
-        $entries = @(Invoke-MtLdapSearch @parameters | ForEach-Object {
-            Complete-MtADQueryRange -Connection $Operation.Connection -Entry $_ -Timeout $Timeout
-        })
+        $previousErrorPreference = $ErrorActionPreference
+        try {
+            # Method/conversion errors must abort collection even when the caller uses Continue.
+            $ErrorActionPreference = 'Stop'
+            $entries = @(Invoke-MtLdapSearch @parameters | ForEach-Object {
+                Complete-MtADQueryRange -Connection $Operation.Connection -Entry $_ -Timeout $Timeout
+            })
+        } catch {
+            # Rethrow so the caller's script stops, rather than merely skipping the failed statement.
+            throw
+        } finally {
+            $ErrorActionPreference = $previousErrorPreference
+        }
         # Commit only after every page and every ranged attribute succeeds, including successful empty results.
         $state.Results[$key] = [pscustomobject]@{
             PSTypeName = 'Maester.AD.QueryResult'

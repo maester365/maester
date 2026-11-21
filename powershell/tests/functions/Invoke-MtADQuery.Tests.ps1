@@ -82,6 +82,7 @@ Describe 'Invoke-MtADQuery additive cached collection' {
                 Disposed = 0
                 Fail = $false
                 Requests = [System.Collections.Generic.List[object]]::new()
+                Timeouts = [System.Collections.Generic.List[object]]::new()
                 Entries = @([pscustomobject]@{
                     DistinguishedName = 'CN=Alice,DC=example,DC=com'
                     Attributes = [ordered]@{ name = @('Alice'); objectGUID = [guid]'00112233-4455-6677-8899-aabbccddeeff' }
@@ -97,6 +98,7 @@ Describe 'Invoke-MtADQuery additive cached collection' {
                 param($request, $timeout)
                 $script:ADQueryTestState.Reads++
                 $script:ADQueryTestState.Requests.Add($request)
+                $script:ADQueryTestState.Timeouts.Add($timeout)
                 if ($script:ADQueryTestState.Fail) { throw 'query test failure' }
                 [pscustomobject]@{
                     ResultCode = [System.DirectoryServices.Protocols.ResultCode]::Success
@@ -130,7 +132,11 @@ Describe 'Invoke-MtADQuery additive cached collection' {
         $rows[0].Attributes['name'][0] | Should -Be 'Alice'
         $rows[0].Attributes['objectguid'][0] | Should -BeOfType ([guid])
         Should -Invoke New-MtAdProtocolConnection -ModuleName Maester -Times 1 -Exactly
-        InModuleScope Maester { $script:ADQueryTestState.Reads | Should -Be 1; $script:ADQueryTestState.Disposed | Should -Be 1 }
+        InModuleScope Maester {
+            $script:ADQueryTestState.Reads | Should -Be 1
+            $script:ADQueryTestState.Disposed | Should -Be 1
+            $script:ADQueryTestState.Timeouts[0] | Should -Be ([timespan]::FromSeconds(30))
+        }
     }
 
     It 'caches successful empty collections without mistaking them for a miss' {
@@ -225,6 +231,8 @@ Describe 'Invoke-MtADQuery additive cached collection' {
             $script:ADQueryTestConnection.MtSendRequestOverride = {
                 param($request, $timeout)
                 $script:ADQueryTestState.Reads++
+                $script:ADQueryTestState.Requests.Add($request)
+                $script:ADQueryTestState.Timeouts.Add($timeout)
                 if ($script:ADQueryTestState.Reads -gt 1) { throw 'second page failed' }
                 [pscustomobject]@{
                     ResultCode = [System.DirectoryServices.Protocols.ResultCode]::Success
@@ -250,6 +258,7 @@ Describe 'Invoke-MtADQuery additive cached collection' {
             $script:ADQueryTestConnection.MtSendRequestOverride = {
                 param($request, $timeout)
                 $script:ADQueryTestState.Reads++
+                $script:ADQueryTestState.Timeouts.Add($timeout)
                 $entries = if ($request.Scope -eq [System.DirectoryServices.Protocols.SearchScope]::Base) { @() }
                 else { @([pscustomobject]@{
                     DistinguishedName = 'CN=Group,DC=example,DC=com'
@@ -266,6 +275,38 @@ Describe 'Invoke-MtADQuery additive cached collection' {
             { Invoke-MtADQuery -Name Group -Attributes member | ForEach-Object { $received.Add($_) } } | Should -Throw '*original entry*'
             $received.Count | Should -Be 0
             $__MtSession.ADCache.ADQueryState.Results.Count | Should -Be 0
+            $script:ADQueryTestState.Disposed | Should -Be 1
+        }
+    }
+
+    It 'completes and caches ranged membership when AD returns an empty base placeholder' {
+        InModuleScope Maester {
+            $script:ADQueryTestConnection.MtSendRequestOverride = {
+                param($request, $timeout)
+                $script:ADQueryTestState.Reads++
+                $script:ADQueryTestState.Requests.Add($request)
+                $script:ADQueryTestState.Timeouts.Add($timeout)
+                $attributes = if ($request.Scope -eq [System.DirectoryServices.Protocols.SearchScope]::Base) {
+                    [ordered]@{ 'member;range=1-*' = @('CN=Bob') }
+                } else {
+                    [ordered]@{ member = @(); 'member;range=0-0' = @('CN=Alice') }
+                }
+                [pscustomobject]@{
+                    ResultCode = [System.DirectoryServices.Protocols.ResultCode]::Success
+                    Entries = @([pscustomobject]@{ DistinguishedName = 'CN=Group,DC=example,DC=com'; Attributes = $attributes })
+                    Controls = @([pscustomobject]@{ Cookie = [byte[]]@() })
+                    References = @()
+                }
+            }
+        }
+        $first = Invoke-MtADQuery -Name Group -Attributes member -AsResult
+        $first.Entries[0].Attributes['member'] | Should -Be @('CN=Alice', 'CN=Bob')
+        @($first.Entries[0].Attributes.Keys | Where-Object { $_ -match ';range=' }) | Should -HaveCount 0
+        $cached = Invoke-MtADQuery -Name Group -Attributes member -AsResult
+        $cached.CollectedAt | Should -Be $first.CollectedAt
+        $cached.Entries[0].Attributes['member'] | Should -Be @('CN=Alice', 'CN=Bob')
+        InModuleScope Maester {
+            $script:ADQueryTestState.Reads | Should -Be 2
             $script:ADQueryTestState.Disposed | Should -Be 1
         }
     }
@@ -288,6 +329,83 @@ Describe 'Invoke-MtADQuery additive cached collection' {
         InModuleScope Maester {
             $__MtSession.ADCache.ADQueryState.Results.Count | Should -Be 0
             $script:ADQueryTestState.Disposed | Should -Be 1
+        }
+    }
+
+    It 'terminates conversion failures under Continue without an enclosing error handler' {
+        # A fresh runspace isolates the call from Pester's own exception handlers and preferences.
+        $runspace = [System.Management.Automation.Runspaces.RunspaceFactory]::CreateRunspace()
+        $powershell = [powershell]::Create()
+        try {
+            $runspace.Open()
+            $powershell.Runspace = $runspace
+            $script = @'
+param($Manifest)
+Import-Module $Manifest -Force -ErrorAction Stop
+$ErrorActionPreference = 'Continue'
+$script:ReachedAfterQuery = $false
+& (Get-Module Maester) {
+    $__MtSession.ADCache = @{}
+    $__MtSession.ADCredential = $null
+    $__MtSession.ADConnection = [ordered]@{
+        ProtocolValidated = $true; ResolvedServer = 'ldap.mock'; DefaultNamingContext = 'DC=example,DC=com'
+        AuthenticationMode = 'Negotiate'; TlsMode = 'Ldaps'; SkipCertificateCheck = $false
+    }
+    $script:ContinueFixture = @{ Disposed = 0 }
+    $script:ContinueConnection = [System.DirectoryServices.Protocols.LdapConnection]::new('ldap.mock')
+    $script:ContinueConnection | Add-Member NoteProperty Fixture $script:ContinueFixture
+    $script:ContinueConnection | Add-Member ScriptMethod Dispose {
+        $this.Fixture.Disposed++
+        $this.psbase.Dispose()
+    } -Force
+    $script:ContinueConnection | Add-Member NoteProperty MtSendRequestOverride {
+        [pscustomobject]@{
+            ResultCode = [System.DirectoryServices.Protocols.ResultCode]::Success
+            Entries = @(
+                [pscustomobject]@{ DistinguishedName = 'CN=Valid'; Attributes = [ordered]@{ name = @('Valid') } }
+                [pscustomobject]@{ DistinguishedName = 'CN=Invalid'; Attributes = [ordered]@{ name = [byte[]]@(255) } }
+            )
+            Controls = @([pscustomobject]@{ Cookie = [byte[]]@() })
+            References = @()
+        }
+    }
+    function script:Test-MtConnection { param([string]$Service) $Service -eq 'ActiveDirectory' }
+    function script:New-MtAdProtocolConnection {
+        param([object]$ProtocolEvidence)
+        if ($ProtocolEvidence.ResolvedServer -ne 'ldap.mock') { throw 'Unexpected fixture target.' }
+        $script:ContinueConnection
+    }
+}
+Invoke-MtADQuery -Attributes name -AsResult
+$script:ReachedAfterQuery = $true
+'@
+            $null = $powershell.AddScript($script).AddArgument((Join-Path $PSScriptRoot '../../Maester.psd1'))
+            $output = @()
+            $failure = $null
+            # Catch only the host-side Invoke exception. The isolated script has no error handler.
+            try { $output = @($powershell.Invoke()) } catch { $failure = $_ }
+            $failure | Should -Not -BeNullOrEmpty
+            $output | Should -HaveCount 0
+            $powershell.InvocationStateInfo.State | Should -Be ([System.Management.Automation.PSInvocationState]::Failed)
+            $powershell.Commands.Clear()
+            $powershell.Streams.Error.Clear()
+            $null = $powershell.AddScript(@'
+$module = Get-Module Maester
+[pscustomobject]@{
+    CacheEntries = $module.Invoke({ $__MtSession.ADCache.ADQueryState.Results.Count })[0]
+    Disposed = $module.Invoke({ $script:ContinueFixture.Disposed })[0]
+    ReachedAfterQuery = $script:ReachedAfterQuery
+    ErrorPreference = $ErrorActionPreference
+}
+'@)
+            $state = @($powershell.Invoke())[0]
+            $state.CacheEntries | Should -Be 0
+            $state.Disposed | Should -Be 1
+            $state.ReachedAfterQuery | Should -BeFalse
+            $state.ErrorPreference | Should -Be 'Continue'
+        } finally {
+            $powershell.Dispose()
+            $runspace.Dispose()
         }
     }
 

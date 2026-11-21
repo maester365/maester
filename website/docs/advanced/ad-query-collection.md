@@ -9,6 +9,10 @@ Maester provides an opt-in LDAP query API for custom tests and collectors. It ad
 replace or change the existing Active Directory collectors. Connect first with
 `Connect-Maester -Service ActiveDirectory` so Maester can validate the target.
 
+These three exported commands are public API for custom tests and collectors. Their
+documented query parameters and result shapes form the compatibility contract;
+existing internal collector helpers are not promoted to public commands.
+
 ## Define and run a query
 
 `New-MtADQuery` creates a reusable query definition without contacting a domain

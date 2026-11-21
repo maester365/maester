@@ -16,7 +16,11 @@ function Complete-MtADQueryRange {
         $expectedStart = 0L
         $rangeKey = $key
         $rangeBag = $Entry.Attributes
-        if ($Entry.Attributes.Contains($attribute)) { throw 'LDAP returned ambiguous ranged and non-ranged values.' }
+        # AD can return an empty base attribute alongside the populated range.
+        # Only a populated base attribute conflicts with the ranged values.
+        if ($Entry.Attributes.Contains($attribute) -and $Entry.Attributes[$attribute].Count -gt 0) {
+            throw 'LDAP returned ambiguous ranged and non-ranged values.'
+        }
 
         while ($true) {
             if ($rangeKey -notmatch ('^' + [regex]::Escape($attribute) + ';range=(\d+)-(\d+|\*)$')) {
