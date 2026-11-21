@@ -102,8 +102,15 @@
         $acceptedDomains = @(Get-MtExo -Request AcceptedDomain | ForEach-Object { $_.Name })
     }
     $domainsCoverTenant = $acceptedDomains.Count -gt 0 -and @($acceptedDomains | Where-Object { $_ -notin $domainTargets }).Count -eq 0
-    $scopePass = $recipientConditions.Count -eq 0 -or $domainsCoverTenant -or $groupTargets.Count -gt 0
+    # Users, groups and domains are different condition types. A rule that matches all of them (AND, the logic of existing
+    # rules) applies only to the listed users. Rules created or edited after the MC1546447 rollout match any of them (OR),
+    # and the rule does not expose which logic applies, so users added to domain or group targets need investigation.
+    $scopeDependsOnMatchLogic = $userTargets.Count -gt 0 -and ($domainsCoverTenant -or $groupTargets.Count -gt 0)
+    $scopePass = $userTargets.Count -eq 0 -and ($recipientConditions.Count -eq 0 -or $domainsCoverTenant -or $groupTargets.Count -gt 0)
     $scopeDescription = if ($recipientConditions.Count -eq 0) { 'All recipients' } else { $recipientConditions -join ', ' }
+    if ($scopeDependsOnMatchLogic) {
+        $scopeDescription += ' (only these users if the rule matches all conditions)'
+    }
     if ($recipientExceptions.Count -gt 0) {
         $scopeDescription += "; exclusions: $($recipientExceptions -join ', ')"
     }
@@ -115,11 +122,15 @@
         [pscustomobject]@{ CheckName = 'Rule state'; Value = $selectedRule.State; Pass = $selectedRule.State -eq 'Enabled' }
         [pscustomobject]@{ CheckName = 'Rule scope'; Value = $scopeDescription; Pass = $scopePass }
     )
-    $testResult = @($safeAttachmentCheckList | Where-Object { -not $_.Pass }).Count -eq 0
+    $failedChecks = @($safeAttachmentCheckList | Where-Object { -not $_.Pass })
+    $testResult = $failedChecks.Count -eq 0
+    $investigate = $scopeDependsOnMatchLogic -and $failedChecks.Count -eq 1
 
     $portalLink = 'https://security.microsoft.com/safeattachmentv2'
     if ($testResult) {
         $testResultMarkdown = "Well done. The highest-priority Safe Attachments policy '$($policy.Name)' and its rule match CIS recommendations ($portalLink).`n`n%TestResult%"
+    } elseif ($investigate) {
+        $testResultMarkdown = "The highest-priority Safe Attachments policy '$($policy.Name)' meets the other CIS recommendations, but its rule adds users to domain or group targets. If the rule matches all conditions, as rules created before the MC1546447 rollout do until they are edited, it applies only to those users. If it matches any condition, it also covers the domains or groups. The rule does not show which logic applies, so move the users to a separate policy to make the scope explicit ($portalLink).`n`n%TestResult%"
     } else {
         $testResultMarkdown = "The highest-priority Safe Attachments policy '$($policy.Name)' or its rule does not match CIS recommendations ($portalLink).`n`n%TestResult%"
     }
@@ -133,6 +144,6 @@
     }
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate:$investigate
     return $testResult
 }

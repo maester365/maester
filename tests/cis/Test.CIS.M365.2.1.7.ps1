@@ -10,7 +10,7 @@
     .EXAMPLE
     Test-MtCisSafeAntiPhishingPolicy
 
-    Returns true if at least one anti-phishing policy and its highest-priority enabled matching rule meet all CIS checks. Recipient scope passes with no targets, coverage of every accepted domain, or at least one group target; group membership and exclusions are not validated.
+    Returns true if at least one anti-phishing policy and its highest-priority enabled matching rule meet all CIS checks. Recipient scope passes with no targets, coverage of every accepted domain, or at least one group target, when the rule names no users; group membership and exclusions are not validated. When users are added to domain or group targets, the scope depends on whether the rule matches all or any of its conditions, which the rule does not show (MC1546447), so the result is Investigate.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisSafeAntiPhishingPolicy
@@ -57,13 +57,20 @@
         $userTargets = @($rule.SentTo | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
         $recipientConditions = @($domainTargets + $groupTargets + $userTargets)
         $domainScopeCoversTenant = $domainTargets.Count -gt 0 -and $acceptedDomains.Count -gt 0 -and @($acceptedDomains | Where-Object { $_ -notin $domainTargets }).Count -eq 0
-        $scopePass = $null -ne $rule -and ($recipientConditions.Count -eq 0 -or $domainScopeCoversTenant -or $groupTargets.Count -gt 0)
+        # Users, groups and domains are different condition types. A rule that matches all of them (AND, the logic of existing
+        # rules) applies only to the listed users. Rules created or edited after the MC1546447 rollout match any of them (OR),
+        # and the rule does not expose which logic applies, so users added to domain or group targets need investigation.
+        $scopeDependsOnMatchLogic = $null -ne $rule -and $userTargets.Count -gt 0 -and ($domainScopeCoversTenant -or $groupTargets.Count -gt 0)
+        $scopePass = $null -ne $rule -and $userTargets.Count -eq 0 -and ($recipientConditions.Count -eq 0 -or $domainScopeCoversTenant -or $groupTargets.Count -gt 0)
         $scopeDescription = if ($null -eq $rule) {
             'No enabled matching rule'
         } elseif ($recipientConditions.Count -eq 0) {
             'All recipients'
         } else {
             $recipientConditions -join ', '
+        }
+        if ($scopeDependsOnMatchLogic) {
+            $scopeDescription += ' (only these users if the rule matches all conditions)'
         }
         $recipientExceptions = @(
             $rule.ExceptIfRecipientDomainIs
@@ -101,13 +108,17 @@
             Name = $policy.Name
             Checks = $checks
             Pass = @($checks | Where-Object { -not $_.Pass }).Count -eq 0
+            Investigate = $scopeDependsOnMatchLogic -and @($checks | Where-Object { -not $_.Pass }).Count -eq 1
         }
     }
 
     $testResult = @($policyReports | Where-Object { $_.Pass }).Count -gt 0
+    $investigatePolicies = @(if (-not $testResult) { $policyReports | Where-Object { $_.Investigate } })
     $portalLink = 'https://security.microsoft.com/antiphishing'
     if ($testResult) {
         $testResultMarkdown = "Well done. An enabled anti-phishing policy and matching rule meet CIS recommendations ($portalLink).`n`n%TestResult%"
+    } elseif ($investigatePolicies.Count -gt 0) {
+        $testResultMarkdown = "Anti-phishing policy '$($investigatePolicies.Name -join "', '")' meets the other CIS recommendations, but its rule adds users to domain or group targets. If the rule matches all conditions, as rules created before the MC1546447 rollout do until they are edited, it applies only to those users. If it matches any condition, it also covers the domains or groups. The rule does not show which logic applies, so move the users to a separate policy to make the scope explicit ($portalLink).`n`n%TestResult%"
     } else {
         $testResultMarkdown = "No enabled anti-phishing policy and matching rule meet all CIS recommendations ($portalLink).`n`n%TestResult%"
     }
@@ -123,6 +134,6 @@
     }
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate:($investigatePolicies.Count -gt 0)
     return $testResult
 }

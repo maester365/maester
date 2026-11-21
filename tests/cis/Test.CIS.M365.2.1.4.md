@@ -2,7 +2,7 @@
 
 The Safe Attachments policy helps protect users from malware in email attachments by scanning attachments for viruses, malware, and other malicious content. When an email attachment is received by a user, Safe Attachments will scan the attachment in a secure environment and provide a verdict on whether the attachment is safe or not.
 
-This check evaluates the highest-priority enabled policy in this order: Strict preset, Standard preset, the highest-priority enabled custom rule, then built-in protection. It verifies the associated rule is enabled and reports its recipient scope. Domain-only rules are checked against accepted domains; group membership size is not evaluated and should be confirmed where group targets are used.
+This check evaluates the highest-priority enabled policy in this order: Strict preset, Standard preset, the highest-priority enabled custom rule, then built-in protection. It verifies the associated rule is enabled and reports its recipient scope. Domain-only rules are checked against accepted domains; group membership size is not evaluated and should be confirmed where group targets are used. When a rule adds users to domain or group targets, the result is Investigate: a rule that matches all conditions applies only to those users, rules created or edited after the MC1546447 rollout match any condition, and the rule does not show which logic it uses.
 
 #### Rationale
 
