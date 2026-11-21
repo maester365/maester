@@ -29,10 +29,12 @@
         $script:Details.Investigate | Should -BeFalse
         $script:Details.Text | Should -BeLike '*| Non-DC Percentage with Unconstrained Delegation | 0% |*'
         $script:AdComputerState.Computers[1].TrustedForDelegation = $true
+        $script:AdComputerState.Computers[1].Name = 'app|one$$$&$1'
         Test-MtAdComputerUnconstrainedDelegationCount | Should -BeFalse
         $script:Details.Text | Should -BeLike '*| Total Non-DC Computers | 2 |*'
         $script:Details.Text | Should -BeLike '*| Non-DC Percentage with Unconstrained Delegation | 50% |*'
         $script:Details.Text | Should -Match 'app\\\|one'
+        $script:Details.Text | Should -BeLike '*| app\|one$$$&$1 |*'
     }
 
     It 'reports overlapping KCD, protocol-transition and RBCD indicators independently' {
