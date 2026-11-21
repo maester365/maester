@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAS04 {
+﻿function Test-MtCheckEidscaAS04 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - SMS - Use for sign-in is 'false'

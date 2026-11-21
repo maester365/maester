@@ -1,4 +1,4 @@
-﻿Duplicate or conflict DNS zones (indicated by CNF: or InProgress- prefixes) indicate:
+Duplicate or conflict DNS zones (indicated by CNF: or InProgress- prefixes) indicate:
 
 - **Replication conflicts**: The same zone was created on multiple DCs simultaneously
 - **Incomplete operations**: Zone creation started but did not complete

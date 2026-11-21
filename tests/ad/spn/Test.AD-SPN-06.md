@@ -1,4 +1,4 @@
-﻿User accounts with Service Principal Names (SPNs) are high-value targets for attackers because:
+User accounts with Service Principal Names (SPNs) are high-value targets for attackers because:
 
 - **Kerberoasting**: Attackers can request service tickets for these SPNs and attempt to crack them offline
 - **Service account exposure**: User accounts with SPNs often have elevated privileges

@@ -7,13 +7,16 @@
         Devices without a compliance policy assigned should be marked "not compliant".
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (4.1, L1)
 
+        The benchmark's audit reads deviceManagement/settings and verifies that secureByDefault is True.
+        MT.1054 checks the same setting, so this test runs that check (Test-MtDeviceComplianceSettings).
+
     .EXAMPLE
         Test-MtCisDevicesWithoutCompliancePolicyMarked
 
         Returns true if devices without a compliance policy assigned are marked "not compliant".
 
     .LINK
-        https://maester.dev/docs/commands/Test-MtCisDevicesWithoutCompliancePolicyMarked
+        https://maester.dev/docs/tests/CIS.M365.4.1
     #>
     [MaesterTest(
         Id = 'CIS.M365.4.1',
@@ -36,34 +39,5 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Getting settings...'
-    $settings = Invoke-MtGraphRequest -RelativeUri "deviceManagement/settings"
-
-    Write-Verbose 'Executing checks'
-    $checkSecureByDefault = $settings | Where-Object { $_.secureByDefault -eq $true }
-
-    $testResult = (($checkSecureByDefault | Measure-Object).Count -ge 1)
-
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
-    }
-    else {
-        $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
-    }
-
-    $resultMd = "| Setting | Result |`n"
-    $resultMd += "| --- | --- |`n"
-
-    if ($checkSecureByDefault) {
-        $checkSecureByDefaultResult = '✅ Pass'
-    }
-    else {
-        $checkSecureByDefaultResult = '❌ Fail'
-    }
-
-    $resultMd += "| Mark devices with no compliance policy assigned as 'Not compliant' | $checkSecureByDefaultResult |`n"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    return $testResult
+    return Test-MtDeviceComplianceSettings
 }

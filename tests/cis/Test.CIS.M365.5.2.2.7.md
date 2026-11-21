@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy responds to medium and high sign-in risk by requiring MFA every time or by blocking access.
+An enabled Conditional Access policy responds to medium and high sign-in risk by requiring MFA every time or by blocking access.
 
 Microsoft Entra ID Protection scores each sign-in on how likely it is that someone other than the account owner started it, for example an anonymous IP address, impossible travel or a leaked-credential match. A policy that responds to the score challenges or stops suspicious sign-ins even when the password is correct.
 

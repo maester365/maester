@@ -1,4 +1,4 @@
-﻿7.2.5 (L2) Ensure that SharePoint guest users cannot share items they don't own
+7.2.5 (L2) Ensure that SharePoint guest users cannot share items they don't own
 
 SharePoint gives users the ability to share files, folders, and site collections. Internal users can share with external collaborators, and with the right permissions could share to other external parties.
 

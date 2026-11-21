@@ -1,4 +1,4 @@
-﻿SMTP AUTH SHALL be disabled.
+SMTP AUTH SHALL be disabled.
 
 Rationale: SMTP AUTH is not used or needed by modern email clients. Therefore, disabling it as the global default conforms to the principle of least functionality.
 

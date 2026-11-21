@@ -1,4 +1,4 @@
-function Get-CntSampleSetting {
+﻿function Get-CntSampleSetting {
     <#
     .SYNOPSIS
     Returns the sample service's settings from the connection state.

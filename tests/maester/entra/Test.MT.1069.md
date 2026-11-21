@@ -1,4 +1,4 @@
-﻿## Description
+## Description
 
 Verifies that security group creation is restricted to admin users only in the Entra ID tenant.
 

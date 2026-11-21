@@ -1,4 +1,4 @@
-﻿Understanding which Active Directory optional features are enabled and their scope is crucial for security management:
+Understanding which Active Directory optional features are enabled and their scope is crucial for security management:
 
 - **Recycle Bin**: Should be enabled at the forest level for object recovery capabilities
 - **Privileged Access Management**: May be enabled for specific domains or the entire forest

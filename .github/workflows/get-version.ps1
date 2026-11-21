@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 Param(
     [Parameter()]
     [string]$ModuleRoot = "$($env:GITHUB_WORKSPACE)/powershell"

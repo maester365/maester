@@ -1,4 +1,4 @@
-﻿Disabled computer accounts that remain in Active Directory represent a security hygiene issue. While disabling a computer account is a valid administrative action (typically when decommissioning systems), these accounts should eventually be removed to:
+Disabled computer accounts that remain in Active Directory represent a security hygiene issue. While disabling a computer account is a valid administrative action (typically when decommissioning systems), these accounts should eventually be removed to:
 
 - **Reduce attack surface**: Disabled accounts can be re-enabled by attackers who gain privileged access
 - **Prevent confusion**: Distinguish between active and truly decommissioned systems

@@ -1,4 +1,4 @@
-﻿Non-standard DNS zone names (not compliant with RFCs 952, 1035, and 1123) may cause:
+Non-standard DNS zone names (not compliant with RFCs 952, 1035, and 1123) may cause:
 
 - **Compatibility issues**: Some DNS clients and applications may fail
 - **Resolution problems**: Non-standard names may not resolve correctly

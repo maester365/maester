@@ -1,4 +1,4 @@
-﻿Understanding the distribution density of computers across OUs helps identify:
+Understanding the distribution density of computers across OUs helps identify:
 
 - **Overloaded OUs**: OUs with too many computers may indicate poor structure or policy bottlenecks
 - **Underutilized OUs**: Many OUs with very few computers may indicate unnecessary complexity

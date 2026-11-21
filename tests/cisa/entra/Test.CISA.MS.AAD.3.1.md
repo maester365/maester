@@ -1,4 +1,4 @@
-﻿Phishing-resistant MFA SHALL be enforced for all users.
+Phishing-resistant MFA SHALL be enforced for all users.
 
 Rationale: Weaker forms of MFA do not protect against sophisticated phishing attacks. By enforcing methods resistant to phishing, those risks are minimized.
 

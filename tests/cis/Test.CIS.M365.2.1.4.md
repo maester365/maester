@@ -1,4 +1,4 @@
-﻿2.1.4 (L2) Ensure Safe Attachments policy is enabled
+2.1.4 (L2) Ensure Safe Attachments policy is enabled
 
 The Safe Attachments policy helps protect users from malware in email attachments by scanning attachments for viruses, malware, and other malicious content. When an email attachment is received by a user, Safe Attachments will scan the attachment in a secure environment and provide a verdict on whether the attachment is safe or not.
 

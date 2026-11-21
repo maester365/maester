@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     $script:BuildScriptPath = Resolve-Path "$PSScriptRoot/../../../build/Build-MaesterModule.ps1"
     $script:RepoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
     # The fixtures this file created. Other test files use the same folder prefix and can run at the same time

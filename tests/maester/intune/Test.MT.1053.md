@@ -1,4 +1,4 @@
-﻿Ensure device clean-up rule is configured
+Ensure device clean-up rule is configured
 
 This test checks if the device clean-up rule is configured.
 

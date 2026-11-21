@@ -1,4 +1,4 @@
-﻿Dynamic groups should not use the retiring `memberOf` rule operator.
+Dynamic groups should not use the retiring `memberOf` rule operator.
 
 Microsoft is ending the `memberOf` public preview on **November 3, 2026**. After that date,
 dynamic groups that still use the operator stop updating and remain in their last known state.

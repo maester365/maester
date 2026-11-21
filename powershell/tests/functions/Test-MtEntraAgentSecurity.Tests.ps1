@@ -1,4 +1,4 @@
-Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
+﻿Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
@@ -700,7 +700,7 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             Test-MtEntraAgentUserExcessiveAccess | Should -BeTrue
             $script:TestResult | Should -Match 'Custom Agent Role'
             $script:TestResult | Should -Match 'Agent User 1'
-            $script:TestResult | Should -Match 'au1@ contoso.com'
+            $script:TestResult | Should -Match 'au1\\@ contoso.com'
             $script:TestResult | Should -Not -Match "Agent`nUser 1"
             $script:TestResult | Should -Not -Match "au1@`r`ncontoso.com"
             $script:TestResult | Should -Not -Match "Custom`r`nAgent Role"

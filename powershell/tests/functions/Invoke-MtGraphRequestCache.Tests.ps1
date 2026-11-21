@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
     Add-Type -AssemblyName System.Net.Http
 }
@@ -108,6 +108,41 @@ Describe 'Invoke-MtGraphRequestCache' {
                 { Invoke-MtGraphRequestCache -Method POST -Uri "https://graph.microsoft.com/v1.0/$Path" -Body '{}' -OutputType PSObject } | Should -Throw 'Graph error'
             }
             Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly
+        }
+    }
+
+    Context 'DisableCache' {
+        BeforeEach {
+            $script:MtGraphRetryTest.Failures = 0
+        }
+
+        It 'Does not write the response to the cache' {
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequestCache -Uri 'https://graph.microsoft.com/v1.0/users' -OutputType PSObject -DisableCache
+                $__MtSession.GraphCache.Keys | Should -Not -Contain 'https://graph.microsoft.com/v1.0/users'
+            }
+        }
+
+        It 'Does not write a runHuntingQuery response to the cache' {
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequestCache -Method POST -Uri 'https://graph.microsoft.com/beta/security/runHuntingQuery' -Body '{"Query":"DeviceInfo"}' -OutputType PSObject -DisableCache
+                $__MtSession.GraphCache.Count | Should -Be 0
+            }
+        }
+
+        It 'Leaves an entry another request already cached untouched' {
+            InModuleScope Maester {
+                $__MtSession.GraphCache['https://graph.microsoft.com/v1.0/users'] = 'cached'
+                $null = Invoke-MtGraphRequestCache -Uri 'https://graph.microsoft.com/v1.0/users' -OutputType PSObject -DisableCache
+                $__MtSession.GraphCache['https://graph.microsoft.com/v1.0/users'] | Should -Be 'cached'
+            }
+        }
+
+        It 'Still caches the response when the cache is enabled' {
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequestCache -Uri 'https://graph.microsoft.com/v1.0/users' -OutputType PSObject
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users'
+            }
         }
     }
 }

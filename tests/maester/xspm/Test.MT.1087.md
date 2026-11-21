@@ -1,4 +1,4 @@
-﻿The query behind this test searches for devices that comply with the following criteria:
+The query behind this test searches for devices that comply with the following criteria:
 
 - Incoming connections from public IP addresses in last 7 days (internet exposed)
 - High or Critical severity CVE's

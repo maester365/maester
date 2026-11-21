@@ -1,4 +1,4 @@
-﻿Security groups are the foundation of access control in Active Directory. Understanding their count and distribution is critical for:
+Security groups are the foundation of access control in Active Directory. Understanding their count and distribution is critical for:
 
 - **Access management assessment**: High numbers of security groups may indicate complex or poorly managed permissions
 - **Security auditing**: Security groups directly control who can access what resources

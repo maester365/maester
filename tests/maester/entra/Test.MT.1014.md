@@ -1,4 +1,4 @@
-﻿Device compliance Conditional Access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins.
+Device compliance Conditional Access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins.
 This is a good way to prevent AITM attacks.
 
 Learn more:

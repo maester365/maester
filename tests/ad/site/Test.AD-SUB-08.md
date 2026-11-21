@@ -1,4 +1,4 @@
-﻿Analyzing subnet distribution by first octet provides:
+Analyzing subnet distribution by first octet provides:
 
 - **Addressing scheme visibility**: Understanding IP allocation patterns
 - **Network segmentation insight**: How the network is logically divided

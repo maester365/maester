@@ -1,4 +1,4 @@
-﻿GPO inheritance blocking controls whether settings from parent Organizational Units (OUs) flow down to child OUs.
+GPO inheritance blocking controls whether settings from parent Organizational Units (OUs) flow down to child OUs.
 When inheritance is blocked on an OU, policies from higher-level scopes won’t apply as expected.
 
 For security assessments, this matters because inheritance blocking can create **security gaps**:

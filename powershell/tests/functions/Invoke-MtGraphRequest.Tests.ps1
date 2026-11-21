@@ -12,7 +12,7 @@ Describe 'Invoke-MtGraphRequest' {
         # context switch inside one PowerShell session.
         $script:MtTestEnvironment = 'Global'
 
-        Mock Get-MgContext -ModuleName Maester { @{ Environment = $script:MtTestEnvironment } }
+        Mock Get-MgContext -ModuleName Maester { @{ Environment = $script:MtTestEnvironment; TenantId = 'contoso-tenant' } }
         Mock Get-MgEnvironment -ModuleName Maester {
             switch ($Name) {
                 'China' { @{ GraphEndpoint = 'https://microsoftgraph.chinacloudapi.cn/' } }
@@ -30,6 +30,7 @@ Describe 'Invoke-MtGraphRequest' {
 
     AfterEach {
         Remove-Variable -Name MtTestEnvironment -Scope Script -ErrorAction SilentlyContinue
+        Remove-Variable -Name MtTestTenant -Scope Script -ErrorAction SilentlyContinue
     }
 
     Context 'Endpoint selection' {
@@ -129,7 +130,7 @@ Describe 'Invoke-MtGraphRequest' {
         It 'Qualifies the cache key with the resolved endpoint' {
             InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging }
             InModuleScope Maester {
-                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users'
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users_{contoso-tenant}'
             }
         }
 
@@ -143,8 +144,8 @@ Describe 'Invoke-MtGraphRequest' {
             Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 2 -Exactly
 
             InModuleScope Maester {
-                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users'
-                $__MtSession.GraphCache.Keys | Should -Contain 'https://microsoftgraph.chinacloudapi.cn/v1.0/users'
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users_{contoso-tenant}'
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://microsoftgraph.chinacloudapi.cn/v1.0/users_{contoso-tenant}'
             }
         }
 
@@ -159,7 +160,7 @@ Describe 'Invoke-MtGraphRequest' {
         It 'Includes query parameters in the cache key' {
             InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -Select 'displayName' -DisablePaging }
             InModuleScope Maester {
-                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users?$select=displayName'
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users?$select=displayName_{contoso-tenant}'
             }
         }
 
@@ -171,9 +172,67 @@ Describe 'Invoke-MtGraphRequest' {
             }
             Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 2 -Exactly
             InModuleScope Maester {
-                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users'
-                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users_[Hashtable]'
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users_{contoso-tenant}'
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users_[Hashtable]_{contoso-tenant}'
             }
+        }
+
+        It 'Does not serve a cached response from a different tenant' {
+            $script:MtTestTenant = 'tenant-a'
+            Mock Get-MgContext -ModuleName Maester { @{ Environment = 'Global'; TenantId = $script:MtTestTenant } }
+            # PSObject, matching Invoke-MgGraphRequest -OutputType PSObject: Format-Result unrolls
+            # 'value' through PSObject properties, which a hashtable does not expose.
+            Mock Invoke-MgGraphRequest -ModuleName Maester { [pscustomobject] @{ value = @([pscustomobject] @{ id = $script:MtTestTenant }) } }
+
+            $first = @(InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'organization' })
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly
+
+            # Same request, same cloud, second tenant: this must reach Graph again.
+            $script:MtTestTenant = 'tenant-b'
+            $second = @(InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'organization' })
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 2 -Exactly
+
+            $first.id | Should -Be 'tenant-a'
+            $second.id | Should -Be 'tenant-b'
+            InModuleScope Maester {
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/organization_{tenant-a}'
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/organization_{tenant-b}'
+            }
+        }
+
+        It 'Keeps each tenant warm instead of discarding the other tenant on a switch' {
+            $script:MtTestTenant = 'tenant-a'
+            Mock Get-MgContext -ModuleName Maester { @{ Environment = 'Global'; TenantId = $script:MtTestTenant } }
+
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'organization' -DisablePaging }
+            $script:MtTestTenant = 'tenant-b'
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'organization' -DisablePaging }
+            $script:MtTestTenant = 'tenant-a'
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'organization' -DisablePaging }
+
+            # Three requests, two tenants: coming back to the first one is still a cache hit.
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 2 -Exactly
+        }
+
+        It 'Carries the tenant on an explicit -GraphBaseUri as well' {
+            # An endpoint override replaces the endpoint, not the tenant the connection is to.
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -GraphBaseUri 'https://microsoftgraph.chinacloudapi.cn/' -DisablePaging
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://microsoftgraph.chinacloudapi.cn/v1.0/users_{contoso-tenant}'
+            }
+        }
+
+        It 'Leaves the request url readable for the affected-object inventory' {
+            # Get-MtAffectedObjectFromCache reads a cache key up to its first "_[" or "_{" to recover
+            # the request url. A tenant prefix would leave every Graph entry unmatched and drop it
+            # from the report's affected objects; a suffix keeps it readable.
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId '11111111-1111-1111-1111-111111111111' -DisablePaging
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId '22222222-2222-2222-2222-222222222222' -OutputType Hashtable -DisablePaging
+            }
+            $objects = InModuleScope Maester { Get-MtAffectedObjectFromCache }
+            @($objects | Where-Object { $_.Type -eq 'User' }).Id |
+                Should -Be @('11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222')
         }
     }
 
@@ -186,7 +245,7 @@ Describe 'Invoke-MtGraphRequest' {
                 $Method -eq 'POST' -and $Uri -eq 'v1.0/security/runHuntingQuery'
             }
             InModuleScope Maester {
-                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/security/runHuntingQuery_{"Query":"DeviceInfo"}'
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/security/runHuntingQuery_{contoso-tenant}_{"Query":"DeviceInfo"}'
             }
         }
     }
@@ -206,6 +265,28 @@ Describe 'Invoke-MtGraphRequest' {
             @($result).id | Should -Be @('page1', 'page2')
             Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
                 $Uri -eq 'https://graph.microsoft.com/v1.0/users?$skiptoken=abc'
+            }
+        }
+
+        It 'Caches the consolidated result under the original uri and nothing else' {
+            # The paging loop reads each page with the cache off, because a skip token is not always
+            # unique and a cached page can send the loop round again. Only the consolidated result
+            # belongs in the cache, under the key of the request the caller made.
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'v1.0/users' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'page1' }); '@odata.nextLink' = 'https://graph.microsoft.com/v1.0/users?$skiptoken=t1' }
+            }
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://graph.microsoft.com/v1.0/users?$skiptoken=t1' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'page2' }); '@odata.nextLink' = 'https://graph.microsoft.com/v1.0/users?$skiptoken=t2' }
+            }
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://graph.microsoft.com/v1.0/users?$skiptoken=t2' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'page3' }) }
+            }
+            $null = InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users' }
+
+            InModuleScope Maester {
+                @($__MtSession.GraphCache.Keys) | Should -Be @('https://graph.microsoft.com/v1.0/users_{contoso-tenant}')
+                @($__MtSession.GraphCache['https://graph.microsoft.com/v1.0/users_{contoso-tenant}'].value).id |
+                    Should -Be @('page1', 'page2', 'page3')
             }
         }
     }
@@ -230,6 +311,51 @@ Describe 'Invoke-MtGraphRequest' {
             $requests.url | Should -Be @('users', 'groups')
             # No request url may carry an absolute endpoint, or batching would pin a cloud.
             foreach ($url in $requests.url) { $url | Should -Not -Match '^https?://' }
+        }
+
+        It 'Caches a paged response in a batch under its own uri, not the last request in the batch' {
+            # The responses are completed after the loop that builds the requests has ended, so the
+            # only uri still in scope is the last one. A paged response used to be cached under it,
+            # which served one request's objects to another.
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Method -eq 'POST' } {
+                @{ responses = @(
+                        @{ id = '0'; status = 200; body = [pscustomobject] @{ value = @([pscustomobject] @{ id = 'user1' }); '@odata.nextLink' = 'https://graph.microsoft.com/v1.0/users?$skiptoken=abc' } }
+                        @{ id = '1'; status = 200; body = [pscustomobject] @{ value = @([pscustomobject] @{ id = 'group1' }) } }
+                    )
+                }
+            }
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://graph.microsoft.com/v1.0/users?$skiptoken=abc' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'user2' }) }
+            }
+            $result = @(InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users', 'groups' })
+
+            $result.id | Should -Be @('user1', 'user2', 'group1')
+            InModuleScope Maester {
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users_{contoso-tenant}'
+                $__MtSession.GraphCache.Keys | Should -Not -Contain 'https://graph.microsoft.com/v1.0/groups_{contoso-tenant}'
+                @($__MtSession.GraphCache['https://graph.microsoft.com/v1.0/users_{contoso-tenant}'].value).id |
+                    Should -Be @('user1', 'user2')
+            }
+        }
+
+        It 'Caches a paged response in a batch under the uri of the object it was read for' {
+            # Same defect with -UniqueId: the key must name the object the response describes.
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Method -eq 'POST' } {
+                @{ responses = @(
+                        @{ id = '0'; status = 200; body = [pscustomobject] @{ value = @([pscustomobject] @{ id = 'a-page1' }); '@odata.nextLink' = 'https://graph.microsoft.com/v1.0/users/a/memberOf?$skiptoken=abc' } }
+                        @{ id = '1'; status = 200; body = [pscustomobject] @{ value = @([pscustomobject] @{ id = 'b-only' }) } }
+                    )
+                }
+            }
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://graph.microsoft.com/v1.0/users/a/memberOf?$skiptoken=abc' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'a-page2' }) }
+            }
+            $null = InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId 'a', 'b' }
+
+            InModuleScope Maester {
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users/a_{contoso-tenant}'
+                $__MtSession.GraphCache.Keys | Should -Not -Contain 'https://graph.microsoft.com/v1.0/users/b_{contoso-tenant}'
+            }
         }
 
         It 'Skips a request in a batch that returns 404 and returns the rest' {
@@ -356,7 +482,7 @@ Describe 'Invoke-MtGraphRequest' {
                 $__MtSession.GraphBaseUri.AbsoluteUri | Should -Be 'https://graph.microsoft.us/'
                 # The response is keyed per endpoint, so the second request is not answered
                 # from the first endpoint's entry.
-                @($__MtSession.GraphCache.Keys) | Should -Contain 'https://graph.microsoft.us/v1.0/users'
+                @($__MtSession.GraphCache.Keys) | Should -Contain 'https://graph.microsoft.us/v1.0/users_{contoso-tenant}'
             }
         }
 

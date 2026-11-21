@@ -1,4 +1,4 @@
-function Get-MtLdapRootDse {
+﻿function Get-MtLdapRootDse {
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param(

@@ -1,9 +1,19 @@
-﻿An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.
+An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.
 
 Rationale: An adversary may modify the `FROM` field of an email such that it appears to be a legitimate email sent by an agency, facilitating phishing attacks. Publishing an SPF policy for each agency domain mitigates forged `FROM` fields by providing a means for recipients to detect emails spoofed in this way. SPF is required for FCEB departments and agencies by Binding Operational Directive (BOD) 18-01, "Enhance Email and Web Security".
 
 Coexistence domains related to Hybrid Configuration Wizard (HCW) are skipped.
 Production use of coexistence domains is discouraged, and additional controls, such as transport rules, should be used to restrict their use.
+
+Every accepted domain is checked. A domain that sends email must name Exchange Online as an approved sender. A parked domain, one that never sends email, has no approved senders, so it only needs a policy that fails all senders, such as `v=spf1 -all` (`~all` is also accepted, as in MS.EXO.2.2v3).
+
+Maester does not guess which domains are parked, and turning off **Allow mail to be sent from this domain** in Exchange no longer leaves a domain out of this test. List your parked domains in the `ParkedDomains` global setting, or in this test's `ParkedDomains` parameter:
+
+```json
+{
+  "GlobalSettings": { "ParkedDomains": ["contoso-old.com"] }
+}
+```
 
 #### Remediation action
 

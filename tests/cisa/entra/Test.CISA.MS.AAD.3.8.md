@@ -1,4 +1,4 @@
-﻿Managed Devices SHOULD be required to register MFA.
+Managed Devices SHOULD be required to register MFA.
 
 Rationale: Reduce risk of an adversary using stolen user credentials and then registering their own MFA device to access the tenant by requiring a managed device provisioned and controlled by the agency to perform registration actions. This prevents the adversary from using their own unmanaged device to perform the registration.
 

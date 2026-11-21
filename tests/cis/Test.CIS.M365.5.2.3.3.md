@@ -1,4 +1,4 @@
-﻿Microsoft Entra password protection is enabled for on-premises Active Directory and runs in enforced mode.
+Microsoft Entra password protection is enabled for on-premises Active Directory and runs in enforced mode.
 
 Hybrid environments allow password changes against domain controllers. Without the on-premises integration, those changes bypass the banned password lists, so users can set passwords that the cloud would reject. Password spraying tries a few common passwords against many accounts, and the banned password list is what stops those passwords from being set. In audit mode, banned passwords are only logged and are still accepted.
 

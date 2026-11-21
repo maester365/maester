@@ -1,4 +1,4 @@
-﻿2.1.13 (L1) Ensure the connection filter safe list is off
+2.1.13 (L1) Ensure the connection filter safe list is off
 
 In Microsoft 365 organizations with Exchange Online mailboxes or standalone Exchange Online Protection (EOP) organizations without Exchange Online mailboxes, connection filtering and the default connection filter policy identify good or bad source email servers by IP addresses. The key components of the default connection filter policy are IP Allow List, IP Block List and Safe list. The safe list is a pre-configured allow list that is dynamically updated by Microsoft. The recommended safe list state is: Off or False
 

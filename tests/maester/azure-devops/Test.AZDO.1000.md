@@ -1,4 +1,4 @@
-﻿Third-party application access via OAuth should be disabled.
+Third-party application access via OAuth should be disabled.
 
 Rationale: Third-party application access should not be used for Azure DevOps.
 

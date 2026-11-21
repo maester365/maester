@@ -1,4 +1,4 @@
-# Schema of the [MaesterTest] attribute (docs/proposals/maester-3.0-test-attributes.md, section 2, and
+﻿# Schema of the [MaesterTest] attribute (docs/proposals/maester-3.0-test-attributes.md, section 2, and
 # the Maester 3.0 design, sections 3.1 and 4).
 #
 # The engine reads [MaesterTest(...)] from a test file's AST and validates it against this table;
@@ -29,7 +29,7 @@
 
     # ID prefixes that belong to tests shipped with Maester, MP. for Maester Packs, and the codes of the packs
     # that ship with Maester, whose IDs have no MP. prefix (ZTA. for the Zero Trust Assessment pack).
-    ReservedPrefixes = @('MT.', 'CISA.', 'CIS.', 'EIDSCA.', 'ORCA.', 'AD-', 'AZDO.', 'MT1060.', 'ASD.', 'MP.', 'ZTA.')
+    ReservedPrefixes = @('MT.', 'CISA.', 'CIS.', 'EIDSCA.', 'ORCA.', 'AD-', 'AZDO.', 'MT1060.', 'ASD.', 'DISA.', 'MP.', 'ZTA.')
 
     # Names reserved for future properties. Adding one later does not break existing tests.
     ReservedNames    = @('OptionalService', 'TimeoutSeconds')
@@ -233,10 +233,17 @@
     ParameterAttribute = @{
         Kind = @{
             Type        = 'string'
-            Required    = 'Always'
+            Required    = 'No'
             ValuesFrom  = 'ParameterKindRegistry'
             Pattern     = '^[A-Za-z][A-Za-z0-9]*(\.[A-Za-z][A-Za-z0-9]*)+$'
-            Description = 'Name of an entry in the parameter-kind registry, for example Entra.Group.'
+            Description = 'Name of an entry in the parameter-kind registry, for example Entra.Group. [MaesterParameter] needs Kind, Setting or both.'
+        }
+        Setting = @{
+            Type        = 'string'
+            Required    = 'No'
+            ValuesFrom  = 'SettingsRegistry'
+            Pattern     = '^[A-Za-z][A-Za-z0-9]*(\.[A-Za-z][A-Za-z0-9]*)*$'
+            Description = 'Name of a GlobalSettings entry the parameter is bound to, for example ParkedDomains. A pack uses Namespace.Key.'
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿# Authentication method policies should not reference non-existent groups
+# Authentication method policies should not reference non-existent groups
 
 This test checks if all groups referenced in authentication method policies still exist in the tenant.
 

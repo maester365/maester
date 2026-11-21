@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy blocks sign-ins from legacy authentication clients for all users.
+An enabled Conditional Access policy blocks sign-ins from legacy authentication clients for all users.
 
 Legacy authentication protocols such as POP, IMAP, SMTP AUTH and older Office clients do not support multifactor authentication. An attacker who has a password can use them to sign in without the MFA prompt, and password spray tools target them first.
 

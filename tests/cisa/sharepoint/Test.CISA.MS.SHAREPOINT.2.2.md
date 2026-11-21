@@ -1,4 +1,4 @@
-﻿File and folder default sharing permissions SHALL be set to View only.
+File and folder default sharing permissions SHALL be set to View only.
 
 Rationale: Setting the default permission to View reduces the risk of accidental editing of shared documents by external parties.
 

@@ -1,4 +1,4 @@
-﻿Ensure a Microsoft Purview Insider Risk Management policy from the **Risky AI usage** template is enabled so risky Microsoft 365 Copilot and AI-app interactions generate triageable alerts.
+Ensure a Microsoft Purview Insider Risk Management policy from the **Risky AI usage** template is enabled so risky Microsoft 365 Copilot and AI-app interactions generate triageable alerts.
 
 The Risky AI usage template detects:
 

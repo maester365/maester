@@ -1,4 +1,4 @@
-function Resolve-MtDnsTxtRecord {
+﻿function Resolve-MtDnsTxtRecord {
     <#
     .SYNOPSIS
     Returns the TXT records published at a DNS name, without filtering them.

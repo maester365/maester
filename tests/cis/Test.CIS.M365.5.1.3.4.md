@@ -1,4 +1,4 @@
-﻿5.1.3.4 (L2) Ensure that 'Users can create Microsoft 365 groups in Azure portals, API or PowerShell' is set to 'No'
+5.1.3.4 (L2) Ensure that 'Users can create Microsoft 365 groups in Azure portals, API or PowerShell' is set to 'No'
 
 All users within a Microsoft Entra organization are permitted to create new Microsoft 365 groups and add members to those groups through the Azure portal, API, or PowerShell. Newly created groups also appear in the Access Panel for all other users. When the applicable group policy settings allow it, users can submit requests to join these groups.
 

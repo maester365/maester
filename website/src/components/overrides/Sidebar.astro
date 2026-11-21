@@ -1,10 +1,12 @@
 ---
 // The topics are tabs in the header, so the sidebar shows only the current topic's pages. On phones the drawer also
-// has the topics and the version picker.
+// has the topics, the version picker and, at the foot, the site's main menu, which the top bar folds away there.
 import MobileMenuFooter from '@astrojs/starlight/components/MobileMenuFooter.astro';
 import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
 import SidebarSublist from '@astrojs/starlight/components/SidebarSublist.astro';
 import VersionPicker from '../VersionPicker.astro';
+import CatalogNav from '../catalog/CatalogNav.astro';
+import { isCurrentNav, siteNav } from '../../lib/site-nav';
 
 const { id } = Astro.locals.starlightRoute;
 let { sidebar } = Astro.locals.starlightRoute;
@@ -15,10 +17,17 @@ if (id === 'docs/2.x' || id.startsWith('docs/2.x/')) {
 	const own = sidebar.find(holds);
 	if (own?.type === 'group') sidebar = own.entries;
 }
+// The test builder lists its steps here (TestBuilder/index.jsx renders them into the element below), above the
+// guides on writing tests. The link to the builder itself is the page you are on, so it is left out.
+const isBuilder = Astro.url.pathname.replace(/\/$/, '') === '/test-builder';
+if (isBuilder) sidebar = sidebar.filter((entry) => !(entry.type === 'link' && /\/test-builder(\.html|\/)?$/.test(entry.href)));
 const topics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic) => !topic.link.startsWith('/docs/2.x'));
 
 // The commands are grouped by job; a switch lists them A to Z instead (remembered in the browser).
 const isCommands = id === 'docs/commands' || id.startsWith('docs/commands/');
+// The test catalog and the test builder can fold the sidebar to a strip.
+// The test catalog has a nav of its own: its views, then the filters of the page (catalog/CatalogNav.astro).
+const isCatalog = id === 'docs/tests' || id.startsWith('docs/tests/');
 type Entry = (typeof sidebar)[number];
 const links = (entries: Entry[]): Entry[] => entries.flatMap((e) => (e.type === 'link' ? [e] : links(e.entries)));
 const overview = sidebar.filter((e) => e.type === 'link');
@@ -36,6 +45,47 @@ const alphabetical: Entry[] = isCommands
 	: [];
 ---
 
+{
+	(isCatalog || isBuilder) && (
+		<>
+			<button type="button" class="mt-nav-toggle" data-nav-toggle data-nav-key={isBuilder ? 'maester-builder-nav' : 'maester-catalog-nav'} aria-expanded="true" aria-label="Hide the sidebar" title="Hide the sidebar">
+				<svg viewBox="0 0 24 24" aria-hidden="true">
+					<rect x="3" y="4" width="18" height="16" rx="2" />
+					<path d="M9 4v16" />
+					<path class="mt-nav-toggle__arrow" d="M15.5 9.5L13 12l2.5 2.5" />
+				</svg>
+			</button>
+			{/* Before the page paints, so a hidden sidebar does not flash open on the next page. */}
+			<script is:inline>
+				(function () {
+					var root = document.documentElement;
+					var button = document.querySelector('[data-nav-toggle]');
+					function set(collapsed, save) {
+						if (collapsed) root.dataset.mtNav = 'collapsed';
+						else delete root.dataset.mtNav;
+						button.setAttribute('aria-expanded', String(!collapsed));
+						var label = collapsed ? 'Show the sidebar' : 'Hide the sidebar';
+						button.setAttribute('aria-label', label);
+						button.title = label;
+						if (save) {
+							try {
+								localStorage.setItem(button.dataset.navKey, collapsed ? 'collapsed' : 'open');
+							} catch (e) {}
+						}
+					}
+					var stored = null;
+					try {
+						stored = localStorage.getItem(button.dataset.navKey);
+					} catch (e) {}
+					set(stored === 'collapsed', false);
+					button.addEventListener('click', function () {
+						set(root.dataset.mtNav !== 'collapsed', true);
+					});
+				})();
+			</script>
+		</>
+	)
+}
 <div class="mt-mobile-version"><VersionPicker /></div>
 <nav class="mt-mobile-topics" aria-label="Documentation sections">
 	{topics.map((topic) => <a href={topic.link} aria-current={topic.isCurrent ? 'page' : undefined}>{topic.label}</a>)}
@@ -48,19 +98,32 @@ const alphabetical: Entry[] = isCommands
 		</div>
 	)
 }
-<SidebarPersister>
-	<div class:list={{ 'mt-cmd-nav': isCommands }} data-order="job">
-		<div class="mt-cmd-nav__job">
-			<SidebarSublist sublist={sidebar} />
+{
+	isBuilder && (
+		<div class="mt-builder-steps">
+			<p class="mt-builder-steps__title">Steps</p>
+			<div id="mt-builder-steps" />
 		</div>
-		{
-			isCommands && (
-				<div class="mt-cmd-nav__az">
-					<SidebarSublist sublist={alphabetical} />
+	)
+}
+<SidebarPersister>
+	{isCatalog && <CatalogNav id={id} />}
+	{
+		!isCatalog && (
+			<div class:list={{ 'mt-cmd-nav': isCommands }} data-order="job">
+				<div class="mt-cmd-nav__job">
+					<SidebarSublist sublist={sidebar} />
 				</div>
-			)
-		}
-	</div>
+				{
+					isCommands && (
+						<div class="mt-cmd-nav__az">
+							<SidebarSublist sublist={alphabetical} />
+						</div>
+					)
+				}
+			</div>
+		)
+	}
 </SidebarPersister>
 {
 	isCommands && (
@@ -94,11 +157,103 @@ const alphabetical: Entry[] = isCommands
 	)
 }
 
+<nav class="mt-mobile-site md:sl-hidden" aria-label="Main">
+	{siteNav.map((item) => <a href={item.href} aria-current={isCurrentNav(Astro.url.pathname, item.href) ? 'page' : undefined}>{item.label}</a>)}
+</nav>
 <div class="md:sl-hidden">
 	<MobileMenuFooter />
 </div>
 
+<style is:global>
+	/* The test catalog's sidebar folds to a strip with the button that opens it again (wide screens only: on a
+	   phone the sidebar is a drawer already). The right column keeps its width. */
+	.mt-nav-toggle {
+		display: none;
+	}
+	@media (min-width: 50rem) {
+		.mt-nav-toggle {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			align-self: flex-start;
+			padding: 0.3rem 0.5rem;
+			margin: -0.25rem 0 -0.25rem -0.5rem;
+			border: 0;
+			border-radius: 7px;
+			background: none;
+			font: inherit;
+			font-size: 0.8rem;
+			color: var(--sl-color-gray-3);
+			cursor: pointer;
+		}
+		.mt-nav-toggle:hover {
+			background: var(--sl-color-gray-6);
+			color: var(--sl-color-white);
+		}
+		.mt-nav-toggle svg {
+			width: 18px;
+			height: 18px;
+			fill: none;
+			stroke: currentColor;
+			stroke-width: 1.8;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+		:root[data-mt-nav='collapsed'][data-has-sidebar] {
+			--sl-content-inline-start: 3.25rem;
+		}
+		:root[data-mt-nav='collapsed'] .sidebar-pane {
+			width: 3.25rem;
+			overflow: hidden;
+		}
+		:root[data-mt-nav='collapsed'] .sidebar-content {
+			padding-inline: 0.55rem;
+		}
+		:root[data-mt-nav='collapsed'] .sidebar-content > :not(.mt-nav-toggle) {
+			display: none;
+		}
+		:root[data-mt-nav='collapsed'] .mt-nav-toggle {
+			margin: 0;
+		}
+		/* The test builder keeps its steps in the strip, as icons (TestBuilder/styles.module.css). */
+		:root[data-mt-nav='collapsed'] .sidebar-content > .mt-builder-steps {
+			display: block;
+			margin: 0.75rem 0 0;
+			padding: 0;
+			border: 0;
+		}
+		:root[data-mt-nav='collapsed'] .mt-builder-steps__title {
+			display: none;
+		}
+		:root[data-mt-nav='collapsed'] .mt-nav-toggle__arrow {
+			transform: scaleX(-1);
+			transform-origin: 14.25px 12px;
+		}
+	}
+</style>
+
 <style>
+	/* Test builder: its steps, above the guides. On a phone the steps are above the form instead. */
+	.mt-builder-steps {
+		display: none;
+		margin-bottom: 1rem;
+		padding-bottom: 1rem;
+		border-bottom: 1px solid var(--sl-color-hairline-light);
+	}
+	@media (min-width: 50rem) {
+		.mt-builder-steps {
+			display: block;
+		}
+	}
+	.mt-builder-steps__title {
+		margin: 0 0 0.4rem 0.5rem;
+		font-size: var(--sl-text-xs);
+		font-weight: 600;
+		color: var(--sl-color-gray-3);
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+	}
+
 	/* Commands: by job or A to Z, one name a line (cut with an ellipsis; the full name is in its tooltip). */
 	.mt-cmd-order {
 		display: flex;
@@ -179,6 +334,32 @@ const alphabetical: Entry[] = isCommands
 		.mt-mobile-version {
 			display: block;
 		}
+	}
+	/* The site's main menu at the foot of the phone drawer: a plain two-column list under a dividing line. Hidden on
+	   wide screens here, not with md:sl-hidden: that class is in Starlight's cascade layer, so this unlayered rule
+	   would win over it. */
+	.mt-mobile-site {
+		display: none;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.15rem 1rem;
+		margin-top: 1.5rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--sl-color-gray-6);
+	}
+	@media (max-width: 49.99rem) {
+		.mt-mobile-site {
+			display: grid;
+		}
+	}
+	.mt-mobile-site a {
+		padding: 0.4rem 0;
+		font-size: 0.9rem;
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+	}
+	.mt-mobile-site a[aria-current='page'] {
+		color: var(--sl-color-white);
+		font-weight: 600;
 	}
 	.mt-mobile-topics a[aria-current='page'] {
 		border-color: var(--sl-color-accent);

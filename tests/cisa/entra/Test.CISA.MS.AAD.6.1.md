@@ -1,4 +1,4 @@
-﻿User passwords SHALL NOT expire.
+User passwords SHALL NOT expire.
 
 The National Institute of Standards and Technology (NIST), OMB, and Microsoft have published guidance indicating mandated periodic password changes make user accounts less secure. For example, OMB-22-09 states, "Password policies must not require use of special characters or regular rotation."
 

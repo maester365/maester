@@ -1,4 +1,4 @@
-﻿5.1.4.1 (L2) Ensure the ability to join devices to Entra is restricted
+5.1.4.1 (L2) Ensure the ability to join devices to Entra is restricted
 
 This setting enables you to select the users who can register their devices as Microsoft Entra joined devices.
 

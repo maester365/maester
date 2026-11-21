@@ -1,4 +1,4 @@
-﻿Agent Identities should have an existing Agent Identity Blueprint Principal.
+Agent Identities should have an existing Agent Identity Blueprint Principal.
 
 An Agent Identity is the account an AI agent uses to access resources in your tenant. It is
 created from an Agent Identity Blueprint. The Blueprint Principal is the tenant's copy of that

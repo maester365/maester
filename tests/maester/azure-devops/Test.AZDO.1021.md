@@ -1,4 +1,4 @@
-﻿Creating classic release pipelines **should be** disabled.
+Creating classic release pipelines **should be** disabled.
 
 Rationale: YAML pipelines offer the best security for your Azure Pipelines. In contrast to classic build and release pipelines.
 

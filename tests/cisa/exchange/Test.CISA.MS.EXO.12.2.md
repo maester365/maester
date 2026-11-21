@@ -1,4 +1,4 @@
-﻿Safe lists SHOULD NOT be enabled.
+Safe lists SHOULD NOT be enabled.
 
 Rationale: Messages sent from allowed safe list addresses bypass important security mechanisms, including spam filtering and sender authentication checks. Avoiding use of safe lists prevents potential threats from circumventing security mechanisms. While blocking all malicious senders is not feasible, blocking specific known, malicious IP addresses may reduce the threat from specific senders.
 

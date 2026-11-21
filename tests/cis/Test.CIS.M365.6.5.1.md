@@ -1,4 +1,4 @@
-﻿Modern authentication is enabled for Exchange Online.
+Modern authentication is enabled for Exchange Online.
 
 The `OAuth2ClientProfileEnabled` setting turns on modern authentication for supported Outlook for Windows clients (Outlook 2013 and later). It allows these clients to support multifactor authentication and Conditional Access. If it is turned off, these Outlook connections can fail to sign in, because Exchange Online no longer supports basic authentication for them.
 

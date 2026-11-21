@@ -1,4 +1,4 @@
-﻿The smart lockout threshold does not exceed the recommended maximum of failed sign-in attempts.
+The smart lockout threshold does not exceed the recommended maximum of failed sign-in attempts.
 
 Smart lockout slows password guessing and spraying by locking an account out after a number of failed sign-ins. A high threshold gives an attacker more guesses per lockout period.
 

@@ -1,4 +1,4 @@
-function Get-MdeSettingValue {
+﻿function Get-MdeSettingValue {
     <#
     .SYNOPSIS
         Extracts setting values from Graph API configuration policy responses

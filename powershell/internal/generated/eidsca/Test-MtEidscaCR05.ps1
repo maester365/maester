@@ -1,4 +1,4 @@
-function Test-MtEidscaCR05 {
+﻿function Test-MtEidscaCR05 {
     <#
     .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Admin consent reviewers have valid query scopes is set to 'true'

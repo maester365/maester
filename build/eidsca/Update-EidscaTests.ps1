@@ -1,4 +1,4 @@
-<#
+﻿<#
  .Synopsis
   Generates the Maester EIDSCA checks for the Entra ID Security Config Analyzer defined at https://github.com/Cloud-Architekt/AzureAD-Attack-Defense
 
@@ -605,7 +605,9 @@ function CreateFile($folderPath, $fileName, $content) {
     }
     $content = RemoveTrailingWhitespace $content
     $content = $content -replace '(\r?\n)+$', ''
-    [System.IO.File]::WriteAllText($filePath, "$content$newLine", [System.Text.UTF8Encoding]::new($false))
+    # PowerShell files are UTF-8 with a byte order mark (see the contributing guide); Markdown has none.
+    $bom = [System.IO.Path]::GetExtension($fileName) -in '.ps1', '.psm1', '.psd1'
+    [System.IO.File]::WriteAllText($filePath, "$content$newLine", [System.Text.UTF8Encoding]::new($bom))
 }
 
 function GetEidscaPsFunctionName($checkId) {

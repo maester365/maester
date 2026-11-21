@@ -1,4 +1,4 @@
-﻿Activation of the Global Administrator role SHALL require approval.
+Activation of the Global Administrator role SHALL require approval.
 
 Rationale: Requiring approval for a user to activate Global Administrator, which provides unfettered access, makes it more challenging for an attacker to compromise the tenant with stolen credentials and it provides visibility of activities indicating a compromise is taking place.
 

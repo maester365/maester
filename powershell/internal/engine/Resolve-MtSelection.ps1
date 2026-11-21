@@ -1,4 +1,4 @@
-function Resolve-MtSelection {
+﻿function Resolve-MtSelection {
     <#
     .SYNOPSIS
     Combines the run config's Selection section with the Invoke-Maester parameters (design section 7.3).

@@ -1,4 +1,4 @@
-function Import-MtPackModule {
+﻿function Import-MtPackModule {
     <#
     .SYNOPSIS
     Loads a pack that passed the loader gate into its own private module (Maester Packs design, section 4.4).

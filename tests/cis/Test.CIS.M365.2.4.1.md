@@ -1,4 +1,4 @@
-﻿Priority account protection is turned on, priority accounts are defined, and alert policies notify people about malware and phishing sent to those accounts.
+Priority account protection is turned on, priority accounts are defined, and alert policies notify people about malware and phishing sent to those accounts.
 
 Executives, finance staff and IT administrators are targeted more often and the damage of a successful attack on them is higher. Priority account protection adds extra detection and reporting for them, and tags them in alerts and reports so that an incident response team notices them.
 

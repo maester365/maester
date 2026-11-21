@@ -1,4 +1,4 @@
-# A shim is a built-in test whose body is one return of another built-in test's function: a benchmark test for a
+﻿# A shim is a built-in test whose body is one return of another built-in test's function: a benchmark test for a
 # requirement that another suite already checks (website/docs/writing-tests/index.mdx, "Tests that another suite
 # already has"). These tests find every shim and check that it is the same check as the test it calls, so the two
 # cannot drift apart without a failure here.
@@ -76,6 +76,20 @@ Describe 'Built-in tests that call another suite''s test' {
         $offenders = foreach ($shim in $script:shims) {
             $declared = @($shim.Target.Parameters.Name)
             foreach ($name in $shim.Parameters) { if ($name -notin $declared) { "$($shim.Test.Id): -$name" } }
+        }
+        @($offenders) | Should -BeNullOrEmpty
+    }
+
+    It 'Declares and passes on the settings of the test it calls' {
+        # The engine binds the parameters of the test it runs, the shim. The function the shim calls is an
+        # ordinary call, so a setting it does not receive from the shim is silently its default: the shim
+        # would ignore the tenant's emergency access accounts or parked domains.
+        $offenders = foreach ($shim in $script:shims) {
+            foreach ($parameter in @($shim.Target.Parameters | Where-Object { $_.Setting -and -not $_.EngineOwned })) {
+                $own = $shim.Test.Parameters | Where-Object { $_.Name -eq $parameter.Name -and $_.Setting -eq $parameter.Setting }
+                if (-not $own) { "$($shim.Test.Id): declare [MaesterParameter(Setting = '$($parameter.Setting)')] `$$($parameter.Name), as $($shim.Target.Id) does" }
+                elseif ($parameter.Name -notin $shim.Parameters) { "$($shim.Test.Id): pass -$($parameter.Name) `$$($parameter.Name) to $($shim.Command)" }
+            }
         }
         @($offenders) | Should -BeNullOrEmpty
     }

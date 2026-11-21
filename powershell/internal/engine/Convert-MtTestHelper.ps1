@@ -1,4 +1,4 @@
-function ConvertTo-MtNativeFunctionBody {
+﻿function ConvertTo-MtNativeFunctionBody {
     <#
     .SYNOPSIS
     Returns the text of a check function with the guards the engine now handles removed (used by Convert-MtTest).

@@ -1,4 +1,4 @@
-﻿Owners with lower privilege than the application should be removed from ownership.
+Owners with lower privilege than the application should be removed from ownership.
 Microsoft also mentions this [risk of elevation of privilege](https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners) over what the owner has access to as a user.
 Those delegations can be identified by the `Tier breach` flag in the test results.
 

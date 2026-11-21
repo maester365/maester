@@ -1,4 +1,4 @@
-﻿## Description
+## Description
 
 Verifies that device join to Entra ID is restricted to selected users/groups or disabled entirely.
 

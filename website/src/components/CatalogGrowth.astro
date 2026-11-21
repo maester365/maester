@@ -1,0 +1,453 @@
+---
+// The home page's count of every check Maester can run: the built-in checks, the packs that ship with Maester and the
+// community packs on packs.maester.cloud, how the count grew release by release, and what each product gets.
+// Each test counts once, a shim and a pack check that names a built-in check in AlsoCheckedBy included.
+// Data: src/data/explorer.json (catalog-explorer.mjs) and src/data/catalog-history.json (catalog-history.mjs).
+import explorer from '../data/explorer.json';
+import history from '../data/catalog-history.json';
+import { productIcon, productInitials } from '../lib/report-icons.mjs';
+
+// bare: the chart and the product list only, for a page that gives the section its own heading.
+const { bare = false } = Astro.props as { bare?: boolean };
+
+type Test = (typeof explorer.tests)[number] & { community?: boolean };
+const tests = explorer.tests as Test[];
+const sourceOf = (t: Test) => (t.community ? 'community' : t.pack ? 'shipped' : 'builtIn');
+
+const sources = ['builtIn', 'shipped', 'community'] as const;
+type Source = (typeof sources)[number];
+const tally = (list: Test[]) => {
+	const all = { builtIn: 0, shipped: 0, community: 0 };
+	for (const t of list) all[sourceOf(t)]++;
+	return { all };
+};
+const counts = tally(tests);
+// A community pack the index lists without its tests (packs.maester.cloud has no catalog.json yet) still counts.
+const unlisted = explorer.communityPacks.reduce((n, p) => n + (p.listed ? 0 : p.count), 0);
+counts.all.community += unlisted;
+const total = (c: Record<Source, number>) => c.builtIn + c.shipped + c.community;
+const communityPacks = explorer.communityPacks.length;
+const format = (n: number) => n.toLocaleString('en-US');
+
+const labels: Record<Source, { name: string; note: string }> = {
+	builtIn: { name: 'Built into Maester', note: `${explorer.suites.length} suites, from CIS and CISA to Active Directory` },
+	shipped: { name: 'Packs that ship with Maester', note: explorer.packs.map((p) => p.name.replace(/^Microsoft /, '')).join(', ') },
+	community: { name: 'Community packs', note: `${communityPacks} packs on packs.maester.cloud` },
+};
+
+// Checks by product, the products with the most first.
+const products = explorer.products.slice(0, 10).map((p) => ({ key: p.key, name: p.name, ...tally(tests.filter((t) => t.product === p.key)) }));
+const productMax = Math.max(...products.map((p) => total(p.all)));
+const pct = (n: number) => `${((n / productMax) * 100).toFixed(2)}%`;
+
+// The growth chart: the checks of each stable release, then today's. Releases count built-in checks and the packs that
+// shipped with them; the community packs are counted from today, as packs.maester.cloud keeps no history of them yet.
+const today = new Date().toISOString().slice(0, 10);
+const points = [
+	...history.releases.map((r) => ({ label: r.version, date: r.date, builtIn: r.builtIn, shipped: r.packs, community: 0 })),
+	{ label: 'Today', date: today, builtIn: counts.all.builtIn, shipped: counts.all.shipped, community: counts.all.community },
+];
+const W = 760;
+// Taller than wide-screen charts usually are, so it fills its card beside the product list.
+const H = 440;
+const pad = { l: 44, r: 16, t: 12, b: 28 };
+const t0 = Date.parse(points[0].date);
+const t1 = Date.parse(today);
+const x = (date: string) => pad.l + ((Date.parse(date) - t0) / Math.max(1, t1 - t0)) * (W - pad.l - pad.r);
+const top = Math.max(...points.map((p) => p.builtIn + p.shipped + p.community));
+const step = top > 1500 ? 500 : top > 600 ? 250 : 100;
+const yMax = Math.ceil(top / step) * step;
+const y = (n: number) => pad.t + (1 - n / yMax) * (H - pad.t - pad.b);
+const ticks = Array.from({ length: yMax / step + 1 }, (_, i) => i * step);
+// A smooth curve through the points that never overshoots them (monotone cubic interpolation, as d3's curveMonotoneX).
+const curve = (xs: number[], ys: number[]) => {
+	const n = xs.length;
+	if (n < 2) return `${xs[0]},${ys[0]}`;
+	const dx = xs.slice(1).map((v, i) => v - xs[i] || 1e-6);
+	const slope = dx.map((h, i) => (ys[i + 1] - ys[i]) / h);
+	const m = xs.map((_, i) => {
+		if (i === 0) return slope[0];
+		if (i === n - 1) return slope[n - 2];
+		const [a, b] = [slope[i - 1], slope[i]];
+		if (a * b <= 0) return 0;
+		return (3 * (dx[i - 1] + dx[i])) / ((2 * dx[i] + dx[i - 1]) / a + (dx[i] + 2 * dx[i - 1]) / b);
+	});
+	let d = `${xs[0].toFixed(1)},${ys[0].toFixed(1)}`;
+	for (let i = 0; i < n - 1; i++) {
+		const h = dx[i] / 3;
+		d += ` C${(xs[i] + h).toFixed(1)},${(ys[i] + m[i] * h).toFixed(1)} ${(xs[i + 1] - h).toFixed(1)},${(ys[i + 1] - m[i + 1] * h).toFixed(1)} ${xs[i + 1].toFixed(1)},${ys[i + 1].toFixed(1)}`;
+	}
+	return d;
+};
+const xs = points.map((p) => x(p.date));
+const stacked = [(p: (typeof points)[number]) => p.builtIn, (p: (typeof points)[number]) => p.builtIn + p.shipped, (p: (typeof points)[number]) => p.builtIn + p.shipped + p.community];
+const edges = stacked.map((f) => curve(xs, points.map((p) => y(f(p)))));
+const base = curve([...xs].reverse(), xs.map(() => y(0)));
+const reversed = stacked.map((f) => curve([...xs].reverse(), [...points].reverse().map((p) => y(f(p)))));
+// Each layer: its smooth top edge, then back along the top edge of the layer under it.
+const areas = {
+	builtIn: { fill: `M${edges[0]} L${base} Z`, line: `M${edges[0]}` },
+	shipped: { fill: `M${edges[1]} L${reversed[0]} Z`, line: `M${edges[1]}` },
+	community: { fill: `M${edges[2]} L${reversed[1]} Z`, line: `M${edges[2]}` },
+};
+const end = points[points.length - 1];
+// The releases named on the axis: the first, each major version and today.
+const marked = points.filter((p, i) => i === 0 || p.label === 'Today' || /^\d+\.0(\.0)?$/.test(p.label));
+const first = points[0];
+const growth = Math.round((total(counts.all) / Math.max(1, first.builtIn)) * 10) / 10;
+---
+
+<section class:list={['mt-growth', { 'mt-growth--bare': bare }]} data-growth>
+	{!bare && <div class="mt-growth__head">
+		<div>
+			<p class="eyebrow">The checks</p>
+			<h2>
+				{format(total(counts.all))} checks, and more every release.
+			</h2>
+			<p class="mt-growth__lede">
+				{history.releases.length > 0 && <>From {format(first.builtIn)} checks in Maester {first.label} to {format(total(counts.all))} today: {growth}× in {Math.max(1, Math.round((t1 - t0) / (365.25 * 864e5) * 10) / 10)} years. </>}Security experts in the
+				community write the built-in checks, and anyone can publish a pack for what Maester doesn't cover yet.
+			</p>
+		</div>
+	</div>}
+
+	<div class="mt-growth__sources">
+		{
+			sources.map((s) => (
+				<a class={`mt-growth__source mt-growth__source--${s}`} href={s === 'community' ? 'https://packs.maester.cloud' : s === 'shipped' ? '/docs/packs' : '/docs/tests'}>
+					<span class="mt-growth__swatch" aria-hidden="true" />
+					<strong>{format(counts.all[s])}</strong>
+					<span>{labels[s].name}</span>
+					<span class="mt-growth__note">{labels[s].note}</span>
+				</a>
+			))
+		}
+	</div>
+
+	<div class="mt-growth__grid">
+		<figure class="mt-growth__chart">
+			<figcaption>Checks by release</figcaption>
+			<svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Checks by release, from ${first.builtIn} in ${first.label} to ${total(counts.all)} today`}>
+				{
+					ticks.map((n) => (
+						<g>
+							<line x1={pad.l} x2={W - pad.r} y1={y(n)} y2={y(n)} class="mt-growth__gridline" />
+							<text x={pad.l - 8} y={y(n) + 4} text-anchor="end" class="mt-growth__tick">
+								{format(n)}
+							</text>
+						</g>
+					))
+				}
+				{sources.map((s) => <path d={areas[s].fill} class={`mt-growth__fill mt-growth__layer--${s}`} />)}
+				{/* Lines from the top layer down, so where a pack layer is still empty the built-in line shows. */}
+				{[...sources].reverse().map((s) => <path d={areas[s].line} class={`mt-growth__line mt-growth__layer--${s}`} />)}
+				{
+					points.map((p) => (
+						<circle cx={x(p.date)} cy={y(p.builtIn + p.shipped + p.community)} r="9" class="mt-growth__hit">
+							<title>{`${p.label === 'Today' ? 'Today' : `Maester ${p.label}`} (${p.date}): ${format(p.builtIn + p.shipped + p.community)} checks`}</title>
+						</circle>
+					))
+				}
+				<circle cx={x(end.date)} cy={y(end.builtIn + end.shipped + end.community)} r="4.5" class="mt-growth__end" />
+				<text x={x(end.date) - 10} y={y(end.builtIn + end.shipped + end.community) + 5} text-anchor="end" class="mt-growth__endlabel">
+					{format(end.builtIn + end.shipped + end.community)}
+				</text>
+				{
+					marked.map((p, i) => (
+						<text x={x(p.date)} y={H - 8} text-anchor={i === 0 ? 'start' : p.label === 'Today' ? 'end' : 'middle'} class="mt-growth__tick">
+							{p.label === 'Today' ? 'Today' : `v${p.label.replace(/\.0$/, '')}`}
+						</text>
+					))
+				}
+			</svg>
+		</figure>
+
+		<figure class="mt-growth__products">
+			<figcaption>Checks by product</figcaption>
+			<ul>
+				{
+					products.map((p) => (
+						<li>
+							<a href={`/docs/tests/products/${p.key}`}>
+								<span class="mt-growth__pname">
+									{productIcon(p.key) ? <img src={productIcon(p.key)} alt="" width="16" height="16" loading="lazy" /> : <span class="mt-growth__ptile">{productInitials(p.key)}</span>}
+									{p.name}
+								</span>
+								<span class="mt-growth__bar" aria-hidden="true">
+									{sources.map((s) => (
+										<span class={`mt-growth__seg mt-growth__seg--${s}`} style={`width: ${pct(p.all[s])}`} />
+									))}
+								</span>
+								<span class="mt-growth__pn">
+									{format(total(p.all))}
+								</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+			<a class="mt-growth__more" href="/docs/tests">Browse every check →</a>
+		</figure>
+	</div>
+</section>
+
+<style>
+	/* The home page's .wrap, .section, .eyebrow and h2 styles are scoped to index.astro: the same, for this section. */
+	.mt-growth {
+		max-width: 75rem;
+		margin: 0 auto;
+		padding: 3.5rem 1rem;
+		--g-builtIn: var(--mt-ember);
+		--g-shipped: #2563eb;
+		--g-community: #7c3aed;
+	}
+	.mt-growth--bare {
+		padding: 0;
+		max-width: none;
+	}
+	.mt-growth--bare .mt-growth__sources {
+		margin-top: 0;
+	}
+	:global(:root[data-theme='dark']) .mt-growth,
+	:global(.mt-dark-tile) .mt-growth {
+		--g-shipped: #60a5fa;
+		--g-community: #a78bfa;
+	}
+	.mt-growth .eyebrow {
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+		margin: 0 0 0.75rem;
+	}
+	.mt-growth h2 {
+		font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+		letter-spacing: -0.03em;
+		line-height: 1.1;
+		margin: 0 0 0.9rem;
+		max-width: 48rem;
+	}
+	.mt-growth__head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 1rem 2rem;
+	}
+	.mt-growth__head h2 span {
+		font-variant-numeric: tabular-nums;
+	}
+	.mt-growth__lede {
+		font-size: 1.05rem;
+		color: var(--sl-color-gray-2);
+		max-width: 46rem;
+		margin: 0;
+	}
+	.mt-growth__sources {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+		gap: 1rem;
+		margin: 2rem 0 1.5rem;
+	}
+	.mt-growth__source {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		column-gap: 0.6rem;
+		align-items: baseline;
+		padding: 1rem 1.1rem;
+		border: 1px solid var(--mt-line);
+		border-radius: 12px;
+		text-decoration: none;
+		color: inherit;
+		transition: border-color 0.15s;
+	}
+	.mt-growth__source:hover {
+		border-color: var(--sl-color-gray-4);
+	}
+	.mt-growth__swatch {
+		width: 0.7rem;
+		height: 0.7rem;
+		border-radius: 3px;
+		grid-row: span 2;
+		align-self: center;
+	}
+	.mt-growth__source strong {
+		font-size: 1.75rem;
+		letter-spacing: -0.02em;
+		font-variant-numeric: tabular-nums;
+		line-height: 1.1;
+	}
+	.mt-growth__source span:nth-of-type(2) {
+		grid-column: 2;
+		font-weight: 600;
+		font-size: 0.9rem;
+	}
+	.mt-growth__note {
+		grid-column: 2;
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-growth__source--builtIn .mt-growth__swatch {
+		background: var(--g-builtIn);
+	}
+	.mt-growth__source--shipped .mt-growth__swatch {
+		background: var(--g-shipped);
+	}
+	.mt-growth__source--community .mt-growth__swatch {
+		background: var(--g-community);
+	}
+	.mt-growth__grid {
+		display: grid;
+		grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+		gap: 1.5rem;
+	}
+	@media (max-width: 60rem) {
+		.mt-growth__grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	.mt-growth figure {
+		margin: 0;
+		padding: 1rem 1.1rem;
+		border: 1px solid var(--mt-line);
+		border-radius: 12px;
+	}
+	.mt-growth figcaption {
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+		margin-bottom: 0.75rem;
+	}
+	.mt-growth svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+	/* The chart's card is as tall as the product list's: the chart grows to fill it. */
+	.mt-growth__chart {
+		display: flex;
+		flex-direction: column;
+	}
+	.mt-growth__chart svg {
+		flex: 1 1 auto;
+		min-height: 0;
+		height: 100%;
+	}
+	.mt-growth__gridline {
+		stroke: var(--mt-line);
+		stroke-width: 1;
+	}
+	.mt-growth__tick {
+		fill: var(--sl-color-gray-3);
+		font-size: 12px;
+		font-family: var(--sl-font-mono);
+	}
+	.mt-growth__fill {
+		fill: var(--layer);
+		fill-opacity: 0.16;
+		stroke: none;
+	}
+	.mt-growth__line {
+		fill: none;
+		stroke: var(--layer);
+		stroke-width: 2;
+		stroke-linejoin: round;
+		stroke-linecap: round;
+	}
+	.mt-growth__layer--builtIn {
+		--layer: var(--g-builtIn);
+	}
+	.mt-growth__layer--shipped {
+		--layer: var(--g-shipped);
+	}
+	.mt-growth__layer--community {
+		--layer: var(--g-community);
+	}
+	.mt-growth__hit {
+		fill: transparent;
+	}
+	.mt-growth__end {
+		fill: var(--g-community);
+		stroke: var(--sl-color-bg, #fff);
+		stroke-width: 2;
+	}
+	.mt-growth__endlabel {
+		fill: var(--sl-color-white);
+		font-size: 14px;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+	}
+	.mt-growth__products ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0.35rem;
+	}
+	.mt-growth__products li a {
+		display: grid;
+		grid-template-columns: 9.5rem minmax(0, 1fr) 3rem;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.2rem 0.3rem;
+		border-radius: 6px;
+		text-decoration: none;
+		color: inherit;
+		font-size: 0.85rem;
+	}
+	.mt-growth__products li a:hover {
+		background: var(--sl-color-gray-6);
+	}
+	.mt-growth__pname {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		min-width: 0;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.mt-growth__ptile {
+		display: inline-grid;
+		place-items: center;
+		width: 16px;
+		height: 16px;
+		border-radius: 4px;
+		background: var(--sl-color-gray-5);
+		font-size: 0.55rem;
+		font-weight: 700;
+	}
+	.mt-growth__bar {
+		display: flex;
+		gap: 2px;
+		height: 0.7rem;
+	}
+	.mt-growth__seg {
+		height: 100%;
+		border-radius: 2px;
+		transition: width 0.2s;
+	}
+	.mt-growth__seg--builtIn {
+		background: var(--g-builtIn);
+	}
+	.mt-growth__seg--shipped {
+		background: var(--g-shipped);
+	}
+	.mt-growth__seg--community {
+		background: var(--g-community);
+	}
+	.mt-growth__pn {
+		text-align: end;
+		font-family: var(--sl-font-mono);
+		font-variant-numeric: tabular-nums;
+		color: var(--sl-color-gray-2);
+	}
+	.mt-growth__more {
+		display: inline-block;
+		margin-top: 0.8rem;
+		font-size: 0.9rem;
+	}
+</style>

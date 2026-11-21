@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     $script:RepoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
     $script:Generator = Join-Path $script:RepoRoot 'build/orca/Update-OrcaTests.ps1'
     $script:CommittedRoot = Join-Path $script:RepoRoot 'tests/orca'

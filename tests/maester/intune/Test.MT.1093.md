@@ -1,4 +1,4 @@
-﻿This test checks if the Apple ADE token is valid and not expired. The Apple Automated Device Enrollment (ADE) token is required to synchronize Apple devices with Microsoft Intune.
+This test checks if the Apple ADE token is valid and not expired. The Apple Automated Device Enrollment (ADE) token is required to synchronize Apple devices with Microsoft Intune.
 The token has a lifetime of one year and needs to be renewed to allow synchronization.
 
 #### Remediation action

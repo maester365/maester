@@ -1,4 +1,4 @@
-﻿Verify that script scanning is enabled to block malicious scripts.
+Verify that script scanning is enabled to block malicious scripts.
 
 Disabled script scanning allows malicious PowerShell, JavaScript, and VBScript execution.
 

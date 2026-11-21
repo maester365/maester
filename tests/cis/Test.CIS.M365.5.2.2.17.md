@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy blocks the authentication transfer flow for all users and all cloud apps.
+An enabled Conditional Access policy blocks the authentication transfer flow for all users and all cloud apps.
 
 Authentication transfer lets a signed-in session on one device start a session on another device, for example from a desktop browser to a mobile app. The second device inherits the trust of the first without its own sign-in, which attackers can abuse by getting a victim to scan a QR code.
 

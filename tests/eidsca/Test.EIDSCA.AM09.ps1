@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAM09 {
+﻿function Test-MtCheckEidscaAM09 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Show geographic location in push and passwordless notifications is 'enabled'

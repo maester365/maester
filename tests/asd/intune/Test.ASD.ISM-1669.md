@@ -1,4 +1,4 @@
-﻿Microsoft Office is blocked from injecting code into other processes (ISM-1669, Essential Eight Maturity Level Two, User application hardening).
+Microsoft Office is blocked from injecting code into other processes (ISM-1669, Essential Eight Maturity Level Two, User application hardening).
 
 Injecting code into another process lets a macro hide its activity behind a trusted program and evade controls that watch Office. No legitimate document needs it. This check reads the attack surface reduction rules of every Intune Windows configuration policy (Endpoint security and settings catalog policies share the same setting definitions) and passes when an assigned policy sets **Block Office applications from injecting code into other processes** to **Block**. Audit and Warn only report the behaviour and do not satisfy the control.
 

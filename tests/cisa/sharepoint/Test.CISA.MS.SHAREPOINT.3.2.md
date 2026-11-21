@@ -1,4 +1,4 @@
-﻿Allowable file and folder permissions for Anyone links SHALL be set to View only.
+Allowable file and folder permissions for Anyone links SHALL be set to View only.
 
 Rationale: Allowing edit permissions on Anyone links increases the risk of unauthorized modifications to shared content. Restricting to View only limits the potential impact of anonymous access.
 

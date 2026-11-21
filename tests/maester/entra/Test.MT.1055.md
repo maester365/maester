@@ -1,4 +1,4 @@
-﻿This test checks if Microsoft 365 Group creation is restricted to approved users.
+This test checks if Microsoft 365 Group creation is restricted to approved users.
 
 By default, all users in the tenant can create Microsoft 365 Groups. This can lead to group sprawl, security risks and compliance issues.
 

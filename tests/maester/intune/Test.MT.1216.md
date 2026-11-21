@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** macOS compliance policy requires a Microsoft Defender machine risk score level.
+Ensure at least one **assigned** macOS compliance policy requires a Microsoft Defender machine risk score level.
 
 Microsoft Defender for Endpoint calculates a machine risk score for every onboarded device based on its active alerts and detections. Intune compliance policy can consume that score through **Require the device to be at or under the machine risk score**, so a Mac whose risk rises above an accepted threshold is marked non-compliant and can then be blocked by Conditional Access.
 

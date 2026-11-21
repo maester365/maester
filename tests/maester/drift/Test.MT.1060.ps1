@@ -1,4 +1,4 @@
-function Get-MtDriftFolderInstance {
+﻿function Get-MtDriftFolderInstance {
     <#
     .SYNOPSIS
     Returns four MT.1060 instances per drift folder.

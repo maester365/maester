@@ -1,4 +1,4 @@
-function Get-MtLdapRangedValue {
+﻿function Get-MtLdapRangedValue {
     [CmdletBinding()]
     [OutputType([object[]])]
     param(

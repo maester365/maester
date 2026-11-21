@@ -1,4 +1,4 @@
-﻿This test identifies Microsoft Entra ID Governance access packages that contain assignment policies which are disabled, misconfigured, or orphaned. Inactive or misconfigured policies prevent users from successfully requesting access and can break automated provisioning workflows.
+This test identifies Microsoft Entra ID Governance access packages that contain assignment policies which are disabled, misconfigured, or orphaned. Inactive or misconfigured policies prevent users from successfully requesting access and can break automated provisioning workflows.
 
 The test validates:
 - Policies are in "published" state and active

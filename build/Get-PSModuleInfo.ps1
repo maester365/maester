@@ -1,4 +1,4 @@
-param
+﻿param
 (
     # Path to Module Manifest
     [parameter(Mandatory = $false)]

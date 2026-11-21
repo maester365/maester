@@ -1,4 +1,4 @@
-﻿Mailbox auditing SHALL be enabled.
+Mailbox auditing SHALL be enabled.
 
 Rationale: Exchange Online user accounts can be compromised or misused. Enabling mailbox auditing provides a valuable source of information to detect and respond to mailbox misuse.
 

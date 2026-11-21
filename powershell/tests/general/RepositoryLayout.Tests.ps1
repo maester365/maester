@@ -1,4 +1,4 @@
-# Guards the repository layout described in website/docs/contributing.md#repository-layout and AGENTS.md.
+﻿# Guards the repository layout described in website/docs/contributing.md#repository-layout and AGENTS.md.
 # When a rule here fails, move or rename the file to fit the layout. Change a rule only together with the guide.
 BeforeDiscovery {
     $script:RepoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
@@ -22,7 +22,7 @@ BeforeAll {
     )
     # Areas of the maester suite that are not a service.
     $script:MaesterAreas = @('drift')
-    $script:Suites = @('ad', 'asd', 'cis', 'cisa', 'custom', 'eidsca', 'maester', 'orca')
+    $script:Suites = @('ad', 'asd', 'cis', 'cisa', 'custom', 'disa', 'eidsca', 'maester', 'orca')
     $script:PublicGroups = @('app', 'connect', 'packs', 'report', 'run', 'services')
     $script:InternalGroups = @('app', 'checks', 'connect', 'engine', 'generated', 'packs', 'report', 'services', 'session', 'utility')
     $script:KebabCase = '^[a-z0-9]+(-[a-z0-9]+)*$'

@@ -1,4 +1,4 @@
-﻿Meeting recordings can capture confidential discussion, shared screens and personal information. While recording is allowed, anyone with recording permission can start one, and the recording is then stored and shared under the organization's retention rules.
+Meeting recordings can capture confidential discussion, shared screens and personal information. While recording is allowed, anyone with recording permission can start one, and the recording is then stored and shared under the organization's retention rules.
 
 Turning meeting recording off in the Global policy means nobody who has that policy can record a meeting. Users who need to record are assigned a separate meeting policy that allows it, so the permission is given on purpose instead of to everyone by default.
 

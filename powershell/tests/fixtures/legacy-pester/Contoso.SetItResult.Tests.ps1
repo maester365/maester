@@ -1,4 +1,4 @@
-# Legacy Pester fixture: Set-ItResult -Skipped and -Inconclusive inside the test body.
+﻿# Legacy Pester fixture: Set-ItResult -Skipped and -Inconclusive inside the test body.
 Describe "Contoso conditional results" -Tag "Contoso" {
     It "CONTOSO.5001: Skipped from inside the body" -Tag "CONTOSO.5001" {
         $licensed = $false

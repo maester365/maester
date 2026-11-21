@@ -69,6 +69,11 @@ When a test recorded an object, the HTML report has an **Affected objects** page
 passed or failed for each object and a link to open it in the admin portal. A run whose tests recorded
 no objects has no such page.
 
+Tests and packs can also describe an object with [`Add-MtAffectedObjectFact`](commands/Add-MtAffectedObjectFact.mdx):
+its last sign-in, its permissions, its expired secrets. Those facts are shown when the object's row is expanded, and
+each record lists them under `Facts`. See
+[Adding facts about an object](writing-tests/formatting-test-results.md#adding-facts-about-an-object).
+
 With `-OutputFolder`, the list is also written next to the other reports as
 `<name>-affected-objects.json`, and `-ExportCsv` adds `<name>-affected-objects.csv`. Neither file is
 written when the list is empty.

@@ -1,4 +1,4 @@
-﻿User accounts, except for break glass accounts, are protected by fixed or risk-based lockout mechanisms aligned to a maximum of five failed logon attempts, with either indefinite or automated lockout durations (ISM-1403, Guidelines for system access).
+User accounts, except for break glass accounts, are protected by fixed or risk-based lockout mechanisms aligned to a maximum of five failed logon attempts, with either indefinite or automated lockout durations (ISM-1403, Guidelines for system access).
 
 Online password guessing is cheap: an attacker who can try ten passwords per account before a lockout gets ten chances at every account in the tenant. Microsoft Entra smart lockout counts failed sign-ins per account, locks the account for the lockout duration when the threshold is reached, and counts familiar and unfamiliar locations separately so that a user at their usual desk is not locked out by an attacker elsewhere.
 

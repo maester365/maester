@@ -1,4 +1,4 @@
-﻿By default Microsoft Entra ID allows service principals and applications to be configured with weak credentials.
+By default Microsoft Entra ID allows service principals and applications to be configured with weak credentials.
 
 This can include
 

@@ -1,4 +1,4 @@
-﻿This test checks if there are any Conditional Access policies that target deleted security groups.
+This test checks if there are any Conditional Access policies that target deleted security groups.
 
 This usually happens when a group is deleted but is still referenced in a Conditional Access policy.
 

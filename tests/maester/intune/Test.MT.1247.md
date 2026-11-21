@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** Android app protection policy requires a minimum OS and app version.
+Ensure at least one **assigned** Android app protection policy requires a minimum OS and app version.
 
 On an unenrolled phone, the **conditional launch** rules of an app protection policy are the only lever the organization has over how old the platform underneath its data is allowed to be. There is no compliance evaluation, no update ring and no device inventory: either the policy refuses to open the app on an outdated Android or app version, or it does not.
 

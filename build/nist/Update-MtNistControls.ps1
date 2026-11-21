@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Refreshes the pinned list of NIST SP 800-53 Rev. 5 controls (powershell/assets/MaesterNistControls.json).
 

@@ -1,4 +1,4 @@
-function Get-MtBuiltInPack {
+﻿function Get-MtBuiltInPack {
     <#
     .SYNOPSIS
     Returns the packs that ship with Maester: every folder under packs/ that holds a maester-pack.json.

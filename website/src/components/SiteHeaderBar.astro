@@ -1,0 +1,191 @@
+---
+// The site's top bar: logo, the main menu, and Sponsor, GitHub and the theme. The pages outside the docs and the
+// docs header both use it, so the two never drift. The `tools` slot adds buttons before Sponsor (the docs put search
+// there on phones).
+import ThemeToggle from './ThemeToggle.astro';
+import { isCurrentNav, siteNav } from '../lib/site-nav';
+
+interface Props {
+	/** The page's path, to mark the menu item it belongs to. */
+	path: string;
+}
+
+const { path } = Astro.props;
+const nav = siteNav;
+const isCurrent = (href: string) => isCurrentNav(path, href);
+---
+
+<div class="site-header__inner">
+	<a href="/" class="site-logo" aria-label="Maester home">
+		<img src="/img/logo.svg" alt="" width="28" height="28" />
+		<span>Maester</span>
+	</a>
+	<nav aria-label="Main" class="site-nav">
+		{nav.map((item) => <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>)}
+	</nav>
+	<div class="site-header__right">
+		<slot name="tools" />
+		<a class="site-btn site-btn--ghost site-sponsor" href="/sponsor">
+			<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="#db2777" d="M8 14.25s-6-3.6-6-8.1C2 3.8 3.7 2.5 5.4 2.5c1.2 0 2.1.7 2.6 1.6.5-.9 1.4-1.6 2.6-1.6 1.7 0 3.4 1.3 3.4 3.65 0 4.5-6 8.1-6 8.1z"></path></svg>
+			Sponsor
+		</a>
+		<a class="site-icon-btn" href="https://github.com/maester365/maester" aria-label="Maester on GitHub" title="Maester on GitHub">
+			<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0C17.6 4.7 18.6 5 18.6 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5z"></path></svg>
+		</a>
+		<ThemeToggle />
+		<details class="site-menu">
+			<summary class="site-btn site-btn--ghost" aria-label="Menu">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+			</summary>
+			<nav class="site-menu__panel" aria-label="Main">
+				{nav.map((item) => <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>)}
+				<a href="/sponsor">Sponsor</a>
+				<a href="https://github.com/maester365/maester">GitHub</a>
+			</nav>
+		</details>
+	</div>
+</div>
+
+<style is:global>
+	.site-header__inner {
+		line-height: 1.5;
+		max-width: 75rem;
+		margin: 0 auto;
+		padding: 0.75rem 1rem;
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+	}
+	.site-logo {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		font-weight: 700;
+		font-size: 1.05rem;
+		color: var(--sl-color-white);
+		text-decoration: none;
+	}
+	.site-logo img {
+		border-radius: 7px;
+	}
+	.site-nav {
+		display: flex;
+		gap: 1.25rem;
+		flex: 1 1 auto;
+		font-size: 0.875rem;
+	}
+	.site-nav a {
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+	}
+	.site-nav a:hover,
+	.site-nav a[aria-current='page'] {
+		color: var(--sl-color-white);
+	}
+	.site-header__right {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.site-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		border-radius: 10px;
+		padding: 0.5rem 0.85rem;
+		font: inherit;
+		font-size: 0.875rem;
+		font-weight: 600;
+		text-decoration: none;
+		cursor: pointer;
+		border: 1px solid transparent;
+		white-space: nowrap;
+	}
+	.site-btn--primary {
+		background: var(--sl-color-white);
+		color: var(--sl-color-black);
+	}
+	.site-btn--primary:hover {
+		opacity: 0.9;
+	}
+	/* An icon on its own in the header (GitHub, the theme): no box, quiet until hovered. */
+	.site-icon-btn {
+		display: inline-grid;
+		place-items: center;
+		width: 2.1rem;
+		height: 2.1rem;
+		border-radius: 9px;
+		color: var(--sl-color-gray-3);
+		transition: color 0.2s, background 0.2s;
+	}
+	.site-icon-btn:hover {
+		color: var(--sl-color-white);
+		background: var(--sl-color-gray-6);
+	}
+	.site-btn--ghost {
+		background: transparent;
+		color: var(--sl-color-white);
+		border-color: var(--mt-line);
+	}
+	.site-btn--ghost:hover {
+		border-color: var(--sl-color-gray-4);
+	}
+	/* Menu for narrow screens, where the main navigation is hidden */
+	.site-menu {
+		display: none;
+		position: relative;
+	}
+	.site-menu summary {
+		list-style: none;
+		padding: 0.5rem 0.6rem;
+	}
+	.site-menu summary::-webkit-details-marker {
+		display: none;
+	}
+	.site-menu__panel {
+		position: absolute;
+		right: 0;
+		top: calc(100% + 8px);
+		min-width: 14rem;
+		display: flex;
+		flex-direction: column;
+		background: var(--sl-color-black);
+		border: 1px solid var(--mt-line);
+		border-radius: 12px;
+		padding: 0.4rem;
+		box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.45);
+		z-index: 60;
+	}
+	.site-menu__panel a {
+		color: var(--sl-color-white);
+		text-decoration: none;
+		padding: 0.65rem 0.8rem;
+		border-radius: 8px;
+		font-size: 0.95rem;
+	}
+	.site-menu__panel a:hover,
+	.site-menu__panel a[aria-current='page'] {
+		background: var(--sl-color-gray-6);
+	}
+	@media (max-width: 64rem) {
+		.site-nav {
+			display: none;
+		}
+		.site-menu {
+			display: block;
+		}
+		.site-header__right {
+			margin-inline-start: auto;
+		}
+	}
+	@media (max-width: 40rem) {
+		.site-hide-sm,
+		.site-sponsor,
+		.site-header__right > a[href*='github.com'] {
+			display: none;
+		}
+		.site-header__inner {
+			gap: 0.75rem;
+		}
+	}
+</style>

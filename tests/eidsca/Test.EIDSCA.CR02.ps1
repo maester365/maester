@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaCR02 {
+﻿function Test-MtCheckEidscaCR02 {
     <#
     .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests is 'true'

@@ -125,9 +125,8 @@
         foreach ($Item in $SponsorlessObjects) {
             $DisplayName = [string]$Item.DisplayName
             if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
-            $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
-            $DisplayName = $DisplayName -replace "`r?`n", ' '
-            $Reason = [System.Net.WebUtility]::HtmlEncode([string]$Item.Reason) -replace '\|', '&#124;'
+            $DisplayName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($DisplayName))
+            $Reason = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.Reason))
             $Result += "`n| $($Item.ObjectId) | $DisplayName | $($Item.ObjectType) | $Reason |"
         }
 

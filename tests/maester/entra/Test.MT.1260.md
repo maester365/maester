@@ -1,10 +1,10 @@
-﻿High-risk users should not be left unremediated in Entra ID Protection.
+High-risk users should not be left unremediated in Entra ID Protection.
 
 Entra ID Protection rates a user's risk and tracks a risk state for each flagged user. A high-risk flag only clears when the risk is remediated, for example by a password reset, or when an admin dismisses it or confirms the user safe. Until then the account stays exposed: the signals that triggered the flag have not been addressed.
 
 This check reports users whose risk level is **high** and whose risk state is still active and unremediated (`atRisk` or `confirmedCompromised`). States that represent a handled flag (`remediated`, `dismissed`, `confirmedSafe`, `none`) are not reported. The check reads risk only and never changes a user's risk state.
 
-If a reported user holds a privileged directory role, active or PIM-eligible, the result lists the role and the severity is raised to High, since a compromised admin account puts the whole tenant at risk.
+If a reported user holds a privileged directory role, active or PIM-eligible, the result lists the role and shows that entry first, since a compromised admin account puts the whole tenant at risk.
 
 The check needs the Microsoft Graph permission `IdentityRiskyUser.Read.All`, which Maester does not request by default. Without it the check is skipped. Connect with `Connect-Maester -IncludePreview`, or grant the permission to the app registration that runs Maester.
 

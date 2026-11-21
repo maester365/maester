@@ -1,4 +1,4 @@
-function Request-MtGitHubAppOrganizationInstall {
+﻿function Request-MtGitHubAppOrganizationInstall {
     <#
     .SYNOPSIS
     Guides an interactive user through installing or approving the Maester GitHub App for an organization.

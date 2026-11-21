@@ -1,4 +1,4 @@
-﻿Emails identified as containing malware SHALL be quarantined or dropped.
+Emails identified as containing malware SHALL be quarantined or dropped.
 
 Rationale: Email can be used as a mechanism for delivering malware. Preventing emails with known malware from reaching user mailboxes helps ensure users cannot interact with those emails.
 

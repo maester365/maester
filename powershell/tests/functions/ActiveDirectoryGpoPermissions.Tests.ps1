@@ -1,4 +1,4 @@
-BeforeDiscovery {
+﻿BeforeDiscovery {
     # The native tests that read the permission summary of Get-MtADGpoState. Finding is the GPO permission
     # profile (see New-TestGpo) that the test must flag.
     $script:permissionTests = @(

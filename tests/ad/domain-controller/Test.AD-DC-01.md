@@ -1,4 +1,4 @@
-﻿Active Directory sites are used to define the physical topology of your network and optimize authentication traffic. Understanding site coverage helps ensure:
+Active Directory sites are used to define the physical topology of your network and optimize authentication traffic. Understanding site coverage helps ensure:
 
 - **Geographic redundancy**: Authentication services are available in all locations
 - **Network efficiency**: Clients authenticate to the nearest DC

@@ -1,4 +1,4 @@
-﻿Detailed visibility into potential honey pot style users helps separate intentional deception assets from legacy, misleading, or risky accounts.
+Detailed visibility into potential honey pot style users helps separate intentional deception assets from legacy, misleading, or risky accounts.
 
 - **Deception validation**: Confirm lure accounts are intentional and monitored.
 - **Operational clarity**: Distinguish test or stale accounts from active users.

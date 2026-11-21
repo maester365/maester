@@ -1,4 +1,4 @@
-function Get-MtSuiteFramework {
+﻿function Get-MtSuiteFramework {
     <#
     .SYNOPSIS
     Reads the frameworks a suite.json declares and their framework files (test attribute design, section 6).
@@ -297,4 +297,53 @@ function Get-MtLoadedFramework {
     )
 
     if ($Suite -is [pscustomobject] -and $Suite.PSObject.Properties['LoadedFrameworks']) { $Suite.LoadedFrameworks }
+}
+
+function Register-MtTestFrameworkIndex {
+    <#
+    .SYNOPSIS
+    Keeps the frameworks a family test's instances can name, by the test's file.
+
+    .DESCRIPTION
+    Discovery resolves a test's Control against the frameworks it can see (Get-MtFrameworkIndex): the ones
+    shipped with Maester and those of the test's own suites. A family's instances exist only at run time, so
+    Complete-MtNativeTest keeps that index here, and Get-MtTestFrameworkIndex returns it when an instance sets
+    its own Control. A later discovery of the same file replaces it.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [string] $File,
+        [Parameter(Mandatory)] [object] $Index
+    )
+
+    if ($null -eq $script:__MtTestFrameworkIndex) { $script:__MtTestFrameworkIndex = @{} }
+    $script:__MtTestFrameworkIndex[$File] = $Index
+}
+
+function Get-MtTestFrameworkIndex {
+    <#
+    .SYNOPSIS
+    Returns the frameworks a family instance's Control can refer to.
+
+    .DESCRIPTION
+    The index that discovery used for the family's own Control (Register-MtTestFrameworkIndex). A test that did not
+    pass through discovery in this session, such as a row of the shipped catalogue, gets the frameworks shipped
+    with Maester (Get-MtBuiltInFramework), which is what discovery gave it.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [Parameter()] [AllowNull()] [object] $Test
+    )
+
+    $file = if ($Test -and $Test.PSObject.Properties['File']) { [string]$Test.File } else { $null }
+    if ($file -and $script:__MtTestFrameworkIndex -and $script:__MtTestFrameworkIndex.ContainsKey($file)) { return $script:__MtTestFrameworkIndex[$file] }
+
+    # Built once for the frameworks shipped with Maester, and again when those are read again.
+    $null = Get-MtBuiltInFramework
+    $builtIn = $script:__MtBuiltInFramework
+    if (-not $script:__MtBuiltInFrameworkIndex -or -not [object]::ReferenceEquals($script:__MtBuiltInFrameworkIndex.Source, $builtIn)) {
+        $script:__MtBuiltInFrameworkIndex = [pscustomobject]@{ Source = $builtIn; Index = Get-MtFrameworkIndex -WarningAction SilentlyContinue }
+    }
+    $script:__MtBuiltInFrameworkIndex.Index
 }

@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
     Generates the Maester 2.x tag table (Maester.LegacyTags.json) from the frozen tag snapshots.
 

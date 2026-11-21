@@ -1,4 +1,4 @@
-﻿This test checks if any app registration has a certificate or secret that is expired or about to expire.
+This test checks if any app registration has a certificate or secret that is expired or about to expire.
 
 An expired credential can no longer authenticate, but it stays on the app registration until someone removes it. Expired credentials accumulate over time, obscure which credential a workload actually uses, and make it harder to notice one that was added by an attacker. Microsoft Entra recommends removing unused credentials from applications for exactly that reason.
 

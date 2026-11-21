@@ -1,4 +1,4 @@
-function Get-MtMaesterConfig {
+﻿function Get-MtMaesterConfig {
     <#
     .SYNOPSIS
     Reads the Maester config with the Maester 2.x rules.

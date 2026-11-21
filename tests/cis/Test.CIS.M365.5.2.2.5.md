@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy requires the phishing-resistant MFA authentication strength for the administrative roles.
+An enabled Conditional Access policy requires the phishing-resistant MFA authentication strength for the administrative roles.
 
 Push notifications, SMS and one-time codes can be relayed by an adversary-in-the-middle phishing site. Phishing-resistant methods bind the sign-in to the real site, so a relayed prompt does not work. Administrators are the highest-value targets, so they are the first accounts to move to these methods.
 

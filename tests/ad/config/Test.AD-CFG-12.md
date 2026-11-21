@@ -1,4 +1,4 @@
-﻿Enterprise Certification Authorities (CAs) issue certificates for domain authentication and other PKI-dependent services. An unauthorized or newly introduced Enterprise CA can issue valid certificates that authenticate users/computers, enabling impersonation, man-in-the-middle attacks, and potential privilege escalation.
+Enterprise Certification Authorities (CAs) issue certificates for domain authentication and other PKI-dependent services. An unauthorized or newly introduced Enterprise CA can issue valid certificates that authenticate users/computers, enabling impersonation, man-in-the-middle attacks, and potential privilege escalation.
 
 #### Control Type
 

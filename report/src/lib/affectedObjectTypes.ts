@@ -14,6 +14,10 @@ const knownTypes: Record<string, [name: string, icon: string]> = {
   Group: ["Group", "group"],
   ServicePrincipal: ["Enterprise application", "enterprise-app"],
   AppRegistration: ["App registration", "app-registration"],
+  AgentIdentity: ["Agent identity", "enterprise-app"],
+  AgentIdentityBlueprint: ["Agent identity blueprint", "app-registration"],
+  AgentIdentityBlueprintPrincipal: ["Agent blueprint principal", "enterprise-app"],
+  ConfigurationPolicy: ["Configuration policy", "intune"],
   DirectoryRole: ["Directory role", "directory-role"],
   AccessPackage: ["Access package", "identity-governance"],
   AccessPackageCatalog: ["Access package catalog", "identity-governance"],
@@ -24,6 +28,7 @@ const knownTypes: Record<string, [name: string, icon: string]> = {
 const systemNames: Record<string, string> = {
   EntraID: "Entra ID",
   ExchangeOnline: "Exchange Online",
+  Intune: "Intune",
   MicrosoftGraph: "Microsoft Graph",
 }
 

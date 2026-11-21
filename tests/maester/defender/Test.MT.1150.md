@@ -1,4 +1,4 @@
-﻿Verify that cloud protection is enabled for real-time threat intelligence.
+Verify that cloud protection is enabled for real-time threat intelligence.
 
 Disabled cloud protection reduces real-time threat detection and response capabilities.
 

@@ -1,4 +1,4 @@
-﻿- Understanding DNS zone distribution across domain computers helps identify network topology, disjoint namespace configurations, and potential DNS-related security issues.
+- Understanding DNS zone distribution across domain computers helps identify network topology, disjoint namespace configurations, and potential DNS-related security issues.
 
 **Security and Operational Insights:**
 - **Disjoint Namespaces**: Multiple DNS zones may indicate disjoint namespace configurations

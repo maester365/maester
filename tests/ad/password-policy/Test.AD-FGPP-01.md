@@ -1,4 +1,4 @@
-﻿Fine-grained password policies (FGPP) provide critical flexibility for security-conscious organizations:
+Fine-grained password policies (FGPP) provide critical flexibility for security-conscious organizations:
 
 * **Privileged account protection**: Apply stricter password policies to administrators and service accounts
 * **Risk-based policies**: Different policies for different risk levels (e.g., IT admins vs. regular users)

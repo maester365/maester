@@ -1,4 +1,4 @@
-﻿Foreign security principals (FSPs) represent security principals from trusted external domains or forests. Understanding their distribution is important because:
+Foreign security principals (FSPs) represent security principals from trusted external domains or forests. Understanding their distribution is important because:
 
 - **Trust visibility**: Identifies external trusts that may have been forgotten or are no longer needed
 - **Security boundaries**: Helps assess the blast radius if an external domain is compromised

@@ -85,9 +85,55 @@
     "Guide": {
       "description": "A JSON file in the pack that says how to install, connect and run it, for its page on packs.maester.cloud. See https://maester.dev/schemas/maester-pack-guide-1.0.json.",
       "allOf": [{ "$ref": "#/$defs/relativePath" }, { "pattern": "\\.json$" }]
+    },
+    "Settings": {
+      "description": "The GlobalSettings keys the pack reads, each named Namespace.Key. Maester checks the run config against them, returns Default from Get-MtSetting when the config does not set one, and lets a pack test bind one with [MaesterParameter(Setting = 'Namespace.Key')]. See https://maester.dev/docs/packs/writing-a-pack#settings.",
+      "type": "object",
+      "propertyNames": { "pattern": "^[A-Za-z][A-Za-z0-9]*(\\.[A-Za-z][A-Za-z0-9]*)+$" },
+      "additionalProperties": {
+        "type": "object",
+        "required": ["Type"],
+        "properties": {
+          "Type": { "enum": ["int", "bool", "string", "string[]", "object", "object[]"] },
+          "Default": { "description": "The value Get-MtSetting returns when the config does not set the setting." },
+          "Description": { "type": "string" },
+          "AllowedValues": { "description": "The values a string or string[] setting accepts.", "type": "array", "items": { "type": "string" } },
+          "Kind": { "description": "What a string holds, for example Entra.Group, so a user interface can offer a picker.", "type": "string" },
+          "Sensitive": { "description": "The value is redacted in the results.", "type": "boolean" }
+        }
+      }
+    },
+    "Report": {
+      "description": "How the pack appears in the Maester report. See https://maester.dev/docs/packs/writing-a-pack#the-packs-menu-in-the-report.",
+      "type": "object",
+      "properties": {
+        "Logo": { "description": "A mark the report draws in the pack's page header instead of its Code: 'microsoft', or a product key such as 'entra'. The report draws it itself and loads no image from the pack.", "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+        "Navigation": {
+          "description": "The pack's menu in the report. Each entry is a row (Title) or a section heading (Section) that opens one of the report's built-in views; any entry can hold Items, to any depth. Without it, the report builds a menu from the pack's tests.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/navEntry" }
+        }
+      }
     }
   },
   "$defs": {
+    "navEntry": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "string", "description": "The entry's part of the page's link. Defaults to the Title or Section in lower case with dashes." },
+        "Title": { "type": "string", "description": "A row in the menu." },
+        "Section": { "type": "string", "description": "A heading in the menu. Its rows are its Items, or the rows its view expands to." },
+        "View": { "enum": ["pack", "tests", "plan", "attachment", "guide", "about"], "description": "pack: the pack's overview. tests: the pack's tests. plan: a JSON attachment drawn by a view the report ships. attachment: an HTML report the pack attached. guide: a page of the pack's guide. about: publisher, version and links." },
+        "Attachment": { "type": "string", "description": "For plan and attachment: the Name the pack gave Add-MtReportAttachment." },
+        "Expand": { "type": "array", "items": { "type": "string" }, "description": "For plan: the levels to list in the menu, such as [\"pillars\", \"areas\", \"lanes\"]." },
+        "GroupBy": { "type": "array", "items": { "type": "string" }, "description": "For tests: names of the tests' Fields, one menu level each, such as [\"Pillar\", \"Category\"]." },
+        "Result": { "type": "string", "description": "For tests: only tests with this result, such as Failed." },
+        "Filter": { "type": "object", "additionalProperties": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] }, "description": "For tests: only tests whose Fields have these values." },
+        "Page": { "enum": ["start", "connect", "run"], "description": "For guide: the page of the guide file to show." },
+        "Items": { "type": "array", "items": { "$ref": "#/$defs/navEntry" }, "description": "Entries nested under this one." }
+      },
+      "oneOf": [{ "required": ["Title"] }, { "required": ["Section"] }]
+    },
     "relativePath": {
       "type": "string",
       "minLength": 1,

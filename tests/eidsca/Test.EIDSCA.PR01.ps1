@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaPR01 {
+﻿function Test-MtCheckEidscaPR01 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Password Protection - Mode is 'Enforce'

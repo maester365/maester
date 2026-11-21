@@ -82,14 +82,12 @@
             }
         }
 
-        if (!$isBatch -and $isMethodGet) {
+        # A caller that asked to skip the cache skips it in both directions. Writing the response
+        # anyway would leave an entry for the next caller to be served, which is what the switch is
+        # there to avoid, and it is how nextLink pages ended up in the cache: the paging loop reads
+        # them with the cache off precisely because a skip token is not always unique.
+        if (!$DisableCache -and !$isBatch -and ($isMethodGet -or $isXdrQuery)) {
             # Update cache
-            if ($isInCache) {
-                $__MtSession.GraphCache[$cacheKey] = $results
-            } else {
-                $__MtSession.GraphCache.Add($cacheKey, $results)
-            }
-        } elseif ($isXdrQuery) {
             if ($isInCache) {
                 $__MtSession.GraphCache[$cacheKey] = $results
             } else {

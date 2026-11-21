@@ -1,4 +1,4 @@
-﻿AD-based activation objects are used by Windows for volume activation and related discovery workflows. If these objects are created, deleted, or altered without authorization, it can indicate licensing/tampering activity and may also reflect broader Active Directory compromise or unauthorized configuration changes.
+AD-based activation objects are used by Windows for volume activation and related discovery workflows. If these objects are created, deleted, or altered without authorization, it can indicate licensing/tampering activity and may also reflect broader Active Directory compromise or unauthorized configuration changes.
 
 #### Control Type
 

@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** iOS app protection policy encrypts organization data.
+Ensure at least one **assigned** iOS app protection policy encrypts organization data.
 
 App protection encryption puts the organization's data in the managed apps under a key the Intune App SDK controls, separately from whatever the user has done with the device. On an unenrolled phone the organization cannot require a device passcode, and iOS data protection is only as strong as the passcode behind it: a device with no passcode gives little protection to files at rest.
 

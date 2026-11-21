@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** iOS compliance policy requires a Microsoft Defender machine risk score level.
+Ensure at least one **assigned** iOS compliance policy requires a Microsoft Defender machine risk score level.
 
 Microsoft Defender for Endpoint on iOS calculates a machine risk score for every onboarded device from what it detects on it: malicious or phishing web traffic, a jailbreak, a known bad app, an unsafe network. Intune compliance policy consumes that verdict through **Require the device to be at or under the machine risk score**, so an iPhone whose risk rises above an accepted threshold is marked non-compliant and can then be blocked by Conditional Access.
 

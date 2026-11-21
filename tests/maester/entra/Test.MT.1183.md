@@ -1,4 +1,4 @@
-﻿Checks if the temporary bypass for onPremisesObjectIdentifier updates is disabled
+Checks if the temporary bypass for onPremisesObjectIdentifier updates is disabled
 
 Starting July 1, 2026, Microsoft Entra ID adds extra protections for hard match operations during on-premises directory synchronization. These protections help prevent an on-premises Active Directory object from taking over the wrong cloud account when the target account is risky to reassociate. A hard match can be blocked when the target cloud account already has onPremisesObjectIdentifier set, is assigned a privileged Microsoft Entra role, or is eligible for a privileged Microsoft Entra role.
 

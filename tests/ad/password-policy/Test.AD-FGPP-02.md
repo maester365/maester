@@ -1,4 +1,4 @@
-﻿Understanding the variation in fine-grained password policy settings helps you:
+Understanding the variation in fine-grained password policy settings helps you:
 
 - **Identify inconsistencies**: Spot policies that may be too lenient or too strict
 - **Validate policy design**: Ensure you have appropriate differentiation between user types

@@ -1,4 +1,4 @@
-function Get-MtPesterRowAnnotation {
+﻿function Get-MtPesterRowAnnotation {
     <#
     .SYNOPSIS
     Computes the 3.0 fields of a result row produced by the Pester provider (design section 9).

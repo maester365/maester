@@ -1,4 +1,4 @@
-function Merge-MtPartitionResult {
+﻿function Merge-MtPartitionResult {
     <#
     .SYNOPSIS
     Merges the partial results of one run split across processes or containers (design section 13.1).

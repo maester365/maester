@@ -1,4 +1,4 @@
-function Test-MtExoMoeraMailActivity {
+﻿function Test-MtExoMoeraMailActivity {
     <#
     .SYNOPSIS
         Checks the sent mail activity for MOERA addresses in the past 7 days.

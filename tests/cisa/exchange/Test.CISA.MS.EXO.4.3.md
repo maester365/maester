@@ -1,4 +1,4 @@
-﻿The DMARC point of contact for aggregate reports SHALL include `reports@dmarc.cyber.dhs.gov`.
+The DMARC point of contact for aggregate reports SHALL include `reports@dmarc.cyber.dhs.gov`.
 
 Rationale: Email spoofing attempts are not inherently visible to domain owners. DMARC provides a mechanism to receive reports of spoofing attempts. Including reports@dmarc.cyber.dhs.gov as a point of contact for these reports gives CISA insight into spoofing attempts and is required by BOD 18-01 for FCEB departments and agencies.
 

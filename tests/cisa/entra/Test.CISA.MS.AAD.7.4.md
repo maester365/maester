@@ -1,4 +1,4 @@
-﻿Permanent active role assignments SHALL NOT be allowed for highly privileged roles.
+Permanent active role assignments SHALL NOT be allowed for highly privileged roles.
 
 Rationale: Instead of giving users permanent assignments to privileged roles, provisioning access just in time lessens exposure if those accounts become compromised. In Azure AD PIM or an alternative PAM system, just in time access can be provisioned by assigning users to roles as eligible instead of perpetually active.
 

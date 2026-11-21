@@ -1,4 +1,4 @@
-﻿Automatic forwarding to external domains SHALL be disabled.
+Automatic forwarding to external domains SHALL be disabled.
 
 Rationale: Adversaries can use automatic forwarding to gain persistent access to a victim's email. Disabling forwarding to external domains prevents this technique when the adversary is external to the organization but does not impede legitimate internal forwarding.
 

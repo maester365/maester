@@ -1,4 +1,4 @@
-﻿Accounts with names that look especially attractive to attackers can be useful as deliberate decoys, but they can also reflect risky naming practices or forgotten identities that warrant review.
+Accounts with names that look especially attractive to attackers can be useful as deliberate decoys, but they can also reflect risky naming practices or forgotten identities that warrant review.
 
 - **Threat detection support**: Decoy-style names can be monitored for malicious interaction.
 - **Naming hygiene**: Identifies user names likely to draw attacker attention.

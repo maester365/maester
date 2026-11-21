@@ -1,4 +1,4 @@
-﻿Foreign SIDs represent security identifiers from domains other than the current domain:
+Foreign SIDs represent security identifiers from domains other than the current domain:
 
 - **SID History**: Migrated accounts may retain original SIDs for access continuity
 - **Trust Relationships**: External domain SIDs indicate trust-based access

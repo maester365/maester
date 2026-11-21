@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
     Generates the Maester previous-ID table (Maester.LegacyIds.json) from the git history of tests/.
 

@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     $script:RepoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
     $script:BuildScriptPath = Join-Path $script:RepoRoot 'build/Build-MaesterModule.ps1'
     $script:ValidationScriptPath = Join-Path $script:RepoRoot 'build/Test-MaesterModuleOutput.ps1'

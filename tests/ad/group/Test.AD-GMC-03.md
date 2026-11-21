@@ -1,4 +1,4 @@
-﻿A detailed breakdown of account types across group membership provides comprehensive visibility:
+A detailed breakdown of account types across group membership provides comprehensive visibility:
 
 - **User Accounts**: Most common members - represent individual access
 - **Group Nesting**: Groups within groups create hierarchical permissions

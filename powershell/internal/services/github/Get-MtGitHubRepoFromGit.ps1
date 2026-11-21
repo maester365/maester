@@ -1,4 +1,4 @@
-function Get-MtGitHubRepoFromGit {
+﻿function Get-MtGitHubRepoFromGit {
     <#
     .SYNOPSIS
     Detects the current GitHub repository from the local git remote (origin).

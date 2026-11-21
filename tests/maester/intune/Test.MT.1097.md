@@ -1,4 +1,4 @@
-﻿This check verifies that all Intune Certificate Connectors are healthy and running a supported Version.
+This check verifies that all Intune Certificate Connectors are healthy and running a supported Version.
 
 #### Remediation action
 

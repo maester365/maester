@@ -1,4 +1,4 @@
-﻿Modern authentication for Exchange Online MUST be enabled
+Modern authentication for Exchange Online MUST be enabled
 
 Rationale: Modern authentication enables enhanced security features like multifactor authentication (MFA), certificate-based authentication (CBA), and third-party SAML identity providers. Without modern authentication, users are more vulnerable to password-based attacks.
 

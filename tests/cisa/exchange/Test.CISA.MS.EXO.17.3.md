@@ -1,4 +1,4 @@
-﻿Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C).
+Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C).
 
 Rationale: Audit logs may no longer be available when needed if they are not retained for a sufficient time. Increased log retention time gives an agency the necessary visibility to investigate incidents that occurred some time ago. OMB M-21-13, Appendix C, Table 5 specifically calls out Unified Audit Logs in the Cloud Azure log category.
 

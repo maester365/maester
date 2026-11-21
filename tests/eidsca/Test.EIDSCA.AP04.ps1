@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAP04 {
+﻿function Test-MtCheckEidscaAP04 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Guest invite restrictions is one of the following values @('adminsAndGuestInviters','none')

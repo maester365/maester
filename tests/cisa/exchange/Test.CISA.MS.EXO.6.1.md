@@ -1,4 +1,4 @@
-﻿Contact folders SHALL NOT be shared with all domains.
+Contact folders SHALL NOT be shared with all domains.
 
 Rationale: Contact folders may contain information that should not be shared by default with all domains. Disabling sharing with all domains closes an avenue for data exfiltration while still allowing for specific legitimate use as needed.
 

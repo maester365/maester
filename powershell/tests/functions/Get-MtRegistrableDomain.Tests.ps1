@@ -1,4 +1,4 @@
-Describe 'Get-MtRegistrableDomain' {
+﻿Describe 'Get-MtRegistrableDomain' {
     It 'returns the registrable domain for standard public suffixes' {
         Get-MtRegistrableDomain -DomainName 'sub.example.co.uk' | Should -Be 'example.co.uk'
     }

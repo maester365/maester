@@ -1,4 +1,4 @@
-function Get-MtOrcaCollection {
+﻿function Get-MtOrcaCollection {
     <#
     .SYNOPSIS
     Returns the ORCA configuration collection for the ORCA tests, reading it from Exchange Online once per session.

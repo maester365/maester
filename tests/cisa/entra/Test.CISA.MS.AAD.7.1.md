@@ -1,4 +1,4 @@
-﻿A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role.
+A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role.
 
 **Rationale:** The Global Administrator role provides unfettered access to the tenant (Azure and Microsoft 365). Limiting the number of users with this level of access makes tenant compromise more challenging. Microsoft recommends fewer than five users in the Global Administrator role. However, additional user accounts, up to eight, may be necessary to support emergency access and some operational scenarios.
 

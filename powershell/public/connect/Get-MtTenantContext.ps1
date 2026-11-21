@@ -1,4 +1,4 @@
-function Get-MtTenantContext {
+﻿function Get-MtTenantContext {
     <#
     .SYNOPSIS
     Returns the facts about the connected tenant that decide which Maester tests apply.

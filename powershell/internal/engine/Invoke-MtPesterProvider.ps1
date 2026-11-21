@@ -1,4 +1,4 @@
-function Invoke-MtPesterProvider {
+﻿function Invoke-MtPesterProvider {
     <#
     .SYNOPSIS
     Runs the Pester-format tests of a run with one Invoke-Pester call (design section 8).

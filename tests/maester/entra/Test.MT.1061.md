@@ -1,4 +1,4 @@
-﻿When MFA is required during device registration in Conditional Access policies, it must be disabled in the Entra ID Device settings.
+When MFA is required during device registration in Conditional Access policies, it must be disabled in the Entra ID Device settings.
 
 When both are enabled, the Conditional Access policy with the "Register or join devices" user action will not work as expected.
 

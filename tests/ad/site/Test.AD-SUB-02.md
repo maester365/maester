@@ -1,4 +1,4 @@
-﻿Sites with subnet associations are essential for:
+Sites with subnet associations are essential for:
 
 - **Proper client site assignment**: Clients can determine their site based on IP address
 - **Efficient authentication**: Clients authenticate to the nearest DC

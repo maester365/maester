@@ -1,4 +1,4 @@
-﻿Check the validity of the Apple Push Notification Service (APNS) Certificate for Intune. The Apple Push Notification Service (APNS) Certificate is required for managing Apple devices with Microsoft Intune. This test checks if the APNS certificate is valid and not expired.
+Check the validity of the Apple Push Notification Service (APNS) Certificate for Intune. The Apple Push Notification Service (APNS) Certificate is required for managing Apple devices with Microsoft Intune. This test checks if the APNS certificate is valid and not expired.
 
 #### Remediation action
 

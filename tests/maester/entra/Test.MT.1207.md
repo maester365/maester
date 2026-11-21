@@ -1,4 +1,4 @@
-﻿Foreign or multi-tenant Agent Blueprints and Agent Identities should not hold privileged directory roles without review.
+Foreign or multi-tenant Agent Blueprints and Agent Identities should not hold privileged directory roles without review.
 
 Multi-tenant Agent Blueprints originate in an external Microsoft Entra tenant. If a foreign Blueprint Principal or its child Agent Identities are granted a privileged directory role (like *Global Administrator*), a compromise of the blueprint or credentials in the external home tenant could compromise your local resources.
 

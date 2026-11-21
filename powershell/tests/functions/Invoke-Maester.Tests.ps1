@@ -196,6 +196,18 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
 }
 '@
 
+            # The html report embeds the results gzip-compressed. Returns a file's text, and for the html report
+            # the page followed by the decoded results, so that a check for a value covers both.
+            function Read-ReportFile([string] $Path) {
+                $content = Get-Content $Path -Raw
+                if ($Path -notlike '*.html') { return $content }
+                $match = [regex]::Match($content, 'id="maester-report-data" data-encoding="gzip\+base64">([A-Za-z0-9+/=]*)<')
+                if (-not $match.Success) { throw "The report has no compressed maester-report-data element: $Path" }
+                $stream = [System.IO.MemoryStream]::new([System.Convert]::FromBase64String($match.Groups[1].Value))
+                $reader = [System.IO.StreamReader]::new([System.IO.Compression.GZipStream]::new($stream, [System.IO.Compression.CompressionMode]::Decompress))
+                try { $content + "`n" + $reader.ReadToEnd() } finally { $reader.Dispose() }
+            }
+
             $script:invokePii = {
                 param([hashtable] $Extra)
                 $outputFolder = Join-Path $TestDrive ([guid]::NewGuid())
@@ -220,7 +232,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
         It 'Redacts the html report when -RedactUserIdentity is used with -ExcludeAffectedObjects' {
             $folder = & $script:invokePii @{ RedactUserIdentity = 'HtmlOnly'; ExcludeAffectedObjects = $true }
 
-            $html = Get-Content (Join-Path $folder 'Pii.html') -Raw
+            $html = Read-ReportFile (Join-Path $folder 'Pii.html')
             $html | Should -Not -BeLike '*Jane Doe*'
             $html | Should -Not -BeLike '*jane.doe@contoso.com*'
             $html | Should -Not -BeLike '*9a9a9a9a-1111-2222-3333-444444444444*'
@@ -235,7 +247,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             $folder = & $script:invokePii @{ RedactUserIdentity = 'AllOutputs' }
 
             foreach ($file in 'Pii.html', 'Pii.json', 'Pii.md') {
-                $content = Get-Content (Join-Path $folder $file) -Raw
+                $content = Read-ReportFile (Join-Path $folder $file)
                 $content | Should -Not -BeLike '*Jane Doe*' -Because "$file must be redacted"
                 $content | Should -Not -BeLike '*jane.doe@contoso.com*' -Because "$file must be redacted"
             }
@@ -248,7 +260,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             $json = Get-Content (Join-Path $folder 'Pii.json') -Raw
             $json | Should -BeLike '*MT.9998: Member should be blocked (object-*'
             foreach ($file in 'Pii.html', 'Pii.json', 'Pii.md') {
-                Get-Content (Join-Path $folder $file) -Raw | Should -Not -BeLike '*sam.member@contoso.com*' -Because "$file must be redacted"
+                Read-ReportFile (Join-Path $folder $file) | Should -Not -BeLike '*sam.member@contoso.com*' -Because "$file must be redacted"
             }
         }
 
@@ -257,7 +269,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
 
             Test-Path (Join-Path $folder 'Pii-affected-objects.json') | Should -BeTrue
             Get-Content (Join-Path $folder 'Pii.json') -Raw | Should -BeLike '*"AffectedObjects":*'
-            Get-Content (Join-Path $folder 'Pii.html') -Raw | Should -BeLike '*"AffectedObjects":*'
+            Read-ReportFile (Join-Path $folder 'Pii.html') | Should -BeLike '*"AffectedObjects":*'
         }
 
         It 'Leaves the affected objects out with -ExcludeAffectedObjects' {
@@ -267,13 +279,13 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             $json = Get-Content (Join-Path $folder 'Pii.json') -Raw
             $json | Should -Not -BeLike '*"AffectedObjects":*'
             $json | Should -Not -BeLike '*"RelatedObjects":*'
-            Get-Content (Join-Path $folder 'Pii.html') -Raw | Should -Not -BeLike '*"AffectedObjects":*'
+            Read-ReportFile (Join-Path $folder 'Pii.html') | Should -Not -BeLike '*"AffectedObjects":*'
         }
 
         It 'Embeds only the fields the Affected objects page reads in the html report' {
             $folder = & $script:invokePii @{ IncludeAffectedObjects = $true }
 
-            $html = Get-Content (Join-Path $folder 'Pii.html') -Raw
+            $html = Read-ReportFile (Join-Path $folder 'Pii.html')
             $html | Should -BeLike '*"AffectedObjects":*'
             $html | Should -BeLike '*"Referenced":true*'
             $html | Should -Not -BeLike '*"UniqueId":*'

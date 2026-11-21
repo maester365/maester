@@ -1,4 +1,4 @@
-﻿External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization.
+External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization.
 
 Rationale: Sharing information outside the organization via SharePoint increases the risk of unauthorized access. By limiting external sharing, administrators decrease the risk of access to information.
 

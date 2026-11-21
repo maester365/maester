@@ -59,7 +59,8 @@ function seedFromGit(ref) {
 
 function fromSource() {
   const catalog = JSON.parse(readFileSync(catalogPath, "utf8"));
-  const tests = catalog.Tests.map((t) => t.Id);
+  // The checks of the packs that ship with Maester count too, so their pages lose the preview notice once released.
+  const tests = [...catalog.Tests.map((t) => t.Id), ...(catalog.Packs ?? []).flatMap((p) => (p.Tests ?? []).map((t) => t.Id))];
   const commands = readdirSync(commandsRoot)
     .filter((f) => f.endsWith(".mdx"))
     .map((f) => [f.replace(/\.mdx$/, ""), parametersOf(readFileSync(join(commandsRoot, f), "utf8"))]);

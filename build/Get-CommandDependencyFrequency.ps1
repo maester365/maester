@@ -1,4 +1,4 @@
-function Get-CommandDependencyFrequency {
+﻿function Get-CommandDependencyFrequency {
     <#
     .SYNOPSIS
     Get command dependencies in the public PowerShell scripts.

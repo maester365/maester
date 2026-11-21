@@ -1,4 +1,4 @@
-﻿Ensure every rule in the Microsoft Defender ASR Standard Protection baseline is configured in **Block** or **Audit** mode.
+Ensure every rule in the Microsoft Defender ASR Standard Protection baseline is configured in **Block** or **Audit** mode.
 
 Attack surface reduction rules block the behaviors malware depends on but legitimate software rarely needs: Office macros spawning child processes, credential theft from LSASS, obfuscated scripts, executable content arriving by email, untrusted processes running from USB media, and persistence through WMI event subscriptions.
 

@@ -1,4 +1,4 @@
-﻿Ensure that no person has permanent access to Azure Subscriptions.
+Ensure that no person has permanent access to Azure Subscriptions.
 
 User Access Administrator is a role that allows an Administrator to perform everything on an Azure Subscription. Global Administrators can gain this permission on the Root Scope in Entra ID, in the properties of the Entra ID tenant. These permissions should only be used in case of emergency and should not be assigned permanently.
 

@@ -1,4 +1,4 @@
-function Resolve-MtTestSource {
+﻿function Resolve-MtTestSource {
     <#
     .SYNOPSIS
     Works out which test files a run uses: the built-in suites and the custom tests (design section 7.2).

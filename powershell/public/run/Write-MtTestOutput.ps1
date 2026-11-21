@@ -1,4 +1,4 @@
-function Write-MtTestOutput {
+﻿function Write-MtTestOutput {
     <#
     .SYNOPSIS
     Shows the lines a long-running test writes while it works, live in the Maester console.

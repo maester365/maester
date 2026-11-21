@@ -1,4 +1,4 @@
-function Get-MtADDomainState {
+﻿function Get-MtADDomainState {
     <#
     .SYNOPSIS
     Collects Active Directory domain state information.

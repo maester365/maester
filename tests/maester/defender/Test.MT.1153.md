@@ -1,4 +1,4 @@
-﻿Verify that real-time monitoring is enabled as core protection function.
+Verify that real-time monitoring is enabled as core protection function.
 
 Disabled real-time monitoring allows malware to execute without immediate detection.
 

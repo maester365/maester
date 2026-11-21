@@ -1,4 +1,4 @@
-function Export-MtTestResultXml {
+﻿function Export-MtTestResultXml {
     <#
     .SYNOPSIS
     Writes the results of a run as an NUnit 2.5 or JUnit 4 XML file (design section 8, appendix A.2).

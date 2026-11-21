@@ -1,4 +1,4 @@
-﻿Every accepted domain, including the initial onmicrosoft.com domain, has a DMARC policy of quarantine or reject that covers all mail and names addresses for aggregate and forensic reports.
+Every accepted domain, including the initial onmicrosoft.com domain, has a DMARC policy of quarantine or reject that covers all mail and names addresses for aggregate and forensic reports.
 
 DMARC tells receiving servers what to do with mail that fails SPF and DKIM alignment, and sends you reports about who is sending mail in your name. With a policy of none, spoofed mail is still delivered. Quarantine or reject stops it, and the reports show abuse and legitimate senders that you forgot.
 

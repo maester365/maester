@@ -1,4 +1,4 @@
-﻿Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.
+Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.
 
 Rationale: Provisioning users to privileged roles within a PAM system enables enforcement of numerous privileged access policies and monitoring. If privileged users are assigned directly to roles in the M365 admin center or via PowerShell outside of the context of a PAM system, a significant set of critical security capabilities are bypassed.
 

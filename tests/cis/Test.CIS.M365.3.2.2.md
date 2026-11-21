@@ -1,4 +1,4 @@
-﻿At least one data loss prevention policy includes the Microsoft Teams location and is turned on.
+At least one data loss prevention policy includes the Microsoft Teams location and is turned on.
 
 Chat and channel messages are a quick way to paste a customer list or credentials, and files that users share in Teams end up in SharePoint and OneDrive. A DLP policy that covers Teams can block or warn about sensitive information in chat messages and channel conversations, in addition to the files. The policy covers the Teams content that an attacker collects from (T1213), the files stored behind it in SharePoint and OneDrive (T1530), and it stops sensitive content from leaving through a web service such as a message or an upload (T1567).
 

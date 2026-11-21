@@ -1,4 +1,4 @@
-function New-MtPack {
+﻿function New-MtPack {
     <#
     .SYNOPSIS
     Creates a new Maester Pack folder: maester-pack.json, a suite with a first test, and optionally a connector.
@@ -178,7 +178,9 @@ function Get-$prefix$($pascal)Setting {
         $target = Join-Path $Path $relative
         if (-not $PSCmdlet.ShouldProcess($target, 'Create pack file')) { continue }
         $null = New-Item -Path (Split-Path -Path $target -Parent) -ItemType Directory -Force
-        Set-Content -LiteralPath $target -Value $files[$relative] -Encoding utf8
+        # PowerShell files are UTF-8 with a byte order mark (see the contributing guide); other files have none.
+        $encoding = if ([System.IO.Path]::GetExtension($target) -in '.ps1', '.psm1', '.psd1') { 'utf8BOM' } else { 'utf8NoBOM' }
+        Set-Content -LiteralPath $target -Value $files[$relative] -Encoding $encoding
         Get-Item -LiteralPath $target
     }
     $testService = if ($Connector) { $service } else { 'Graph' }
@@ -190,7 +192,7 @@ function Get-$prefix$($pascal)Setting {
     if ($Connector -and $testScript) {
         $text = [System.IO.File]::ReadAllText($testScript.FullName)
         $text = $text.Replace("Invoke-MtGraphRequest -RelativeUri 'policies/authorizationPolicy'", "Get-$prefix$($pascal)Setting")
-        [System.IO.File]::WriteAllText($testScript.FullName, $text, [System.Text.UTF8Encoding]::new($false))
+        [System.IO.File]::WriteAllText($testScript.FullName, $text, [System.Text.UTF8Encoding]::new($true))
     }
     $created
 }

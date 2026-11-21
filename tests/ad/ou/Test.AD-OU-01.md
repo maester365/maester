@@ -1,4 +1,4 @@
-﻿- Organizational Units with overlapping (duplicate) names can create administrative confusion and operational risks in Active Directory:
+- Organizational Units with overlapping (duplicate) names can create administrative confusion and operational risks in Active Directory:
 - Administrative errors: Administrators may inadvertently apply Group Policies, permissions, or settings to the wrong OU when multiple OUs share the same name
 - Scripting complications: Automation scripts that reference OUs by name may target incorrect containers
 - Policy application issues: Group Policy links may be applied to unintended OUs

@@ -1,4 +1,4 @@
-function Get-MtLdapCertificateDetail {
+﻿function Get-MtLdapCertificateDetail {
     <#
     .SYNOPSIS
     Extracts and logs details from an LDAP server certificate.

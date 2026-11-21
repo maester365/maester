@@ -1,4 +1,4 @@
-﻿Disable the ability to install and run tasks from the Marketplace, which gives you greater control over the code that executes in a pipeline.
+Disable the ability to install and run tasks from the Marketplace, which gives you greater control over the code that executes in a pipeline.
 
 Rationale: Tasks from the marketplace should be reviewed and approved.
 

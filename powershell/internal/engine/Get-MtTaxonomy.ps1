@@ -1,4 +1,4 @@
-function Get-MtTaxonomy {
+﻿function Get-MtTaxonomy {
     <#
     .SYNOPSIS
     Returns the taxonomy registry (assets/MaesterTaxonomy.psd1). Cached for the session.

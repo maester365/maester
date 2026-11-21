@@ -1,4 +1,4 @@
-function Write-MtHostLine {
+﻿function Write-MtHostLine {
     <#
     .SYNOPSIS
     Writes a line straight to the host, while a test runs, without disturbing the console renderer.

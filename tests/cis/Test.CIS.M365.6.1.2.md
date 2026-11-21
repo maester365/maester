@@ -1,4 +1,4 @@
-﻿Every user mailbox audits the recommended set of actions for administrators, delegates and mailbox owners.
+Every user mailbox audits the recommended set of actions for administrators, delegates and mailbox owners.
 
 Exchange Online audits a default set of actions. Some actions that matter in an investigation, such as MailItemsAccessed, which shows which messages an attacker read, and the actions that change inbox rules and folder permissions, are not part of every default set, or an administrator may have reduced the list.
 

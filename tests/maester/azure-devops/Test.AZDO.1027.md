@@ -1,4 +1,4 @@
-﻿Gravatar images should not be exposed for users outside your enterprise.
+Gravatar images should not be exposed for users outside your enterprise.
 
 Rationale: Gravatar images are served by an external service (gravatar.com) and may leak email hashes or profile information. Allowing them can reveal internal usernames or identities to outside observers and increases privacy risk.
 

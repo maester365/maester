@@ -1,4 +1,4 @@
-﻿5.1.5.5 (L1) Ensure new application passwords are system-generated
+5.1.5.5 (L1) Ensure new application passwords are system-generated
 
 In Microsoft Entra ID, applications and service principals can authenticate using password credentials (also referred to as client secrets). By default, when adding a new password credential, the caller may supply a custom password value or allow the system to generate one. This setting enforces a tenant-wide restriction that blocks the use of custom password values, requiring all new password credentials to be system-generated. The policy is implemented through the default app management policy and applies to all applications unless scoped exceptions are configured.
 

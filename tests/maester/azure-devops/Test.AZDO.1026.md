@@ -1,4 +1,4 @@
-﻿GitHub advanced Security for Azure DevOps **should be** automatically enabled for new projects.
+GitHub advanced Security for Azure DevOps **should be** automatically enabled for new projects.
 
 Rationale: Newly created projects should have Advanced Security enabled upon creation.
 

@@ -1,4 +1,4 @@
-﻿Ensure at least one Intune **App Control for Business** (formerly Windows Defender Application Control / WDAC) policy is configured.
+Ensure at least one Intune **App Control for Business** (formerly Windows Defender Application Control / WDAC) policy is configured.
 
 App Control for Business restricts which applications and drivers are allowed to run on Windows devices using code integrity policies. This is one of the most effective defenses against malware, ransomware, and unauthorized software because it blocks untrusted executables from running at all — even if they bypass antivirus detection.
 

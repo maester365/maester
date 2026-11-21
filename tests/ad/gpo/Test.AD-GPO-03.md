@@ -1,4 +1,4 @@
-﻿Group Policy Objects (GPOs) that have not been modified for a long time can become "stale".
+Group Policy Objects (GPOs) that have not been modified for a long time can become "stale".
 Stale GPOs may contain outdated security configurations, which can create security gaps
 if they no longer match your current security baselines.
 

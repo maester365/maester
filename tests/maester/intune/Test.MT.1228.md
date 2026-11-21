@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** iOS compliance policy blocks jailbroken devices.
+Ensure at least one **assigned** iOS compliance policy blocks jailbroken devices.
 
 A jailbroken iPhone or iPad has had the chain of platform protections that iOS is trusted for removed: code signing enforcement, the app sandbox, and the protections around the keychain. Apps from outside the App Store run unsigned, one app can read another app's data, and the credentials and refresh tokens that iOS stores for Microsoft Authenticator, Outlook and Teams become reachable by anything running on the device.
 

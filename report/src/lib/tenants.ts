@@ -3,7 +3,7 @@
 
 import { priority, type Model, type Row } from "@/lib/model"
 
-export const tenantName = (model: Model, index: number) => String(model.result.TenantName || model.result.TenantId || `Tenant ${index + 1}`).replace(/\.$/, "")
+export const tenantName = (model: Model, index: number) => String(model.subject?.name || model.result.TenantId || `Tenant ${index + 1}`).replace(/\.$/, "")
 
 export function tenantInitials(name: string) {
   const words = name.replace(/[^\p{L}\p{N} ]/gu, "").split(/\s+/).filter((w) => w && !/^(inc|ltd|llc|corp|co|the)$/i.test(w))

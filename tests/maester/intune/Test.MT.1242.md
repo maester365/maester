@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** iOS app protection policy limits offline access to organization data.
+Ensure at least one **assigned** iOS app protection policy limits offline access to organization data.
 
 Every revocation an administrator can perform on an unenrolled phone travels through the app protection check: disabling the account, removing the user from the assigned group, or issuing a selective wipe. The **offline grace period** is how long the managed app keeps opening organization data without that check, and a device kept in airplane mode is a device that has received none of those decisions.
 

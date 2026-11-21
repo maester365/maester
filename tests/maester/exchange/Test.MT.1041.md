@@ -1,4 +1,4 @@
-﻿Users SHOULD NOT be allowed to install Outlook add-ins
+Users SHOULD NOT be allowed to install Outlook add-ins
 
 Rationale: When users can install their own Outlook add-ins, it creates security risks. Malicious add-ins could access email content, exploit vulnerabilities, or facilitate data exfiltration through legitimate-looking add-ins.
 

@@ -31,6 +31,9 @@
             EntraID        = @(
                 'AccessPackage'
                 'AccessPackageCatalog'
+                'AgentIdentity'
+                'AgentIdentityBlueprint'
+                'AgentIdentityBlueprintPrincipal'
                 'AppRegistration'
                 'AuthenticationMethod'
                 'AuthorizationPolicy'
@@ -49,6 +52,9 @@
             ExchangeOnline = @(
                 'SharingPolicy'
                 'TransportRule'
+            )
+            Intune         = @(
+                'ConfigurationPolicy'
             )
             GitHub         = @(
                 'GitHubOrganization'

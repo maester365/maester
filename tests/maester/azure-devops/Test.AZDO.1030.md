@@ -1,4 +1,4 @@
-﻿Project Collection Administrator is a highly privileged role, and membership should be restricted and regularly reviewed.
+Project Collection Administrator is a highly privileged role, and membership should be restricted and regularly reviewed.
 
 Rationale: Project Collection Administrators (PCAs) have unrestricted control over the Azure DevOps organization or collection. A compromised PCA account or an overly broad roster can lead to:
 

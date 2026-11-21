@@ -1,4 +1,4 @@
-﻿This test checks if any of the following high-privilege, first-party Microsoft service principals allow sign-in from any user instead of requiring explicit assignment:
+This test checks if any of the following high-privilege, first-party Microsoft service principals allow sign-in from any user instead of requiring explicit assignment:
 
 - Microsoft Azure PowerShell
 - Microsoft Azure CLI and Azure Developer CLI (`azd`) - both currently use the same application ID

@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAP15 {
+﻿function Test-MtCheckEidscaAP15 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Default User Role Permissions - Allowed to create agent identity blueprints is 'false'

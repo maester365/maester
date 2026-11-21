@@ -1,4 +1,4 @@
-function Get-MtTrustedNamedLocationId {
+﻿function Get-MtTrustedNamedLocationId {
     <#
     .SYNOPSIS
         Returns the IDs of the named locations that are marked as trusted.

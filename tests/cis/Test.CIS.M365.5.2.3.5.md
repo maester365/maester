@@ -1,4 +1,4 @@
-﻿5.2.3.5 (L1) Ensure weak authentication methods are disabled
+5.2.3.5 (L1) Ensure weak authentication methods are disabled
 
 Authentication methods support a wide variety of scenarios for signing in to Microsoft 365 resources. Some of these methods are inherently more secure than others but require more investment in time to get users enrolled and operational.
 

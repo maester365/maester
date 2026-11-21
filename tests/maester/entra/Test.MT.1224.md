@@ -1,4 +1,4 @@
-﻿Microsoft-managed Conditional Access policies should be reviewed and set to On or Off, not left in report-only mode.
+Microsoft-managed Conditional Access policies should be reviewed and set to On or Off, not left in report-only mode.
 
 Microsoft creates Microsoft-managed Conditional Access policies in your tenant to roll out protections such as MFA for administrators, blocking legacy authentication and risk remediation for high-risk users. Each policy starts in report-only mode. If no administrator sets it to On or Off, Microsoft turns it on automatically no less than 30 days after it was created, sometimes sooner. Microsoft sends a Message center post and an email about two weeks before.
 

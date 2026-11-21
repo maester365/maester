@@ -1,4 +1,4 @@
-﻿Detailed visibility into schema modifications by year provides a comprehensive timeline of your Active Directory's evolution. This information is valuable for:
+Detailed visibility into schema modifications by year provides a comprehensive timeline of your Active Directory's evolution. This information is valuable for:
 
 - **Capacity planning**: Understanding growth patterns of the directory
 - **Change management**: Tracking when major applications were deployed

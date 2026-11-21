@@ -1,4 +1,4 @@
-# The ASD checks that run another suite's test, and the helpers the ASD checks read through. Graph is mocked.
+﻿# The ASD checks that run another suite's test, and the helpers the ASD checks read through. Graph is mocked.
 
 BeforeAll { Import-Module "$PSScriptRoot/../../Maester.psd1" -Force -WarningAction SilentlyContinue }
 
@@ -58,7 +58,7 @@ Describe 'ASD checks and the tests they run' {
                     ) } }
             Mock Get-MtGroupMember { @([pscustomobject]@{ '@odata.type' = '#microsoft.graph.user'; id = 'u2' }) }
             Mock Get-MtEmergencyAccessAccount { @([pscustomobject]@{ ObjectId = 'bg' }) }
-            $r = Get-MtPrivilegedRoleUser -ExcludeEmergencyAccessAccount
+            $r = Get-MtPrivilegedRoleUser -EmergencyAccessAccounts @([pscustomobject]@{ Id = 'bg' })
             @($r.Keys | Sort-Object) | Should -Be @('u1', 'u2')
             $r['u2'] | Should -Be @('Global Administrator')
             @((Get-MtPrivilegedRoleUser).Keys | Sort-Object) | Should -Be @('bg', 'u1', 'u2')

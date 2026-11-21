@@ -1,4 +1,4 @@
-﻿Privileged directory roles are held through Privileged Identity Management (PIM) activation instead of permanent active assignment.
+Privileged directory roles are held through Privileged Identity Management (PIM) activation instead of permanent active assignment.
 
 An account with a permanent privileged role is a permanent target: a stolen password or token gives immediate administrative access, at any hour, with no approval, justification or time limit. Making the role eligible means the account is an ordinary user until an admin activates the role for a few hours, with MFA and an audit trail. An attacker who adds a role to an account to keep access leaves a permanent assignment, and this test lists it.
 

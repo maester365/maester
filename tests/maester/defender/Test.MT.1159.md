@@ -1,4 +1,4 @@
-﻿Checks that quick scan time configuration is not required in assigned Microsoft Defender Antivirus policies.
+Checks that quick scan time configuration is not required in assigned Microsoft Defender Antivirus policies.
 
 Not required - Quick scans are replaced by real-time protection, so this setting does not need to be configured.
 

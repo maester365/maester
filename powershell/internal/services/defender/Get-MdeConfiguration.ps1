@@ -1,4 +1,4 @@
-function Get-MdeConfiguration {
+﻿function Get-MdeConfiguration {
     <#
     .SYNOPSIS
         Gets information about your organization's Defender-protected devices and their policies

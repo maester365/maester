@@ -1,4 +1,4 @@
-﻿Test whether Windows diagnostic data processor configuration is enabled. Before you can use some Intune features, you must enable Windows diagnostic data in processor configuration for your tenant. Doing so enables you as the controller of Windows diagnostic data collected from your devices to then allow its use by Intune when it's required by features that are dependent on that data.
+Test whether Windows diagnostic data processor configuration is enabled. Before you can use some Intune features, you must enable Windows diagnostic data in processor configuration for your tenant. Doing so enables you as the controller of Windows diagnostic data collected from your devices to then allow its use by Intune when it's required by features that are dependent on that data.
 
 In addition, several of the features that require Windows diagnostic data also require you to have Windows E3 (or equivalent) licenses, and you must attest to having these licenses to enable use of those features.
 

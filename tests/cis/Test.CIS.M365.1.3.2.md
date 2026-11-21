@@ -1,4 +1,4 @@
-﻿Browser sessions on unmanaged devices for Microsoft 365 apps end after at most three hours of inactivity.
+Browser sessions on unmanaged devices for Microsoft 365 apps end after at most three hours of inactivity.
 
 A browser that someone leaves open on a shared or personal computer keeps the Microsoft 365 session signed in. Anyone who walks up to it, or any malware that runs on it, can use the session. A short idle timeout signs the user out of the web apps when nothing happens for a while.
 

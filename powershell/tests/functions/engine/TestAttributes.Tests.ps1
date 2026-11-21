@@ -1,4 +1,4 @@
-# The typed attributes of [MaesterTest] (docs/proposals/maester-3.0-test-attributes.md): the taxonomy registry,
+﻿# The typed attributes of [MaesterTest] (docs/proposals/maester-3.0-test-attributes.md): the taxonomy registry,
 # the reader's rules, the derived Block, the typed selectors, default exclusions by attribute, selection with
 # Maester 2.x tags, the attribute fields of a result row and the Taxonomy of a result, and the migration script.
 BeforeAll {

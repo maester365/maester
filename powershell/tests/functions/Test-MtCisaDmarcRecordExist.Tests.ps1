@@ -321,7 +321,9 @@ Describe 'CISA.MS.EXO.4.1 with DNS mocked' {
 
             Test-MtCisaDmarcRecordExist | Should -BeTrue
 
-            $script:testResultMarkdown | Should -BeLike '*rua=mailto:a@contoso.com\!10m\|$1 |*'
+            # `mailto:` and the address are escaped now. A DMARC record is tenant-controlled text,
+            # and GFM autolinked both forms; escaped, it reads the same and no longer renders as a link.
+            $script:testResultMarkdown | Should -BeLike '*rua=mailto\:a\@contoso.com\!10m\|$1 |*'
         }
 
         It 'skips when no DNS resolver is available' {

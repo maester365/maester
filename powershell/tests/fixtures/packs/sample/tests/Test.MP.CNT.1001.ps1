@@ -1,4 +1,4 @@
-function Test-CntSampleMfaRequired {
+﻿function Test-CntSampleMfaRequired {
     <#
     .SYNOPSIS
     Checks that the sample service requires MFA.

@@ -1,4 +1,4 @@
-﻿Verify that sample submission consent is configured to send safe samples automatically.
+Verify that sample submission consent is configured to send safe samples automatically.
 
 Restricted sample submission reduces threat intelligence and protection quality.
 

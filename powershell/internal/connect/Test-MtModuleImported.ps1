@@ -1,4 +1,4 @@
-function Test-MtModuleImported {
+﻿function Test-MtModuleImported {
     <#
     .SYNOPSIS
     Returns $true when a module is imported in this session.

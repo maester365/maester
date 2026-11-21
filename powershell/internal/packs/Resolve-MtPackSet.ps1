@@ -1,4 +1,4 @@
-function Resolve-MtPackSet {
+﻿function Resolve-MtPackSet {
     <#
     .SYNOPSIS
     The loader gate: decides, before any pack code runs, which packs may load (Maester Packs design, sections 4.4, 5.5 and 9.8).

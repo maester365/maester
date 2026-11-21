@@ -1,4 +1,4 @@
-﻿Enabled Agent Identities should show sign-in activity within the last 180 days.
+Enabled Agent Identities should show sign-in activity within the last 180 days.
 
 An enabled Agent Identity that is no longer used can retain directory roles, OAuth permissions, and group memberships. Without active monitoring, these access rights create an unnecessary opportunity for misuse or persistence.
 

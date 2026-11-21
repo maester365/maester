@@ -1,4 +1,4 @@
-﻿Validation of SSH key expiration date **should be** enabled.
+Validation of SSH key expiration date **should be** enabled.
 
 Rationale: Expired SSH keys should not be valid for authentication towards Azure DevOps.
 

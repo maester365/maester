@@ -1,4 +1,4 @@
-﻿Service Principal Names (SPNs) are critical for Kerberos authentication in Active Directory. Understanding the distribution of SPN service classes helps security teams:
+Service Principal Names (SPNs) are critical for Kerberos authentication in Active Directory. Understanding the distribution of SPN service classes helps security teams:
 
 - **Identify service exposure**: Know what services are exposed for Kerberos authentication
 - **Detect anomalies**: Unusual SPN service classes may indicate unauthorized services or misconfigurations

@@ -1,4 +1,4 @@
-﻿Password history is a critical security control that prevents users from reusing their recent passwords. Without adequate password history:
+Password history is a critical security control that prevents users from reusing their recent passwords. Without adequate password history:
 
 * **Password cycling**: Users can quickly cycle through passwords to return to their favorite (often compromised) password
 * **Compromised credential reuse**: If a password is breached, users may inadvertently reintroduce it into the environment

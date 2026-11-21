@@ -1,4 +1,4 @@
-﻿The Active Directory Recycle Bin provides significant advantages over traditional tombstone reanimation:
+The Active Directory Recycle Bin provides significant advantages over traditional tombstone reanimation:
 
 - **Complete Object Recovery**: Restores all object attributes, group memberships, and links
 - **Simplified Recovery**: No need to restore from backup for accidental deletions

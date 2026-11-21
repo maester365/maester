@@ -1,4 +1,4 @@
-function ConvertFrom-MtPackSource {
+﻿function ConvertFrom-MtPackSource {
     <#
     .SYNOPSIS
     Parses the <source> of Install-MtPack (Maester Packs design, section 5.1).

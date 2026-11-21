@@ -1,4 +1,4 @@
-function Group-AzdoRepositoryByProject {
+﻿function Group-AzdoRepositoryByProject {
     <#
     .SYNOPSIS
     Groups Advanced Security repository enablement entries by project name, largest group first.

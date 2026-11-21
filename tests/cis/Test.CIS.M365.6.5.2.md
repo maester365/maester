@@ -1,4 +1,4 @@
-﻿MailTips are enabled, including tips for external recipients and for large audiences.
+MailTips are enabled, including tips for external recipients and for large audiences.
 
 MailTips show a short warning in the message while it is being written, for example that a recipient is outside the organisation or that the message goes to a large group. The warning prevents misdirected mail and gives the user a chance to stop a message that would leak data.
 

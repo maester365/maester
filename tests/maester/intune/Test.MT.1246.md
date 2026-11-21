@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** Android app protection policy encrypts organization data.
+Ensure at least one **assigned** Android app protection policy encrypts organization data.
 
 App protection encryption puts the organization's data in the managed apps under a key the Intune App SDK controls, separately from whatever the user has done with the device. On an unenrolled Android phone the organization cannot verify how the device encrypts storage, and the fleet spans a decade of manufacturers and patch levels.
 

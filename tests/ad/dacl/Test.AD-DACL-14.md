@@ -1,4 +1,4 @@
-﻿Non-inherited ACEs represent explicit access assignments applied directly to directory objects.
+Non-inherited ACEs represent explicit access assignments applied directly to directory objects.
 
 - **Custom delegation visibility**: Explicit ACEs often reveal manual delegations and exceptions
 - **Misconfiguration detection**: Direct permissions are more likely to diverge from baseline inheritance

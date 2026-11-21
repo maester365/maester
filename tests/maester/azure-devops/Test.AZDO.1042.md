@@ -1,4 +1,4 @@
-﻿The GitHub Code Security plan **should be** automatically enabled on newly created Git repositories.
+The GitHub Code Security plan **should be** automatically enabled on newly created Git repositories.
 
 Rationale: Code Security provides dependency alerts for vulnerabilities in open source dependencies, CodeQL scanning to detect vulnerabilities directly in your code, ingestion of findings from third-party scanning tools, and a security overview of your organization's risk. When automatic enablement is off, every new repository starts unscanned and has to be onboarded manually, so coverage silently degrades as the organization grows.
 

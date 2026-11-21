@@ -1,4 +1,4 @@
-function Test-MtFixtureFrameworkContosoBl11 {
+﻿function Test-MtFixtureFrameworkContosoBl11 {
     <#
     .SYNOPSIS
     Framework fixture: its Control names requirement 1.1 of contoso-baseline between two other controls, one of which the requirement repeats as Related.

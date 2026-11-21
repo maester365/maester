@@ -1,4 +1,4 @@
-Describe 'Import-MtMaesterResult' {
+﻿Describe 'Import-MtMaesterResult' {
     BeforeAll {
         # Create a temp directory for test JSON files
         $testDir = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath "MaesterImportTests_$([guid]::NewGuid().ToString('N'))"

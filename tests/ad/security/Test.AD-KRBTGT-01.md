@@ -1,4 +1,4 @@
-﻿- The KRBTGT account is the most critical service account in Active Directory. It is used by the Key Distribution Center (KDC) service to encrypt and sign all Kerberos tickets within the domain. If this account is compromised, an attacker can forge Kerberos tickets (Golden Tickets) that grant unlimited access to any resource in the domain.
+- The KRBTGT account is the most critical service account in Active Directory. It is used by the Key Distribution Center (KDC) service to encrypt and sign all Kerberos tickets within the domain. If this account is compromised, an attacker can forge Kerberos tickets (Golden Tickets) that grant unlimited access to any resource in the domain.
 
 **Security Risks:**
 - **Golden Ticket Attacks**: Compromised KRBTGT password allows attackers to forge TGTs for any user
@@ -12,7 +12,7 @@
 #### Security Recommendation
 
 1. **Rotate KRBTGT password regularly**:
-   - At least every `MaxPasswordAgeDays` days (default 180, about twice per year)
+   - At least every `MaximumPasswordAgeDays` days (default 180, about twice per year)
    - Immediately if compromise is suspected
 
 2. **If compromise is suspected**:
@@ -30,7 +30,7 @@
 This test retrieves the KRBTGT account from Active Directory and checks:
 - Password last set date
 - Days since last password change
-- Whether password age exceeds `MaxPasswordAgeDays` (default 180)
+- Whether password age exceeds `MaximumPasswordAgeDays` (default 180)
 - Account status (should be disabled)
 
 #### Related Tests

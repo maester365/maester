@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Migration: rewrites the [MaesterTest] attribute of every built-in test to the typed attributes of Maester 3.0.
 

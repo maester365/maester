@@ -1,4 +1,4 @@
-BeforeDiscovery {
+﻿BeforeDiscovery {
     $repoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
 
     # Files that may declare or forward a cache switch (DisableCache, NoCache, ClearCache) or define a Clear-Mt*Cache

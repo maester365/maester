@@ -1,4 +1,4 @@
-﻿SMB signing (also known as security signatures) is a security feature that helps prevent:
+SMB signing (also known as security signatures) is a security feature that helps prevent:
 
 - **Man-in-the-middle attacks**: Attackers cannot modify SMB packets in transit
 - **Session hijacking**: Ensures the integrity of SMB sessions

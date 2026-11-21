@@ -1,4 +1,4 @@
-﻿This test identifies Microsoft Entra ID Governance access package catalogs that contain resources (groups, applications, SharePoint sites) that are not used in any access package within that catalog. Orphaned resources indicate incomplete configuration or drift.
+This test identifies Microsoft Entra ID Governance access package catalogs that contain resources (groups, applications, SharePoint sites) that are not used in any access package within that catalog. Orphaned resources indicate incomplete configuration or drift.
 
 The test validates:
 - All catalog resources are referenced in at least one access package

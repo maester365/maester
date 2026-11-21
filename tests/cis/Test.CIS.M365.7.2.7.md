@@ -1,4 +1,4 @@
-﻿7.2.7 (L1) Ensure link sharing is restricted in SharePoint and OneDrive
+7.2.7 (L1) Ensure link sharing is restricted in SharePoint and OneDrive
 
 This setting sets the default link type that a user will see when sharing content in OneDrive or SharePoint. It does not restrict or exclude any other options. The recommended state is **Specific people (only the people the user specifies) or Only people in your organization** (more restrictive).
 

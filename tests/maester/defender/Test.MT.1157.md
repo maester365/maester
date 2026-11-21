@@ -1,4 +1,4 @@
-﻿Checks that the average CPU load factor is configured between 20-30% in the assigned Microsoft Defender Antivirus policies.
+Checks that the average CPU load factor is configured between 20-30% in the assigned Microsoft Defender Antivirus policies.
 
 Inappropriate CPU load settings may impact system performance or reduce scan effectiveness, leaving endpoints vulnerable to threats.
 

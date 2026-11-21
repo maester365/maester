@@ -1,4 +1,4 @@
-﻿Understanding the number and distribution of domain controllers in your domain is critical for:
+Understanding the number and distribution of domain controllers in your domain is critical for:
 
  * **High Availability**: Ensuring sufficient DCs exist to handle authentication load and provide redundancy
  * **Disaster Recovery**: Knowing how many DCs need to be recovered in a disaster scenario

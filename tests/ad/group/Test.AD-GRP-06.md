@@ -1,4 +1,4 @@
-﻿Distribution groups are email-only groups used for Exchange and email distribution lists. Understanding their count and proportion helps:
+Distribution groups are email-only groups used for Exchange and email distribution lists. Understanding their count and proportion helps:
 
 - **Email infrastructure assessment**: Provides visibility into the email distribution infrastructure
 - **Security boundary awareness**: Distinguishes email-only groups from security groups that control access

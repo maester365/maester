@@ -1,4 +1,4 @@
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'CI script that reports the version to the workflow log.')]
+﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'CI script that reports the version to the workflow log.')]
 [CmdletBinding()]
 Param(
     [Parameter()]

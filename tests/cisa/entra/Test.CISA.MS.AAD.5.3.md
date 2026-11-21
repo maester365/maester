@@ -1,4 +1,4 @@
-﻿An admin consent workflow SHALL be configured for applications.
+An admin consent workflow SHALL be configured for applications.
 
 Rationale: Configuring an admin consent workflow reduces the risk of the previous policy by setting up a process for users to securely request access to applications necessary for business purposes. Administrators have the opportunity to review the permissions requested by new applications and approve or deny access based on a risk assessment.
 

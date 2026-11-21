@@ -1,4 +1,4 @@
-﻿Delegation-capable user accounts can impersonate users to downstream services. If these accounts are over-privileged or poorly protected, they can become valuable pivot points for privilege escalation and lateral movement.
+Delegation-capable user accounts can impersonate users to downstream services. If these accounts are over-privileged or poorly protected, they can become valuable pivot points for privilege escalation and lateral movement.
 
 #### Control Type
 

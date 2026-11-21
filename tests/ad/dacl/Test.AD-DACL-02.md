@@ -1,4 +1,4 @@
-﻿Organizational Units are a common delegation boundary in Active Directory. Understanding how many DACL entries apply to OU objects helps focus permission review on objects that commonly control administration and policy scoping.
+Organizational Units are a common delegation boundary in Active Directory. Understanding how many DACL entries apply to OU objects helps focus permission review on objects that commonly control administration and policy scoping.
 
 - **Highlights OU permission surface area**
 - **Supports delegation review** for administrative boundaries

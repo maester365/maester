@@ -63,10 +63,10 @@ export function Kpis() {
     <div className="mt-kpis">
       <Kpi icon="finding" label="Failed" value={failing.length} note={model.previous ? `+${newly} new` : undefined} noteTone={newly ? "up" : undefined} onClick={() => explore({ filters: failedFilter })}
         chips={["Critical", "High", "Medium", "Low"].map((s) => ({ label: s, n: failing.filter((t) => t.Severity === s).length, colour: SEVERITY_DOT[s], onClick: () => explore({ filters: { Result: ["Failed"], Severity: [s] } }) })).filter((c) => c.n)} />
-      <Kpi icon="severity" label="Critical and high" value={severe.length} note={model.previous ? `${model.changes.newlyFailing.filter((t) => severe.includes(t)).length} new` : undefined} onClick={() => explore({ filters: { Result: ["Failed"], Severity: ["Critical", "High"] } })}
-        chips={[{ label: "Quick to fix", n: severe.filter(isQuickWin).length }, { label: "With ATT&CK", n: severe.filter((t) => t.Mitre.length).length }]} />
-      <Kpi icon="effort" label="Quick wins" value={quick.length} note="low effort, low impact" onClick={quick.length ? () => navigate("/plan") : undefined}
-        chips={[{ label: "Fixed since last run", n: model.changes.fixed.length }]} />
+      {model.rated.severity && <Kpi icon="severity" label="Critical and high" value={severe.length} note={model.previous ? `${model.changes.newlyFailing.filter((t) => severe.includes(t)).length} new` : undefined} onClick={() => explore({ filters: { Result: ["Failed"], Severity: ["Critical", "High"] } })}
+        chips={[...(model.rated.effort ? [{ label: "Quick to fix", n: severe.filter(isQuickWin).length }] : []), ...(model.rated.mitre ? [{ label: "With ATT&CK", n: severe.filter((t) => t.Mitre.length).length }] : [])]} />}
+      {model.rated.effort && <Kpi icon="effort" label="Quick wins" value={quick.length} note="low effort, low impact" onClick={quick.length ? () => navigate("/plan") : undefined}
+        chips={[{ label: "Fixed since last run", n: model.changes.fixed.length }]} />}
       <Kpi icon="service" label="Did not run" value={notRun.length} onClick={() => explore({ filters: { Result: [...new Set(notRun.map((t) => t.Result))] } })}
         chips={[...reasons.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([code, n]) => ({ label: (REASONS[code] || [code])[0].replace(/\.$/, ""), n }))} />
       {grid.length > 0 && (

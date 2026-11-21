@@ -1,4 +1,4 @@
-﻿A data loss prevention policy for the Microsoft 365 Copilot location is turned on, includes all users, and has an enforcing rule for sensitive data.
+A data loss prevention policy for the Microsoft 365 Copilot location is turned on, includes all users, and has an enforcing rule for sensitive data.
 
 Microsoft 365 Copilot can read and summarise everything that a user can open. Without a DLP policy for the Copilot location, a prompt can bring sensitive content into an answer, or send it to a web search, and nothing in the policy limits that. A policy lets you keep content with certain sensitivity labels or sensitive information types out of Copilot responses and processing. Copilot reads SharePoint sites and OneDrive files, so a policy on that location limits what an attacker who gets a session can collect through Copilot from them (T1213.002 and T1530).
 

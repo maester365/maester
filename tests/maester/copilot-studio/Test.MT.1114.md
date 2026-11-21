@@ -1,4 +1,4 @@
-﻿AI agents should require user authentication with sign-in enforced.
+AI agents should require user authentication with sign-in enforced.
 
 This test flags two issues:
 - **No authentication**: Agents configured without any authentication allow anonymous access.

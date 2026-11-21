@@ -1,4 +1,4 @@
-﻿## Description
+## Description
 
 Checks that default users, meaning users who hold no built-in or custom Entra role, cannot create agent identity blueprints.
 

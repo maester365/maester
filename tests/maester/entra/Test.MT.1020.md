@@ -1,4 +1,4 @@
-﻿Microsoft Entra Connect uses a connector identity to synchronize an on-premises directory with Microsoft Entra ID.
+Microsoft Entra Connect uses a connector identity to synchronize an on-premises directory with Microsoft Entra ID.
 Legacy installations can use a user-based directory synchronization account. These accounts should be excluded from
 Conditional Access policies scoped to all cloud apps and all users, and their access should be restricted to trusted
 networks.

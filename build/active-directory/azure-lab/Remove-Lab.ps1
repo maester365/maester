@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Removes Azure lab resources created by Deploy-Lab.ps1.
 

@@ -1,4 +1,4 @@
-﻿User warnings, comparable to the user safety tips included with EOP, SHOULD be displayed.
+User warnings, comparable to the user safety tips included with EOP, SHOULD be displayed.
 
 Rationale: Many tasks are better suited for automated processes, such as identifying unusual characters in the `FROM` address or identifying a first-time sender. User warnings can handle these tasks, reducing the burden on end users and the risk of successful phishing attempts.
 

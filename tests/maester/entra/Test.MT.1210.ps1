@@ -172,19 +172,10 @@
                 'User principal name | Directory role |'
             $ObservationNote += "`n| --- | --- | --- | --- |"
             foreach ($Item in $RoleObservations) {
-                $Name = [System.Net.WebUtility]::HtmlEncode(
-                    [string]$Item.DisplayName
-                ) -replace '\|', '&#124;'
-                $Name = $Name -replace '[\r\n]+', ' '
+                $Name = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.DisplayName))
                 if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
-                $UPN = [System.Net.WebUtility]::HtmlEncode(
-                    [string]$Item.UserPrincipalName
-                ) -replace '\|', '&#124;'
-                $UPN = $UPN -replace '[\r\n]+', ' '
-                $RoleName = [System.Net.WebUtility]::HtmlEncode(
-                    [string]$Item.RoleName
-                ) -replace '\|', '&#124;'
-                $RoleName = $RoleName -replace '[\r\n]+', ' '
+                $UPN = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.UserPrincipalName))
+                $RoleName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.RoleName))
                 $ObservationNote += "`n| $($Item.UserId) | $Name | $UPN | $RoleName |"
             }
         }
@@ -203,11 +194,10 @@
         foreach ($Item in $ExcessiveAccessFindings) {
             $Name = [string]$Item.DisplayName
             if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
-            $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
-            $Name = $Name -replace "`r?`n", ' '
-            $UPN = [System.Net.WebUtility]::HtmlEncode([string]$Item.UserPrincipalName) -replace '\|', '&#124;'
-            $PrivItem = [System.Net.WebUtility]::HtmlEncode([string]$Item.PrivilegedItem) -replace '\|', '&#124;'
-            $Reason = [System.Net.WebUtility]::HtmlEncode([string]$Item.Reason) -replace '\|', '&#124;'
+            $Name = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Name))
+            $UPN = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.UserPrincipalName))
+            $PrivItem = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.PrivilegedItem))
+            $Reason = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.Reason))
             $Result += "`n| $($Item.UserId) | $Name | $UPN | $($Item.AccessType) | " +
                 "$PrivItem | $Reason |"
         }

@@ -1,4 +1,4 @@
-﻿**This is no longer applicable, and is deprecated by CISA. The content below is retained as a historical archive and will be removed in a future version.**
+**This is no longer applicable, and is deprecated by CISA. The content below is retained as a historical archive and will be removed in a future version.**
 
 Microsoft Purview Audit (Premium) logging SHALL be enabled.
 

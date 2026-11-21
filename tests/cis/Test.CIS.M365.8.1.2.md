@@ -1,4 +1,4 @@
-﻿Channel email addresses let a user send an email into a Teams channel. An attacker who learns or guesses such an address can post content into the channel, which members may trust because it appears in the team. Blocking this removes a path for unsolicited and phishing content into channels.
+Channel email addresses let a user send an email into a Teams channel. An attacker who learns or guesses such an address can post content into the channel, which members may trust because it appears in the team. Blocking this removes a path for unsolicited and phishing content into channels.
 
 When the setting is off, channel members can still post in Teams. Only the email-to-channel entry point is closed, so users who relied on it need another way to share content.
 

@@ -1,4 +1,4 @@
-﻿Global Catalogs (GCs) maintain a partial replica of all objects in the Active Directory forest, enabling:
+Global Catalogs (GCs) maintain a partial replica of all objects in the Active Directory forest, enabling:
 
 - **Forest-wide searches**: Users can search for objects across all domains in the forest
 - **Universal group membership caching**: Required for authentication when universal groups are used

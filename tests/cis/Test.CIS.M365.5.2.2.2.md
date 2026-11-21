@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy requires multifactor authentication for all users, in all cloud apps.
+An enabled Conditional Access policy requires multifactor authentication for all users, in all cloud apps.
 
 Passwords are the most common way into Microsoft 365 accounts: they are phished, reused, guessed and sprayed. Requiring a second factor for every user at sign-in blocks most of these attacks even when the password is known.
 

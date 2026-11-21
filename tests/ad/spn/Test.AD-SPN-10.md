@@ -1,4 +1,4 @@
-﻿Detailed information about unknown user SPNs is critical for security:
+Detailed information about unknown user SPNs is critical for security:
 
 - **Immediate action required**: User SPNs are prime Kerberoasting targets
 - **Accountability**: Know exactly which users have unknown SPNs

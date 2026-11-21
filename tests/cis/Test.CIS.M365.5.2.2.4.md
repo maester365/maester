@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy sets a short sign-in frequency and turns off persistent browser sessions for the administrative roles.
+An enabled Conditional Access policy sets a short sign-in frequency and turns off persistent browser sessions for the administrative roles.
 
 A session token that stays valid for days or survives a browser restart can be stolen and replayed on another machine. Administrators hold the most valuable sessions, so shortening how long a session lasts, and not keeping it after the browser closes, limits how long a stolen token is useful.
 

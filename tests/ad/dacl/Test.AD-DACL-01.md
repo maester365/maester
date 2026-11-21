@@ -1,4 +1,4 @@
-﻿Knowing how many distinct Active Directory objects are represented in the collected DACL dataset helps establish the scope of permission analysis.
+Knowing how many distinct Active Directory objects are represented in the collected DACL dataset helps establish the scope of permission analysis.
 
 - **Measures DACL coverage** across collected directory objects
 - **Provides a baseline** for comparing later DACL metrics

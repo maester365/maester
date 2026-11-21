@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaPR06 {
+﻿function Test-MtCheckEidscaPR06 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold is less than or equal to 10

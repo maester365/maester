@@ -1,4 +1,4 @@
-﻿The default Outlook on the web mailbox policy does not allow connecting personal email accounts and personal calendars.
+The default Outlook on the web mailbox policy does not allow connecting personal email accounts and personal calendars.
 
 When a user connects a personal mail account, company and private mail mix in one inbox, and content can be moved or copied between them without any of your data protection controls applying. Mail from the personal account is also not filtered by your anti-phishing protection, which makes it a way to deliver malicious content.
 

@@ -1,4 +1,4 @@
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
     'PSAvoidUsingConvertToSecureStringWithPlainText',
     '',
     Justification = 'Test fixtures use a fake password to verify that transport arguments do not expose it.'

@@ -25,11 +25,7 @@
     )
 
     $acceptedDomains = Get-MtExo -Request AcceptedDomain
-    <# Parked domains should have DMARC with reject policy
-    $sendingDomains = $acceptedDomains | Where-Object {`
-        -not $_.SendingFromDomainDisabled
-    }
-    #>
+    # Every accepted domain is checked, a parked domain included: MS.EXO.4.4v1 gives no separate rule for one.
     $expandedDomains = @()
     foreach($domain in $acceptedDomains){
         #This regex does NOT capture for third level domain scenarios

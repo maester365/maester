@@ -1,4 +1,4 @@
-function Clear-MtConnectionState {
+﻿function Clear-MtConnectionState {
     <#
     .SYNOPSIS
     Forgets the connection of a Maester Pack connector.

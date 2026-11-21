@@ -1,4 +1,4 @@
-﻿Computers located in the default `CN=Computers` container represent a security and management concern:
+Computers located in the default `CN=Computers` container represent a security and management concern:
 
 - **No Group Policy inheritance**: The Computers container is not an OU, so it doesn't support Group Policy inheritance
 - **Management gaps**: Computers in the default container may not receive security policies, software updates, or configurations

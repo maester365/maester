@@ -1,4 +1,4 @@
-BeforeDiscovery {
+﻿BeforeDiscovery {
     $script:GoldenRoot = (Resolve-Path "$PSScriptRoot/../../fixtures/golden").Path
     $script:GoldenFiles = @(
         Get-ChildItem -Path $script:GoldenRoot -Recurse -File -Filter '*.json' |

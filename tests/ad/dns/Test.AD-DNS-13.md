@@ -1,4 +1,4 @@
-﻿DNSSEC (DNS Security Extensions) provides authentication of DNS data through digital signatures. Trust anchors are the starting points for DNSSEC validation:
+DNSSEC (DNS Security Extensions) provides authentication of DNS data through digital signatures. Trust anchors are the starting points for DNSSEC validation:
 
 - **Data integrity**: DNSSEC prevents DNS spoofing and cache poisoning
 - **Authentication**: Clients can verify DNS responses are authentic

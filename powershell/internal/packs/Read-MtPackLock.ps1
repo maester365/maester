@@ -1,4 +1,4 @@
-function Read-MtPackLock {
+﻿function Read-MtPackLock {
     <#
     .SYNOPSIS
     Reads maester-packs.lock.json (Maester Packs design, section 5.2), or returns an empty lock.

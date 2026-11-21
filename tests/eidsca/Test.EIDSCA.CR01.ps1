@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaCR01 {
+﻿function Test-MtCheckEidscaCR01 {
     <#
     .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Policy to enable or disable admin consent request feature is 'true'

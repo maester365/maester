@@ -1,4 +1,4 @@
-﻿AI agents should not be shared broadly with unrestricted access.
+AI agents should not be shared broadly with unrestricted access.
 
 Agents with access control set to **Any** or **Any multitenant** can be accessed by anyone, including users outside your organization. This increases the risk of data exposure and unauthorized use of connected systems.
 

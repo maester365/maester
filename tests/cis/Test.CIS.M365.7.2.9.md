@@ -1,4 +1,4 @@
-﻿7.2.9 (L1) Ensure guest access to a site or OneDrive will expire automatically
+7.2.9 (L1) Ensure guest access to a site or OneDrive will expire automatically
 
 This policy setting configures the expiration time for each guest that is invited to the SharePoint site or with whom users share individual files and folders with.
 

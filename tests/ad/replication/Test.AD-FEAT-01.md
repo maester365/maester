@@ -1,4 +1,4 @@
-﻿Active Directory optional features extend the base functionality of AD and can significantly impact security capabilities:
+Active Directory optional features extend the base functionality of AD and can significantly impact security capabilities:
 
 - **Recycle Bin**: Critical for recovering accidentally or maliciously deleted objects
 - **Privileged Access Management (PAM)**: Enables time-based group membership for just-in-time access

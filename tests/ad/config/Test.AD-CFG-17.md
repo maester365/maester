@@ -1,4 +1,4 @@
-﻿Trusted Root Certification Authorities (CAs) define which certificate chains are trusted for AD-integrated scenarios. If an unauthorized or misconfigured trusted root certificate is present, attackers may be able to mint certificates that validate in your environment.
+Trusted Root Certification Authorities (CAs) define which certificate chains are trusted for AD-integrated scenarios. If an unauthorized or misconfigured trusted root certificate is present, attackers may be able to mint certificates that validate in your environment.
 
 This test focuses on the *details* of trusted root CAs, including certificate validity, to help detect:
 - Expired root certificates that can break trust and authentication flows

@@ -1,4 +1,4 @@
-﻿1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'
+1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'
 
 Third-party storage can be enabled for users in Microsoft 365, allowing them to store and share documents using services such as Dropbox, alongside OneDrive and team sites.
 

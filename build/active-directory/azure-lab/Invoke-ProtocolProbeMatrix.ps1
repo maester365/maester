@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Executes the mandatory LDAP protocol probe matrix on an AD lab runner.
 

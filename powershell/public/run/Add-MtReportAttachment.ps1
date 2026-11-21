@@ -1,20 +1,25 @@
-function Add-MtReportAttachment {
+﻿function Add-MtReportAttachment {
     <#
     .SYNOPSIS
-    Embeds an HTML report from another tool in the Maester HTML report, opened with one click.
+    Embeds an HTML report from another tool, or data for a built-in report view, in the Maester HTML report.
 
     .DESCRIPTION
     Call this from a test, an instance source or a pack when the tool it runs writes its own single-file
     HTML report (for example the Microsoft Zero Trust Assessment). The file is read at once, so the tool's
     output folder can be deleted afterwards.
 
-    The HTML report shows a button for each attachment on the overview page, and on the result of the test
+    The HTML report shows a button for each HTML attachment on the overview page, and on the result of the test
     that added it. The button shows the attached report inside the Maester report, beside its navigation, with an option to open it in a new browser tab. The report is stored compressed
     (gzip, then Base64), so a 10 MB report adds about 2 MB to the Maester report.
 
+    With -ContentType application/json the attachment is data that a built-in view of the report reads, found by
+    its Name (for example 'zero-trust-workshop', the Zero Trust plan of the Zero Trust Assessment pack). A JSON
+    attachment is not shown as a button. It is stored compressed in the same way.
+
     Attachments are kept only in the HTML report and the results that Invoke-Maester -PassThru returns. The
-    JSON results file lists each attachment's name and size without its content. The HTML report leaves
-    attachments out when -RedactUserIdentity is used, because Maester cannot redact another tool's report.
+    JSON results file lists each attachment's name and size without its content. When -RedactUserIdentity is
+    used, the HTML report redacts JSON attachments the way it redacts the results, and leaves HTML attachments
+    out, because Maester cannot redact another tool's report.
 
     The attached page runs in a sandboxed frame, with its scripts in an origin of their own, so it cannot read or
     change the Maester report or its data. Adding a second attachment with the same name from the same test
@@ -30,13 +35,19 @@ function Add-MtReportAttachment {
 
     Embeds an HTML page built in memory.
 
+    .EXAMPLE
+    Add-MtReportAttachment -Name 'zero-trust-workshop' -Content $json -ContentType 'application/json'
+
+    Adds data for the report's Zero Trust plan view.
+
     .LINK
     https://maester.dev/docs/commands/Add-MtReportAttachment
     #>
     [CmdletBinding(DefaultParameterSetName = 'Path')]
     [OutputType([void])]
     param(
-        # The label of the button that opens the attachment, for example 'Zero Trust Assessment'.
+        # The label of the button that opens the attachment, for example 'Zero Trust Assessment'. For a JSON
+        # attachment, the name the report view reads it by, for example 'zero-trust-workshop'.
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string] $Name,
@@ -46,10 +57,16 @@ function Add-MtReportAttachment {
         [ValidateNotNullOrEmpty()]
         [string] $Path,
 
-        # The HTML to embed, when it is not in a file.
+        # The HTML or JSON to embed, when it is not in a file.
         [Parameter(Mandatory, ParameterSetName = 'Content')]
         [ValidateNotNullOrEmpty()]
-        [string] $Content
+        [string] $Content,
+
+        # text/html (the default) for a report the user opens from a button; application/json for data that a
+        # built-in view of the report reads.
+        [Parameter()]
+        [ValidateSet('text/html', 'application/json')]
+        [string] $ContentType = 'text/html'
     )
 
     if ($PSCmdlet.ParameterSetName -eq 'Path') {
@@ -84,7 +101,7 @@ function Add-MtReportAttachment {
             Id          = [guid]::NewGuid().ToString('n')
             Name        = $Name
             TestId      = $testId
-            ContentType = 'text/html'
+            ContentType = $ContentType
             FileName    = $fileName
             Size        = $bytes.Length
             Encoding    = 'gzip+base64'

@@ -1,4 +1,4 @@
-﻿Root DNS server hints are essential for external DNS resolution. Incorrect root server IP addresses can:
+Root DNS server hints are essential for external DNS resolution. Incorrect root server IP addresses can:
 
 - **Prevent external DNS resolution**: Clients cannot resolve internet domain names
 - **Indicate compromise**: Unexpected changes may indicate DNS poisoning attacks

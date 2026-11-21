@@ -1,4 +1,4 @@
-@{
+﻿@{
     Run          = @{
         #PassThru = $true
     }

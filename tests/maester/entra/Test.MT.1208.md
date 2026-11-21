@@ -1,4 +1,4 @@
-﻿Agent Identity Blueprints should not have expired, excessive, or overly long-lived client credentials.
+Agent Identity Blueprints should not have expired, excessive, or overly long-lived client credentials.
 
 Credentials on Agent Identity Blueprints are used for token exchange to authenticate all child Agent Identities. If a blueprint accumulates expired secrets, secrets valid for years without rotation, or an excessive number of active secrets, the risk of credential compromise and unmanaged persistence increases significantly.
 

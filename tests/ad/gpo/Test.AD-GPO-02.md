@@ -1,4 +1,4 @@
-﻿Group Policy Objects (GPOs) created a long time ago can be a sign of policy growth over time. Older GPOs may contain outdated security settings, legacy configuration patterns, and assumptions that no longer match your current security baseline.
+Group Policy Objects (GPOs) created a long time ago can be a sign of policy growth over time. Older GPOs may contain outdated security settings, legacy configuration patterns, and assumptions that no longer match your current security baseline.
 
 Tracking the count of GPOs created before 2020 helps you quickly identify areas that may benefit from review and modernization.
 

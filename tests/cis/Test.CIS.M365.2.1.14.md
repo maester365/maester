@@ -1,4 +1,4 @@
-﻿No inbound anti-spam policy in Microsoft Defender for Office 365 lists allowed sender domains.
+No inbound anti-spam policy in Microsoft Defender for Office 365 lists allowed sender domains.
 
 A domain on the allowed list bypasses spam and phishing filtering. Attackers know that and spoof, or compromise, the domains that organisations trust most, such as partners and suppliers. A single allowed domain turns into a path past the filters.
 

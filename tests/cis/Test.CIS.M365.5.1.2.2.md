@@ -1,4 +1,4 @@
-﻿5.1.2.2 (L1) Ensure users cannot register applications
+5.1.2.2 (L1) Ensure users cannot register applications
 
 This setting controls whether standard users can register applications in the Microsoft Entra ID directory. When enabled, any user can create app registrations, which function as identity objects for applications.
 

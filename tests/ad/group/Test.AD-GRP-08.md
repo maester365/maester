@@ -1,4 +1,4 @@
-﻿Domain local groups have specific characteristics that affect your security architecture:
+Domain local groups have specific characteristics that affect your security architecture:
 
 - **Domain boundary restriction**: Can only be used to assign permissions to resources within the same domain
 - **Flexible membership**: Can contain users, global groups, and universal groups from any domain in the forest

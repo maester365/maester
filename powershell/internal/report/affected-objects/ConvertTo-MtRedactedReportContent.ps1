@@ -1,4 +1,4 @@
-function ConvertTo-MtRedactedReportContent {
+﻿function ConvertTo-MtRedactedReportContent {
     <#
     .SYNOPSIS
     Replaces user identity values in generated report content with stable stable ids.

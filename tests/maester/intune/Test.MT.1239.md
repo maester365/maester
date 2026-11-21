@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** iOS app protection policy keeps organization data inside managed apps.
+Ensure at least one **assigned** iOS app protection policy keeps organization data inside managed apps.
 
 **This is the control a device compliance policy cannot provide.** A tenant can require a compliant, passcode-protected, up-to-date iPhone and still let a user forward an attachment from Outlook into a personal cloud drive, paste a customer list into a note-taking app, or let iCloud back the whole mailbox up to a personal Apple account. Compliance evaluates the device; app protection evaluates what the app may do with the data.
 

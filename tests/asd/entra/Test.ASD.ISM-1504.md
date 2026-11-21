@@ -1,4 +1,4 @@
-﻿Multi-factor authentication is used to authenticate human users to their organisation's online services that process, store or communicate their organisation's sensitive data (ISM-1504, Essential Eight Maturity Level One).
+Multi-factor authentication is used to authenticate human users to their organisation's online services that process, store or communicate their organisation's sensitive data (ISM-1504, Essential Eight Maturity Level One).
 
 A password alone is defeated by phishing, password spray and credential stuffing. Requiring a second factor for every user on every resource is the first Essential Eight requirement for multi-factor authentication, and the baseline the phishing-resistant requirement of Maturity Level Two builds on.
 

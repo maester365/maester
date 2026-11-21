@@ -1,4 +1,4 @@
-﻿The Authentication Methods Manage Migration feature SHALL be set to Migration Complete.
+The Authentication Methods Manage Migration feature SHALL be set to Migration Complete.
 
 Rationale: To disable the legacy authentication methods screen for the tenant, configure the Manage Migration feature to Migration Complete. The MFA and Self-Service Password Reset (SSPR) authentication methods are both managed from a central admin page, thereby reducing administrative complexity and potential security misconfigurations.
 

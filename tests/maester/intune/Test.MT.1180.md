@@ -1,4 +1,4 @@
-﻿Ensure at least one Intune App Control for Business policy has **Managed Installer** enabled.
+Ensure at least one Intune App Control for Business policy has **Managed Installer** enabled.
 
 When Managed Installer is enabled in an App Control for Business policy, applications deployed through Intune (or SCCM) are automatically trusted and allowed to run without needing explicit allow rules in the code integrity policy. This dramatically simplifies App Control deployment in enterprise environments.
 

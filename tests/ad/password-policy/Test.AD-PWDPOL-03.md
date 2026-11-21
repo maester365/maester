@@ -1,4 +1,4 @@
-﻿Minimum password length is one of the most effective controls against password-based attacks:
+Minimum password length is one of the most effective controls against password-based attacks:
 
 - **Brute-force resistance**: Each additional character exponentially increases the time required to brute-force a password
 - **Dictionary attack protection**: Longer passwords are less likely to appear in common password dictionaries

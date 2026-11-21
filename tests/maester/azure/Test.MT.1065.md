@@ -1,4 +1,4 @@
-﻿Soft delete ensures that backup items and recovery points are retained for a period after deletion. This protects against accidental or malicious deletion of backups.
+Soft delete ensures that backup items and recovery points are retained for a period after deletion. This protects against accidental or malicious deletion of backups.
 
 Ensure that all Recovery Services Vaults across all subscriptions have soft delete enabled.
 

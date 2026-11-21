@@ -1,4 +1,4 @@
-﻿Only users with the Guest Inviter role SHOULD be able to invite guest users.
+Only users with the Guest Inviter role SHOULD be able to invite guest users.
 
 Rationale: By only allowing an authorized group of individuals to invite external users to create accounts in the tenant, an agency can enforce a guest user account approval process, reducing the risk of unauthorized account creation.
 

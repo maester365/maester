@@ -1,4 +1,4 @@
-﻿FSMO (Flexible Single Master Operations) roles are critical directory services operations that can only be performed by one domain controller at a time:
+FSMO (Flexible Single Master Operations) roles are critical directory services operations that can only be performed by one domain controller at a time:
 
 - **Schema Master**: Controls schema updates
 - **Domain Naming Master**: Controls domain additions/removals

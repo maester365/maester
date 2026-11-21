@@ -1,4 +1,4 @@
-﻿Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes.
+Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes.
 
 Rationale: Limiting which domains can be invited to create guest accounts in the tenant helps reduce the risk of users from unauthorized external organizations getting access.
 

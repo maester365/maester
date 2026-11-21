@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Enables and configures OpenSSH Server on a Windows VM for SSH-based management.
 

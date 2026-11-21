@@ -1,4 +1,4 @@
-function Get-MtRoleMember {
+﻿function Get-MtRoleMember {
     <#
     .Synopsis
     Returns all the members of a role.

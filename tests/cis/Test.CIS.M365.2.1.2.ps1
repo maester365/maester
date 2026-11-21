@@ -28,7 +28,7 @@
         ImplementationCost = 'Low',
         Mitre = ('T1566.001', 'T1204.002'),
         Control = ('cis-m365:2.1.2', 'nist-800-53-r5:SI-3'),
-        Service = ('ExchangeOnline', 'SecurityCompliance'),
+        Service = 'ExchangeOnline',
         Author = 'NZLostboy'
     )]
     [CmdletBinding()]

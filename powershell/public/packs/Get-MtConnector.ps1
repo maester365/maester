@@ -1,4 +1,4 @@
-function Get-MtConnector {
+﻿function Get-MtConnector {
     <#
     .SYNOPSIS
     Lists the services that installed Maester Packs connect to, and whether each is connected.

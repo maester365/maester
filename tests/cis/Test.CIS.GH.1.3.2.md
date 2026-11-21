@@ -1,4 +1,4 @@
-﻿Organization members cannot create teams.
+Organization members cannot create teams.
 
 Teams can grant access to organization repositories. Restricting who can create them helps prevent unplanned access and makes the organization's permissions easier to manage. Members who need a new team may need an owner, administrator, or approved access-management process to create it.
 

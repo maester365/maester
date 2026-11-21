@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** Android compliance policy blocks devices managed with device administrator.
+Ensure at least one **assigned** Android compliance policy blocks devices managed with device administrator.
 
 Android device administrator is the legacy management mode. Google deprecated the APIs it is built on, newer Android releases ignore a growing share of them, and the hardening that Android Enterprise brings - a separate work profile, Play Integrity attestation, per-profile policy - does not exist there. A device administrator enrollment is therefore managed in name while the controls an administrator believes are applied quietly stop being enforced.
 

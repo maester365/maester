@@ -1,4 +1,4 @@
-﻿Detailed visibility into domain admin SPNs is critical for security incident response:
+Detailed visibility into domain admin SPNs is critical for security incident response:
 
 - **Immediate remediation**: Know exactly which SPNs to remove
 - **Service identification**: Understand what services were improperly configured

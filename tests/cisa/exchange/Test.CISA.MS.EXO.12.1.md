@@ -1,4 +1,4 @@
-﻿IP allow lists SHOULD NOT be created.
+IP allow lists SHOULD NOT be created.
 
 Rationale: Messages sent from IP addresses on an allow list bypass important security mechanisms, including spam filtering and sender authentication checks. Avoiding use of IP allow lists prevents potential threats from circumventing security mechanisms.
 

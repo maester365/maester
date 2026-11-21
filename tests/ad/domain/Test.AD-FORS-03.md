@@ -1,4 +1,4 @@
-﻿SPN (Service Principal Name) suffixes simplify Service Principal Name management in complex Active Directory environments. They are important for:
+SPN (Service Principal Name) suffixes simplify Service Principal Name management in complex Active Directory environments. They are important for:
 
 - **Service Authentication**: SPNs are used by Kerberos to authenticate services; suffixes provide flexibility in how services are registered
 - **Multi-Domain Services**: Organizations hosting services across multiple DNS namespaces use SPN suffixes to simplify SPN registration

@@ -1,4 +1,4 @@
-function Write-OrcaError {
+﻿function Write-OrcaError {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]

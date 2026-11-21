@@ -1,4 +1,4 @@
-function Get-MtPackConnectorSetting {
+﻿function Get-MtPackConnectorSetting {
     <#
     .SYNOPSIS
     Returns the parameters for a pack connector's Connect function, from -ServiceSetting, the environment and the config (Maester Packs design, section 6.2).

@@ -1,4 +1,4 @@
-Describe 'Test-MtExoModernAuth' {
+﻿Describe 'Test-MtExoModernAuth' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"

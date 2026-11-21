@@ -1,4 +1,4 @@
-function Test-MtFixtureFrameworkContosoOther1 {
+﻿function Test-MtFixtureFrameworkContosoOther1 {
     <#
     .SYNOPSIS
     Framework fixture: its Control names no framework of a suite.

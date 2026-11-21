@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Creates and configures a Windows or Ubuntu runner VM for the lab.
 

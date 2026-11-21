@@ -1,4 +1,4 @@
-﻿Understanding FSMO (Flexible Single Master Operations) role distribution is critical for:
+Understanding FSMO (Flexible Single Master Operations) role distribution is critical for:
 
 - **Operational awareness**: Knowing which DCs perform critical directory operations
 - **Disaster recovery**: Being able to quickly seize roles if a DC fails

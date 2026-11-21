@@ -1,4 +1,4 @@
-﻿Agent Identity Blueprint Principals should have an existing Blueprint.
+Agent Identity Blueprint Principals should have an existing Blueprint.
 
 An Agent Identity Blueprint defines how Agent Identities are created and managed. A Blueprint
 Principal is the service principal created from that Blueprint in the tenant. If the Blueprint

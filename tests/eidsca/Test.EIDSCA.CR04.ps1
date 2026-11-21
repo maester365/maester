@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaCR04 {
+﻿function Test-MtCheckEidscaCR04 {
     <#
     .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Consent request duration (days) is less than or equal to 30

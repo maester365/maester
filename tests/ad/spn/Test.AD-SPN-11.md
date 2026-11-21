@@ -1,4 +1,4 @@
-﻿User account SPNs with non-FQDN hosts can cause:
+User account SPNs with non-FQDN hosts can cause:
 
 - **Authentication failures**: Kerberos may fail to resolve short names
 - **Cross-domain issues**: Non-FQDNs don't work across domain trusts

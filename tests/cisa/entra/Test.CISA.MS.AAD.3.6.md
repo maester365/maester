@@ -1,4 +1,4 @@
-﻿Phishing-resistant MFA SHALL be required for highly privileged roles.
+Phishing-resistant MFA SHALL be required for highly privileged roles.
 
 Rationale: This is a backup security policy to help protect privileged access to the tenant if the Conditional Access policy, which requires MFA for all users, is disabled or misconfigured.
 

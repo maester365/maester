@@ -1,4 +1,4 @@
-﻿External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.
+External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.
 
 Rationale: By limiting sharing to domains or approved security groups used for interagency collaboration purposes, administrators help prevent sharing with unknown organizations and individuals.
 

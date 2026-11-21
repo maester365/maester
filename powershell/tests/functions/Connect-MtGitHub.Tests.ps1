@@ -380,6 +380,42 @@ Describe 'Connect-MtGitHub' {
             }
         }
 
+        It 'Passes explicit headers and the same connection object to all four probes' {
+            $script:ProbeCalls = [System.Collections.Generic.List[object]]::new()
+            Mock Invoke-MtGitHubConnectionProbe -ModuleName Maester {
+                $script:ProbeCalls.Add([pscustomobject]@{ Uri = $Uri; Headers = $Headers; Connection = $Connection })
+                $Content = switch ($Uri) {
+                    'https://api.myco.ghe.com/user' { '{"login":"testuser"}' }
+                    'https://api.myco.ghe.com/orgs/myorg' { '{"login":"myorg"}' }
+                    'https://api.myco.ghe.com/user/memberships/orgs/myorg' { '{"state":"active","role":"admin"}' }
+                    'https://api.myco.ghe.com/orgs/myorg/actions/permissions' { '{}' }
+                    default { throw "Unexpected probe URI: $Uri" }
+                }
+                [pscustomobject]@{ Content = $Content; StatusCode = 200 }
+            }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.myco.ghe.com' -ApiVersion '2024-01-01' 3>$null
+
+            Should -Invoke Invoke-MtGitHubConnectionProbe -ModuleName Maester -Exactly -Times 4
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 0
+            $script:ProbeCalls.Uri | Should -Be @(
+                'https://api.myco.ghe.com/user'
+                'https://api.myco.ghe.com/orgs/myorg'
+                'https://api.myco.ghe.com/user/memberships/orgs/myorg'
+                'https://api.myco.ghe.com/orgs/myorg/actions/permissions'
+            )
+            InModuleScope Maester -Parameters @{ ProbeCalls = $script:ProbeCalls } {
+                $__MtSession.GitHubConnection.Connected | Should -BeTrue
+                foreach ($Call in $ProbeCalls) {
+                    [object]::ReferenceEquals($Call.Connection, $ProbeCalls[0].Connection) | Should -BeTrue
+                    $Call.Connection.ApiBaseUri | Should -Be 'https://api.myco.ghe.com'
+                    [object]::ReferenceEquals($Call.Headers, $__MtSession.GitHubAuthHeader) | Should -BeTrue
+                    $Call.Headers.Authorization | Should -Be 'Bearer valid-token'
+                    $Call.Headers['X-GitHub-Api-Version'] | Should -Be '2024-01-01'
+                }
+            }
+        }
+
         It 'All four probes use the configured ApiBaseUri and X-GitHub-Api-Version header' {
             Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.myco.ghe.com' -ApiVersion '2024-01-01' 3>$null
 
@@ -1587,6 +1623,66 @@ Describe 'Connect-MtGitHub' {
             }
             Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
                 $Uri -eq 'https://api.github.com/user'
+            }
+        }
+    }
+}
+
+Describe 'Invoke-MtGitHubConnectionProbe' {
+    It 'Checks the supplied connection before GET and records headers before returning the original response' {
+        InModuleScope Maester {
+            $ProbeConnection = [pscustomobject]@{ ApiBaseUri = 'https://api.fixture.ghe.com' }
+            $RequestHeaders = @{ Authorization = 'Bearer synthetic-probe'; Accept = 'application/vnd.github+json' }
+            $Response = [pscustomobject]@{ Content = 'unparsed response'; Headers = @{ 'x-ratelimit-remaining' = '1' }; StatusCode = 200 }
+            $Events = [System.Collections.Generic.List[string]]::new()
+            Mock Invoke-MtGitHubRateLimitGuard {
+                $Events.Add($(if ($null -ne $Headers) { 'Response' } else { 'Preflight' }))
+            }
+            Mock Invoke-WebRequest { $Events.Add('Request'); return $Response }
+
+            $Actual = Invoke-MtGitHubConnectionProbe -Uri 'https://api.fixture.ghe.com/user' -Headers $RequestHeaders -Connection $ProbeConnection
+
+            [object]::ReferenceEquals($Actual, $Response) | Should -BeTrue
+            $Events | Should -Be @('Preflight', 'Request', 'Response')
+            Should -Invoke Invoke-WebRequest -Exactly -Times 1 -ParameterFilter {
+                $Uri -eq 'https://api.fixture.ghe.com/user' -and [object]::ReferenceEquals($Headers, $RequestHeaders) -and
+                $Method -eq 'GET' -and $UseBasicParsing -and $ConnectionTimeoutSeconds -eq 30 -and
+                $OperationTimeoutSeconds -eq 30 -and $ErrorAction -eq 'Stop'
+            }
+            Should -Invoke Invoke-MtGitHubRateLimitGuard -Exactly -Times 2 -ParameterFilter {
+                $Api -eq 'REST' -and [object]::ReferenceEquals($Connection, $ProbeConnection)
+            }
+            Should -Invoke Invoke-MtGitHubRateLimitGuard -Exactly -Times 1 -ParameterFilter {
+                [object]::ReferenceEquals($Headers, $Response.Headers)
+            }
+        }
+    }
+
+    It 'Records an ordinary request error on the supplied connection and rethrows it' {
+        InModuleScope Maester {
+            $ProbeConnection = [pscustomobject]@{ ApiBaseUri = 'https://api.github.com' }
+            $Response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::Forbidden)
+            $Failure = [System.Management.Automation.ErrorRecord]::new(
+                [Microsoft.PowerShell.Commands.HttpResponseException]::new('Synthetic forbidden probe', $Response),
+                'FixtureProbe', 'InvalidOperation', $null
+            )
+            $Failure.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('{"message":"Forbidden"}')
+            Mock Invoke-MtGitHubRateLimitGuard {}
+            Mock Invoke-WebRequest { throw $Failure }
+
+            $Caught = $null
+            try {
+                Invoke-MtGitHubConnectionProbe -Uri 'https://api.github.com/user' -Headers @{ Authorization = 'Bearer synthetic-probe' } -Connection $ProbeConnection
+            } catch { $Caught = $_ }
+
+            $Caught | Should -Not -BeNullOrEmpty
+            [object]::ReferenceEquals($Caught.Exception, $Failure.Exception) | Should -BeTrue
+            $Caught.ErrorDetails.Message | Should -Be $Failure.ErrorDetails.Message
+            Should -Invoke Invoke-MtGitHubRateLimitGuard -Exactly -Times 2 -ParameterFilter {
+                $Api -eq 'REST' -and [object]::ReferenceEquals($Connection, $ProbeConnection)
+            }
+            Should -Invoke Invoke-MtGitHubRateLimitGuard -Exactly -Times 1 -ParameterFilter {
+                $null -ne $ErrorRecord -and [object]::ReferenceEquals($ErrorRecord.Exception, $Failure.Exception)
             }
         }
     }

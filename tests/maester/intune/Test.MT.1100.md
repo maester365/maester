@@ -1,4 +1,4 @@
-﻿This test checks for the existence of Intune Diagnostic settings collecting Intune Audit Logs.
+This test checks for the existence of Intune Diagnostic settings collecting Intune Audit Logs.
 
 #### Test Prerequisites
 

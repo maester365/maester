@@ -1,4 +1,4 @@
-﻿Disabled GPO links represent a potential security and operational concern in Active Directory environments:
+Disabled GPO links represent a potential security and operational concern in Active Directory environments:
 
 - **Policy Gaps**: Disabled links mean GPOs that are configured but not applied, potentially leaving systems without intended security controls
 - **Configuration Drift**: Disabled links may indicate temporary troubleshooting that was never reverted

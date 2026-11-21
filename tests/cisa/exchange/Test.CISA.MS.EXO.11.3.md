@@ -1,4 +1,4 @@
-﻿The phishing protection solution SHOULD include an AI-based phishing detection tool comparable to EOP Mailbox Intelligence.
+The phishing protection solution SHOULD include an AI-based phishing detection tool comparable to EOP Mailbox Intelligence.
 
 Rationale: Phishing attacks can result in unauthorized data disclosure and unauthorized access. Using AI-based phishing detection tools to improve the detection rate of phishing attempts helps reduce the risk of successful phishing attacks.
 

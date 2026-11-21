@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Runs the certified public Active Directory E2E matrix in isolated processes.
 

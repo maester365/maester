@@ -1,4 +1,4 @@
-﻿Normal user account (or non-critical user account) credentials should not live on devices that also have credentials of critical users. This makes the related devices an interesting target for attackers to exploit to eventually perform privilege escalation and lateral movement.
+Normal user account (or non-critical user account) credentials should not live on devices that also have credentials of critical users. This makes the related devices an interesting target for attackers to exploit to eventually perform privilege escalation and lateral movement.
 
 ### How to fix
 

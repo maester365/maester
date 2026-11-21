@@ -1,4 +1,4 @@
-﻿- Understanding the types of objects that can be group members helps assess Active Directory security posture:
+- Understanding the types of objects that can be group members helps assess Active Directory security posture:
 - **Security Principal Types**: Groups can contain users, groups, computers, and foreign security principals
 - **Nested Groups**: Groups containing other groups create inheritance chains that can be complex to audit
 - **Computer Membership**: Computers in groups may indicate service accounts or special access requirements

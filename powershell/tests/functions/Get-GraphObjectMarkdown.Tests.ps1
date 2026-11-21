@@ -13,7 +13,9 @@
 
         $link = Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess -AsPlainTextLink
 
-        $link | Should -BeLike '`[Microsoft-managed: A \`[B\`] \| C`](*PolicyBlade/policyId/00000000-0000-0000-0000-000000000001)'
+        # The colon is escaped now: GFM would otherwise autolink a scheme inside a tenant name.
+        # It renders as a plain colon, so the reader sees the name unchanged.
+        $link | Should -BeLike '`[Microsoft-managed\: A \`[B\`] \| C`](*PolicyBlade/policyId/00000000-0000-0000-0000-000000000001)'
     }
 
     It 'keeps a plain display name unchanged in the list form' {

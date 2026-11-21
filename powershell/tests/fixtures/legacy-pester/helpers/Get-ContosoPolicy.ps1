@@ -1,4 +1,4 @@
-# Helper dot-sourced by Contoso.DotSource.Tests.ps1. Not a test file.
+﻿# Helper dot-sourced by Contoso.DotSource.Tests.ps1. Not a test file.
 function Get-ContosoPolicy {
     param([string] $Name)
     $all = @(

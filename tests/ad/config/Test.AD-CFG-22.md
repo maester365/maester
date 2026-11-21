@@ -1,4 +1,4 @@
-﻿KDS root keys are used to generate keys required for Group Managed Service Accounts (gMSA) and related group-managed credential operations.
+KDS root keys are used to generate keys required for Group Managed Service Accounts (gMSA) and related group-managed credential operations.
 
 If KDS root keys are missing, misconfigured, or unexpectedly changed, service account provisioning can fail—potentially causing insecure workarounds or prolonged downtime.
 

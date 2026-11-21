@@ -1,4 +1,4 @@
-﻿Allow ACEs that grant `GenericAll`, `WriteDacl`, `WriteOwner`, or `ExtendedRight` can enable high-impact control over Active Directory objects. These permissions are commonly involved in privilege escalation and persistence paths.
+Allow ACEs that grant `GenericAll`, `WriteDacl`, `WriteOwner`, or `ExtendedRight` can enable high-impact control over Active Directory objects. These permissions are commonly involved in privilege escalation and persistence paths.
 
 - **GenericAll**: Grants broad control over the object.
 - **WriteDacl / WriteOwner**: Enables permission tampering or ownership takeover.

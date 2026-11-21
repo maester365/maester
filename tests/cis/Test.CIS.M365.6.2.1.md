@@ -1,4 +1,4 @@
-﻿Mail flow rules and outbound spam policies do not forward mail to recipients outside the organisation.
+Mail flow rules and outbound spam policies do not forward mail to recipients outside the organisation.
 
 Auto-forwarding is a favourite way to take mail from a compromised mailbox: the attacker adds a rule that copies every message to an outside address and then keeps receiving mail after the password is reset. It is also an easy way for a user to move company data to a personal account.
 

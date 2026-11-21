@@ -1,4 +1,4 @@
-function Test-MtFixtureFrameworkFxk1 {
+﻿function Test-MtFixtureFrameworkFxk1 {
     <#
     .SYNOPSIS
     Framework fixture: its Control names requirement R1 of fx-key, whose file says it is another framework.

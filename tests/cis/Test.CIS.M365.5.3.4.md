@@ -1,4 +1,4 @@
-﻿Activating the Global Administrator role in Privileged Identity Management needs approval from at least one other person.
+Activating the Global Administrator role in Privileged Identity Management needs approval from at least one other person.
 
 Global Administrator can change anything in the tenant. If an attacker gets an eligible account, MFA is the only barrier to activating the role. Requiring approval adds a second person who can refuse an activation that looks wrong, and creates a record of why it was granted. Without approval, an attacker with an eligible account can take temporary elevated access silently.
 

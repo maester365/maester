@@ -1,4 +1,4 @@
-﻿SRV records are essential for Active Directory service location. They enable clients to find:
+SRV records are essential for Active Directory service location. They enable clients to find:
 
 - **Domain controllers** (_ldap records)
 - **Global Catalog servers** (_gc records)

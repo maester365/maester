@@ -1,4 +1,4 @@
-﻿Microsoft recommends creating at least one Conditional Access policy targeting all cloud apps
+Microsoft recommends creating at least one Conditional Access policy targeting all cloud apps
 and ideally should be enabled for all users.
 
 Learn more:

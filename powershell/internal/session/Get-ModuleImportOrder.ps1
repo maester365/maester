@@ -1,4 +1,4 @@
-function Get-ModuleImportOrder {
+﻿function Get-ModuleImportOrder {
     <#
     .SYNOPSIS
     Evaluates the import order of specified modules based on their versions and the location in PSModulePath.

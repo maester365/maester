@@ -1,4 +1,4 @@
-﻿Email scanning SHALL be capable of reviewing emails after delivery.
+Email scanning SHALL be capable of reviewing emails after delivery.
 
 Rationale: As known malware signatures are updated, it is possible for an email to be retroactively identified as containing malware after delivery. By scanning emails, the number of malware-infected in users' mailboxes can be reduced.
 

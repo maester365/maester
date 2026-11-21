@@ -1,4 +1,4 @@
-﻿Verify that archive scanning is enabled to detect malware in compressed files.
+Verify that archive scanning is enabled to detect malware in compressed files.
 
 Disabled archive scanning allows malware to hide in compressed files (ZIP, RAR, etc.)
 

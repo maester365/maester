@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Builds Maester.Engine.dll from src/Maester.Engine and copies it to powershell/lib.
 

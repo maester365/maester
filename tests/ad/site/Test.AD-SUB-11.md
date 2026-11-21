@@ -1,4 +1,4 @@
-﻿Subnets without site associations (orphaned subnets) can cause:
+Subnets without site associations (orphaned subnets) can cause:
 
 - **Client mislocation**: Computers with these IPs cannot determine their site
 - **Authentication inefficiency**: Clients may authenticate to distant DCs

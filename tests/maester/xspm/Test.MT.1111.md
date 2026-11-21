@@ -1,4 +1,4 @@
-﻿Linking a privileged user account to the primary work account in Microsoft Defender XDR makes it easier to detect, prioritize, and contain attacks that target highly sensitive identities. It also improves incident response because all relevant activity and risk signals are correlated to the real person behind both identities, reducing blind spots and investigation time.
+Linking a privileged user account to the primary work account in Microsoft Defender XDR makes it easier to detect, prioritize, and contain attacks that target highly sensitive identities. It also improves incident response because all relevant activity and risk signals are correlated to the real person behind both identities, reducing blind spots and investigation time.
 
 This use case is explicitly described in the Defender XDR documentation:
 A user might have two accounts, one for everyday work and another with elevated permissions for administrative tasks.

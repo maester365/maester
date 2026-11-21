@@ -1,4 +1,4 @@
-﻿1.2.2 (L1) Ensure sign-in to shared mailboxes is blocked
+1.2.2 (L1) Ensure sign-in to shared mailboxes is blocked
 
 Shared mailboxes are used when multiple people need access to the same mailbox, such as a company information or support email address, reception desk, or other function that might be shared by multiple people. Users with permissions to the group mailbox can send as or send on behalf of the mailbox email address if the administrator has given that user permissions to do that. This is particularly useful for help and support mailboxes because users can send
 emails from "Contoso Support" or "Building A Reception Desk." Shared mailboxes are created with a corresponding user account using a system generated password that is unknown at the time of creation. The recommended state is **Sign in blocked** for **Shared mailboxes**.

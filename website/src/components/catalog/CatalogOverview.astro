@@ -1,0 +1,325 @@
+---
+// The overview of the test catalog: what it covers, as the report shows a run, but counting checks instead of results.
+// The matrix is products by security area; each cell opens All checks with those two filters.
+import { checks, data, plural, productIcon, productInitials } from './data';
+
+const areas = data.areas;
+const products = data.products;
+const cell = new Map<string, number>();
+for (const t of checks) cell.set(`${t.product}|${t.area}`, (cell.get(`${t.product}|${t.area}`) ?? 0) + 1);
+const band = (n: number) => (n === 0 ? 0 : n < 5 ? 1 : n < 15 ? 2 : n < 35 ? 3 : n < 80 ? 4 : 5);
+const short: Record<string, string> = {
+	infrastructure: 'Infra',
+	authentication: 'Auth',
+	'email-protection': 'Email',
+	'access-control': 'Access',
+	devices: 'Devices',
+	'privileged-access': 'Privileged',
+	'external-access': 'External',
+	applications: 'Apps',
+	'identity-lifecycle': 'Lifecycle',
+	'engineering-systems': 'DevOps',
+	ai: 'AI',
+	'logging-and-detection': 'Logging',
+	'data-protection': 'Data',
+};
+
+const mapped = checks.filter((t) => t.mitre.length);
+const techniqueCounts = new Map<string, number>();
+for (const t of mapped) for (const m of t.mitre) techniqueCounts.set(m, (techniqueCounts.get(m) ?? 0) + 1);
+const techniqueName = new Map(data.attack.techniques.map((t) => [t.Id, t.Name]));
+const topTechniques = [...techniqueCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
+const newCount = checks.filter((t) => t.previewOnly && !t.pack).length;
+---
+
+<div class="mt-ov not-content">
+	<div class="mt-ov__kpis">
+		<a href="/docs/tests" class="mt-ov__kpi"><span>Checks</span><b>{data.total.toLocaleString('en-US')}</b><small>{data.builtIn} built in{data.packs.map((p) => `, ${p.count} in ${p.code}`).join('')}</small></a>
+		<a href="/docs/tests?channel=new" class="mt-ov__kpi"><span>New in the preview</span><b>{newCount}</b><small>Built-in checks not in the stable release</small></a>
+		<a href="#matrix" class="mt-ov__kpi"><span>Products</span><b>{products.length}</b><small>{products.slice(0, 3).map((p) => p.name).join(', ')} and more</small></a>
+		<a href="/docs/tests/attack" class="mt-ov__kpi"><span>ATT&CK techniques</span><b>{techniqueCounts.size}</b><small>{plural(mapped.length, 'check')} mapped, ATT&CK {data.attack.version}</small></a>
+	</div>
+
+	<section class="mt-ov__card" id="matrix">
+		<h2>By product and security area</h2>
+		<div class="mt-ov__scroll">
+			<table class="mt-ov__matrix">
+				<thead>
+					<tr>
+						<th scope="col" class="mt-ov__p">Product</th>
+						{areas.map((a) => <th scope="col" title={a.name}>{short[a.key] ?? a.name}</th>)}
+					</tr>
+				</thead>
+				<tbody>
+					{
+						products.map((p) => (
+							<tr>
+								<th scope="row" class="mt-ov__p">
+									<a href={`/docs/tests/products/${p.key}`}>
+										{productIcon(p.key) ? <img src={productIcon(p.key)} alt="" width="16" height="16" loading="lazy" /> : <span class="mt-ov__tile">{productInitials(p.key)}</span>}
+										{p.name}
+									</a>
+								</th>
+								{areas.map((a) => {
+									const n = cell.get(`${p.key}|${a.key}`) ?? 0;
+									return (
+										<td>
+											{n ? (
+												<a class="mt-ov__cell" data-band={band(n)} href={`/docs/tests?product=${p.key}&area=${a.key}&group=none`} aria-label={`${p.name}, ${a.name}: ${n} checks`}>
+													{n}
+												</a>
+											) : (
+												<span class="mt-ov__cell" data-band="0">
+													–
+												</span>
+											)}
+										</td>
+									);
+								})}
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+		<p class="mt-ov__note">Darker means more checks. Choose a cell to list its checks.</p>
+	</section>
+
+	<div class="mt-ov__two">
+		<section class="mt-ov__card">
+			<h2>Framework coverage</h2>
+			{
+				data.frameworks.map((f) => (
+					<a class="mt-ov__fw" href={`/docs/tests/frameworks/${f.key}`}>
+						<span>{f.label}</span>
+						<span class="mt-ov__num">{f.complete ? `${f.covered} of ${f.total}` : plural(f.checks, 'check')}</span>
+						<span class="mt-ov__track">
+							<i style={`width: ${f.complete ? (f.covered / f.total) * 100 : 100}%`} class:list={{ 'mt-ov__track--muted': !f.complete }} />
+						</span>
+					</a>
+				))
+			}
+			<p class="mt-ov__note">Requirements with at least one Maester check. Some cannot be checked from a tenant, such as patching servers.</p>
+		</section>
+		<section class="mt-ov__card">
+			<h2>Most defended techniques <a href="/docs/tests/attack">ATT&CK matrix →</a></h2>
+			{
+				topTechniques.map(([id, n]) => (
+					<a class="mt-ov__tech" href={`/docs/tests?mitre=${id}&group=product`}>
+						<span class="mt-ov__tid">{id}</span>
+						<span>{techniqueName.get(id) ?? id}</span>
+						<span class="mt-ov__track">
+							<i style={`width: ${(n / topTechniques[0][1]) * 100}%`} />
+						</span>
+						<span class="mt-ov__num">{n}</span>
+					</a>
+				))
+			}
+		</section>
+	</div>
+</div>
+
+<style>
+	.mt-ov {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		font-size: 0.875rem;
+	}
+	.mt-ov a {
+		color: inherit;
+		text-decoration: none;
+	}
+	.mt-ov__kpis {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+		gap: 0.75rem;
+	}
+	.mt-ov__kpi,
+	.mt-ov__card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		padding: 1rem 1.1rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 12px;
+		background: var(--sl-color-bg);
+	}
+	.mt-ov__kpi:hover {
+		border-color: var(--sl-color-gray-3);
+	}
+	.mt-ov__kpi span {
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-ov__kpi b {
+		font-size: 1.75rem;
+		letter-spacing: -0.02em;
+		color: var(--sl-color-white);
+	}
+	.mt-ov__kpi small {
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-ov__card h2 {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		margin: 0 0 0.5rem;
+		font-size: 1.05rem;
+	}
+	.mt-ov__card h2 a {
+		font-size: 0.8rem;
+		font-weight: 500;
+		color: var(--sl-color-text-accent);
+	}
+	.mt-ov__scroll {
+		overflow-x: auto;
+	}
+	.mt-ov__matrix {
+		width: 100%;
+		min-width: 52rem;
+		border-collapse: separate;
+		border-spacing: 3px;
+		table-layout: fixed;
+	}
+	.mt-ov__matrix th {
+		padding: 0.2rem;
+		font-size: 0.72rem;
+		font-weight: 600;
+		color: var(--sl-color-gray-2);
+		text-align: center;
+		border: 0;
+		background: none;
+	}
+	.mt-ov__matrix td {
+		padding: 0;
+		border: 0;
+	}
+	.mt-ov__matrix .mt-ov__p {
+		width: 11rem;
+		text-align: start;
+		font-size: 0.82rem;
+		font-weight: 500;
+		white-space: nowrap;
+	}
+	.mt-ov__p a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+	}
+	.mt-ov__p a:hover {
+		color: var(--sl-color-text-accent);
+	}
+	.mt-ov__p img {
+		width: 16px;
+		height: 16px;
+		margin: 0;
+		object-fit: contain;
+	}
+	.mt-ov__tile {
+		display: inline-grid;
+		place-items: center;
+		width: 16px;
+		height: 16px;
+		border-radius: 4px;
+		background: var(--sl-color-gray-5);
+		font-size: 0.45rem;
+		font-weight: 700;
+	}
+	.mt-ov__cell {
+		display: grid;
+		place-items: center;
+		height: 2rem;
+		border-radius: 6px;
+		font-family: var(--sl-font-mono);
+		font-size: 0.78rem;
+	}
+	a.mt-ov__cell:hover {
+		outline: 2px solid var(--sl-color-white);
+		outline-offset: -2px;
+	}
+	.mt-ov__cell[data-band='0'] {
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-gray-4);
+	}
+	.mt-ov__cell[data-band='1'] {
+		background: #fde2e2;
+		color: #7f1d1d;
+	}
+	.mt-ov__cell[data-band='2'] {
+		background: #f9b4b4;
+		color: #7f1d1d;
+	}
+	.mt-ov__cell[data-band='3'] {
+		background: #ef6b6e;
+		color: #fff;
+	}
+	.mt-ov__cell[data-band='4'] {
+		background: #d22c31;
+		color: #fff;
+	}
+	.mt-ov__cell[data-band='5'] {
+		background: #8f1c22;
+		color: #fff;
+	}
+	.mt-ov__note {
+		margin: 0.4rem 0 0;
+		font-size: 0.78rem;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-ov__two {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+		gap: 0.75rem;
+	}
+	.mt-ov__fw {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 0.3rem 0.75rem;
+		padding: 0.35rem 0;
+	}
+	.mt-ov__fw:hover span:first-child,
+	.mt-ov__tech:hover span:nth-child(2) {
+		color: var(--sl-color-text-accent);
+	}
+	.mt-ov__fw .mt-ov__track {
+		grid-column: 1 / -1;
+	}
+	.mt-ov__track {
+		display: block;
+		height: 7px;
+		border-radius: 4px;
+		background: var(--sl-color-gray-6);
+		overflow: hidden;
+	}
+	.mt-ov__track i {
+		display: block;
+		height: 100%;
+		background: var(--sl-color-accent);
+	}
+	.mt-ov__track i.mt-ov__track--muted {
+		background: var(--sl-color-gray-5);
+	}
+	.mt-ov__num {
+		font-family: var(--sl-font-mono);
+		font-size: 0.78rem;
+		color: var(--sl-color-gray-3);
+		text-align: end;
+	}
+	.mt-ov__tech {
+		display: grid;
+		grid-template-columns: 5.5rem minmax(0, 1fr) 6rem 2.5rem;
+		gap: 0.6rem;
+		align-items: center;
+		padding: 0.3rem 0;
+	}
+	.mt-ov__tid {
+		font-family: var(--sl-font-mono);
+		font-size: 0.78rem;
+		color: var(--sl-color-text-accent);
+	}
+</style>

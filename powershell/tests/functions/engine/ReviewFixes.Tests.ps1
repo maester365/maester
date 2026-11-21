@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force -WarningAction SilentlyContinue
 
     function New-TestFile {
@@ -184,7 +184,7 @@ Describe 'Engine review fixes' {
         BeforeAll {
             function New-FamilyFile {
                 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
-                param([string] $Folder, [string] $Id, [string] $Source)
+                param([string] $Folder, [string] $Id, [string] $Source, [string] $Family = '')
                 $null = New-Item -ItemType Directory -Path $Folder -Force
                 $name = $Id -replace '[^A-Za-z0-9]', ''
                 @"
@@ -195,7 +195,7 @@ function Get-Instance$name {
 }
 
 function Test-Family$name {
-    [MaesterTest(Id = '$Id', Title = 'Attribute title', Severity = 'Low', Service = 'None', InstanceSource = 'Get-Instance$name')]
+    [MaesterTest(Id = '$Id', Title = 'Attribute title', Severity = 'Low', Service = 'None', InstanceSource = 'Get-Instance$name'$Family)]
     [CmdletBinding()]
     param(
         # The instance, supplied by the engine.
@@ -219,6 +219,103 @@ function Test-Family$name {
             $row.Title | Should -Be 'Instance title'
             $row.Severity | Should -Be 'Critical'
             $row.Tag | Should -Contain 'FromInstance'
+        }
+
+        It 'Writes the product, feature, area, ratings and techniques an instance sets for itself' {
+            $source = "@{ Id = 'a'; Product = 'Entra ID'; Feature = 'conditional-access'; Area = 'authentication'; RelatedProduct = 'exchange'; UserImpact = 'medium'; ImplementationCost = 'High'; Mitre = @('T1110', 'T9999') }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-attributes') -Id 'CONTOSO.52' -Source $source
+            $row = Invoke-MtTest -Path $file
+            $row.Product | Should -Be 'entra'
+            $row.Feature | Should -Be 'conditional-access'
+            $row.Area | Should -Be 'authentication'
+            $row.RelatedProduct | Should -Be @('exchange')
+            $row.UserImpact | Should -Be 'Medium'
+            $row.ImplementationCost | Should -Be 'High'
+            $row.Mitre | Should -Be @('T1110')
+        }
+
+        It 'Leaves out values the taxonomy does not know, so the row keeps its family''s' {
+            $source = "@{ Id = 'a'; Product = 'not-a-product'; Feature = 'conditional-access'; Area = 'not-an-area'; UserImpact = 'Severe'; Mitre = 'T9999' }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-unknown') -Id 'CONTOSO.53' -Source $source
+            $row = Invoke-MtTest -Path $file
+            $row.Product | Should -BeNullOrEmpty
+            $row.Feature | Should -BeNullOrEmpty
+            $row.Area | Should -BeNullOrEmpty
+            $row.UserImpact | Should -BeNullOrEmpty
+            @($row.Mitre) | Should -BeNullOrEmpty
+        }
+
+        It 'Clears the family''s feature and takes the new product off its related products when an instance changes product' {
+            $family = ", Product = 'entra', Feature = 'conditional-access', RelatedProduct = 'exchange'"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-moved') -Id 'CONTOSO.54' -Source "@{ Id = 'a'; Product = 'exchange' }" -Family $family
+            $row = Invoke-MtTest -Path $file
+            $row.Product | Should -Be 'exchange'
+            $row.Feature | Should -BeNullOrEmpty
+            @($row.RelatedProduct) | Should -Not -Contain 'exchange'
+        }
+
+        It 'Applies the list rules to an instance''s techniques: None only on its own, at most five' {
+            $source = "@{ Id = 'a'; Mitre = @('None', 'T1110', 'T1110', 'T1078', 'T1098', 'T1556', 'T1621', 'T1528') }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-mitre') -Id 'CONTOSO.55' -Source $source
+            $row = Invoke-MtTest -Path $file
+            $row.Mitre | Should -Not -Contain 'None'
+            @($row.Mitre).Count | Should -Be 5
+            @($row.Mitre | Select-Object -Unique).Count | Should -Be 5
+        }
+
+        It 'Gives an instance that names a requirement its own Benchmark and the requirement''s Related references' {
+            $source = "@{ Id = 'a'; Control = 'CISA-SCUBA:MS.AAD.3.1' }, @{ Id = 'b'; Control = @('cisa-scuba:MS.AAD.1.1', 'nist-800-53-r5:AC-2') }, @{ Id = 'c' }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-control') -Id 'CONTOSO.56' -Source $source -Family ", Control = 'cisa-scuba:MS.AAD.2.1'"
+            $rows = @{}; foreach ($row in @(Invoke-MtTest -Path $file)) { $rows[$row.Id] = $row }
+
+            $rows['CONTOSO.56.a'].Benchmark.Framework | Should -Be 'cisa-scuba'
+            $rows['CONTOSO.56.a'].Benchmark.Requirement | Should -Be 'MS.AAD.3.1'
+            $rows['CONTOSO.56.a'].Benchmark.Criticality | Should -Be 'SHALL'
+            $rows['CONTOSO.56.a'].Control[0] | Should -BeExactly 'cisa-scuba:MS.AAD.3.1'
+            $rows['CONTOSO.56.a'].Control | Should -Contain 'nist-800-53-r5:IA-2(1)'
+            $rows['CONTOSO.56.a'].Control | Should -Not -Contain 'cisa-scuba:MS.AAD.2.1'
+
+            $rows['CONTOSO.56.b'].Benchmark.Requirement | Should -Be 'MS.AAD.1.1'
+            $rows['CONTOSO.56.b'].Control | Should -Be @('cisa-scuba:MS.AAD.1.1', 'nist-800-53-r5:AC-2', 'nist-800-53-r5:CM-7')
+
+            # An instance that sets no Control keeps its family's.
+            $rows['CONTOSO.56.c'].Benchmark.Requirement | Should -Be 'MS.AAD.2.1'
+            $rows['CONTOSO.56.c'].Control | Should -Contain 'cisa-scuba:MS.AAD.2.1'
+        }
+
+        It 'Keeps the family''s Control and Benchmark when an instance names only requirements that are not known' {
+            $source = "@{ Id = 'a'; Control = @('cisa-scuba:MS.NOPE.9.9', 'not a control', 'cisa-scuba:') }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-control-unknown') -Id 'CONTOSO.57' -Source $source -Family ", Control = 'cisa-scuba:MS.AAD.2.1'"
+            $row = Invoke-MtTest -Path $file
+            $row.Benchmark.Requirement | Should -Be 'MS.AAD.2.1'
+            $row.Control | Should -Contain 'cisa-scuba:MS.AAD.2.1'
+            $row.Control | Should -Not -Contain 'cisa-scuba:MS.NOPE.9.9'
+        }
+
+        It 'Resolves an instance''s Control against a framework its own suite declares' {
+            $folder = Join-Path $TestDrive 'family-suite-framework'
+            $null = New-FamilyFile -Folder $folder -Id 'CONTOSO.58' -Source "@{ Id = 'a'; Control = 'fx-pack:P-1' }, @{ Id = 'b'; Control = 'fx-pack:P-9' }"
+            $null = New-Item -ItemType Directory -Path (Join-Path $folder 'frameworks') -Force
+            '{ "Id": "ContosoPack", "Frameworks": [ { "Key": "fx-pack", "Version": "1" } ] }' | Set-Content (Join-Path $folder 'suite.json')
+            '{ "Framework": "fx-pack", "Requirements": [ { "Id": "P-1", "Level": "L1", "Related": [ "nist-800-53-r5:AC-3" ] } ] }' | Set-Content (Join-Path $folder 'frameworks/fx-pack.json')
+            $rows = @{}; foreach ($row in @(Invoke-MtTest -Path $folder 3>$null)) { $rows[$row.Id] = $row }
+
+            $rows['CONTOSO.58.a'].Benchmark.Framework | Should -Be 'fx-pack'
+            $rows['CONTOSO.58.a'].Benchmark.Level | Should -Be 'L1'
+            $rows['CONTOSO.58.a'].Control | Should -Be @('fx-pack:P-1', 'nist-800-53-r5:AC-3')
+            $rows['CONTOSO.58.b'].Benchmark | Should -BeNullOrEmpty
+            @($rows['CONTOSO.58.b'].Control) | Should -BeNullOrEmpty
+        }
+
+        It 'Resolves an instance''s Control against the shipped frameworks for a family that was not discovered in the session' {
+            InModuleScope Maester {
+                $index = Get-MtTestFrameworkIndex -Test ([pscustomobject]@{ File = 'tests/maester/entra/Test.MT.9999.ps1' })
+                $index.ByKey.ContainsKey('cisa-scuba') | Should -BeTrue
+                $own = Get-MtInstanceAttribute -Instance @{ Id = 'a'; Control = 'cisa-scuba:MS.AAD.3.1' } -Framework $index
+                $own.Benchmark.Requirement | Should -Be 'MS.AAD.3.1'
+                # The index is built once for the shipped frameworks.
+                [object]::ReferenceEquals($index, (Get-MtTestFrameworkIndex -Test $null)) | Should -BeTrue
+            }
         }
 
         It 'Rejects an instance ID that ends in a newline' {

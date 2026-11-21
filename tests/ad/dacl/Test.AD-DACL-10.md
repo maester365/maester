@@ -1,4 +1,4 @@
-﻿A count alone does not show where powerful ACEs are applied. Grouping privileged allow ACEs by object helps identify high-value directory objects that carry sensitive delegated rights.
+A count alone does not show where powerful ACEs are applied. Grouping privileged allow ACEs by object helps identify high-value directory objects that carry sensitive delegated rights.
 
 - **Object-Centric Review**: Highlights which objects hold the most powerful ACEs.
 - **Delegation Validation**: Makes it easier to confirm whether privileged rights are intentional.

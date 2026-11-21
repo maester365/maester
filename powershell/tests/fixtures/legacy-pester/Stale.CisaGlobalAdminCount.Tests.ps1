@@ -1,4 +1,4 @@
-# Legacy Pester fixture: a stale copy of an early CISA wrapper, written before the "CISA."
+﻿# Legacy Pester fixture: a stale copy of an early CISA wrapper, written before the "CISA."
 # prefix was added. MS.AAD.7.1 is a previous ID of CISA.MS.AAD.7.1, so 3.0 supersedes it
 # through Maester.LegacyIds.json.
 Describe "CISA" -Tag "MS.AAD", "MS.AAD.7.1", "CISA", "Entra ID Free" {

@@ -1,4 +1,4 @@
-﻿Reverse lookup zones enable IP-to-name resolution (PTR records) and are essential for:
+Reverse lookup zones enable IP-to-name resolution (PTR records) and are essential for:
 
 - **Security auditing**: Identifying systems by IP address
 - **Network troubleshooting**: Resolving IPs to hostnames

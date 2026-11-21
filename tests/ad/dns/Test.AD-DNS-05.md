@@ -1,4 +1,4 @@
-﻿Dynamic DNS allows clients to register and update their own DNS records. While convenient, excessive dynamic registration can indicate:
+Dynamic DNS allows clients to register and update their own DNS records. While convenient, excessive dynamic registration can indicate:
 
 - **Security risks**: Unauthorized devices may register in DNS
 - **Configuration issues**: Misconfigured clients may create excessive records

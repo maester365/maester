@@ -1,4 +1,4 @@
-﻿Detailed information about unknown SPNs enables security teams to:
+Detailed information about unknown SPNs enables security teams to:
 
 - **Investigate effectively**: Know exactly which computers have unknown SPNs
 - **Assess scope**: Understand how widespread an unknown service is

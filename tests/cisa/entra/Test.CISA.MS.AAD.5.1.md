@@ -1,4 +1,4 @@
-﻿Only administrators SHALL be allowed to register applications.
+Only administrators SHALL be allowed to register applications.
 
 Rationale: Application access for the tenant presents a heightened security risk compared to interactive user access because applications are typically not subject to critical security protections, such as MFA policies. Reduce risk of unauthorized users installing malicious applications into the tenant by ensuring that only specific privileged users can register applications.
 

@@ -1,4 +1,4 @@
-﻿Analyzing /24 network distribution provides:
+Analyzing /24 network distribution provides:
 
 - **Subnet granularity**: Understanding the typical subnet size in use
 - **Location mapping**: Each /24 often represents a specific location or VLAN

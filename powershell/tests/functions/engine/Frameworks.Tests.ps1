@@ -1,4 +1,4 @@
-# Benchmarks and framework files (docs/proposals/maester-3.0-test-attributes.md, section 6): the Frameworks a
+﻿# Benchmarks and framework files (docs/proposals/maester-3.0-test-attributes.md, section 6): the Frameworks a
 # suite.json declares, the framework files beside it, the Control that maps a test to a requirement, Benchmark and
 # Control on a test, on its rows and in the catalog, what the catalog build rejects, and what a run does with a
 # custom suite whose framework file is wrong.
@@ -145,8 +145,8 @@ Describe 'Frameworks of a suite' {
             }
         }
         $keys.Own | Should -Be @('contoso-baseline', 'contoso-cloud') -Because 'the tests shipped with Maester refer to nothing outside their own folder'
-        $keys.Custom | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'contoso-baseline', 'contoso-cloud', 'essential-eight', 'ism') -Because 'a custom test can also refer to a framework shipped with Maester'
-        $keys.None | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'essential-eight', 'ism')
+        $keys.Custom | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'contoso-baseline', 'contoso-cloud', 'disa-stig-entra-id', 'disa-stig-intune-desktop', 'disa-stig-intune-mdm', 'essential-eight', 'ism') -Because 'a custom test can also refer to a framework shipped with Maester'
+        $keys.None | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'disa-stig-entra-id', 'disa-stig-intune-desktop', 'disa-stig-intune-mdm', 'essential-eight', 'ism')
     }
 
     It 'Reports a key that two suites declare, names both files and keeps the first' {
@@ -310,7 +310,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
         $script:frameworkFiles = @(Get-ChildItem -Path (Join-Path $script:repoRoot 'tests') -Recurse -File -Filter '*.json' | Where-Object { $_.Directory.Name -eq 'frameworks' })
     }
 
-    It 'Declares the benchmarks of the CIS, CISA and ASD suites in their suite.json' {
+    It 'Declares the benchmarks of the CIS, CISA, ASD and DISA suites in their suite.json' {
         $cis = Get-Content (Join-Path $script:repoRoot 'tests/cis/suite.json') -Raw | ConvertFrom-Json
         @($cis.Frameworks | ForEach-Object { "$($_.Key) $($_.Version)" }) | Should -Be @('cis-m365 7.0.0', 'cis-github 1.2.0')
         $cisa = Get-Content (Join-Path $script:repoRoot 'tests/cisa/suite.json') -Raw | ConvertFrom-Json
@@ -323,19 +323,22 @@ Describe 'Benchmark of the tests shipped with Maester' {
         # Both come from one ISM OSCAL release, so they carry one version.
         @($asd.Frameworks.Version | Sort-Object -Unique).Count | Should -Be 1
         $asd.Frameworks[0].Version | Should -Not -BeNullOrEmpty
+        $disa = Get-Content (Join-Path $script:repoRoot 'tests/disa/suite.json') -Raw | ConvertFrom-Json
+        @($disa.Frameworks | ForEach-Object { "$($_.Key) $($_.Version)" }) | Should -Be @('disa-stig-entra-id V1R2', 'disa-stig-intune-mdm V1R2', 'disa-stig-intune-desktop V1R1')
     }
 
     It 'Has a framework file for every declared framework and no problem in any of them' {
-        @($script:frameworkFiles.Name | Sort-Object) | Should -Be @('cis-github.json', 'cis-m365.json', 'cisa-scuba.json', 'essential-eight.json', 'ism.json')
+        @($script:frameworkFiles.Name | Sort-Object) | Should -Be @('cis-github.json', 'cis-m365.json', 'cisa-scuba.json', 'disa-stig-entra-id.json', 'disa-stig-intune-desktop.json', 'disa-stig-intune-mdm.json', 'essential-eight.json', 'ism.json')
         $problems = @(InModuleScope Maester { Get-MtFrameworkProblem -Test @(Get-MtTestCatalog) -Root (Get-MtMaesterTestFolderPath) })
         $problems | Should -BeNullOrEmpty
     }
 
     It 'Gives every <Prefix> test a Benchmark of <Label>, from the first Control of the test' -ForEach @(
-        @{ Prefix = 'CIS.M365.'; Label = 'cis-m365'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 143 }
+        @{ Prefix = 'CIS.M365.'; Label = 'cis-m365'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 144 }
         @{ Prefix = 'CIS.GH.'; Label = 'cis-github'; Framework = 'cis-github'; Version = '1.2.0'; Count = 5 }
         @{ Prefix = 'CISA.'; Label = 'cisa-scuba'; Framework = 'cisa-scuba'; Version = $null; Count = 79 }
         @{ Prefix = 'ASD.'; Label = 'essential-eight or ism'; Framework = @('essential-eight', 'ism'); Version = $null; Count = 14 }
+        @{ Prefix = 'DISA.'; Label = 'a DISA STIG'; Framework = @('disa-stig-entra-id', 'disa-stig-intune-mdm', 'disa-stig-intune-desktop'); Version = $null; Count = 19 }
     ) {
         $tests = @($script:builtIn | Where-Object { $_.Id.StartsWith($Prefix) })
         $tests.Count | Should -Be $Count
@@ -349,7 +352,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
     }
 
     It 'Carries Benchmark as null on every other test' {
-        $others = @($script:builtIn | Where-Object { $_.Id -notlike 'CIS.*' -and $_.Id -notlike 'CISA.*' -and $_.Id -notlike 'ASD.*' })
+        $others = @($script:builtIn | Where-Object { $_.Id -notlike 'CIS.*' -and $_.Id -notlike 'CISA.*' -and $_.Id -notlike 'ASD.*' -and $_.Id -notlike 'DISA.*' })
         $others.Count | Should -BeGreaterThan 600
         @($others | Where-Object { -not $_.PSObject.Properties['Benchmark'] -or $null -ne $_.Benchmark } | ForEach-Object Id) | Should -BeNullOrEmpty
     }
@@ -404,7 +407,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
             $content = Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Json
             foreach ($requirement in $content.Requirements) {
                 foreach ($name in $requirement.PSObject.Properties.Name) {
-                    if ($name -cnotin 'Id', 'Related', 'Level', 'Profile', 'Criticality', 'Upstream', 'Strategy', 'Guideline', 'Section', 'Applicability') { "$($file.Name): requirement $($requirement.Id) has $name" }
+                    if ($name -cnotin 'Id', 'Related', 'Level', 'Profile', 'Criticality', 'Upstream', 'Strategy', 'Guideline', 'Section', 'Applicability', 'Category', 'RuleId', 'StigId') { "$($file.Name): requirement $($requirement.Id) has $name" }
                 }
             }
         }
@@ -489,7 +492,7 @@ Describe 'Benchmark and Control on result rows' {
 
     It 'Gives the rows of the CIS suite their Benchmark without a tenant' {
         $rows = @((Get-Run 'Cis').Tests | Where-Object Suite -EQ 'CIS')
-        $rows.Count | Should -Be 148
+        $rows.Count | Should -Be 149
         @($rows | Where-Object { $_.Result -notin 'NotRun', 'Skipped' -or $_.ReasonCode -eq 'NotSelected' } | ForEach-Object Id) | Should -BeNullOrEmpty -Because 'the suite is selected and nothing runs'
         @($rows | Where-Object { $_.Benchmark.Framework -cnotin 'cis-m365', 'cis-github' -or $_.Benchmark.Level -cnotin 'L1', 'L2' -or -not $_.Benchmark.Requirement } | ForEach-Object Id) | Should -BeNullOrEmpty
         $row = $rows | Where-Object Id -EQ 'CIS.M365.1.1.1'
@@ -729,7 +732,7 @@ Describe 'Docs export' {
     }
 
     It 'Names every framework the tests use, with its version' {
-        @($script:export.Frameworks.Key) | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'essential-eight', 'ism')
+        @($script:export.Frameworks.Key) | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'disa-stig-entra-id', 'disa-stig-intune-desktop', 'disa-stig-intune-mdm', 'essential-eight', 'ism')
         ($script:export.Frameworks | Where-Object Key -EQ 'cis-m365').Name | Should -Be 'CIS Microsoft 365 Foundations Benchmark'
         ($script:export.Frameworks | Where-Object Key -EQ 'cis-m365').Version | Should -BeExactly '7.0.0'
         @($script:export.Tests | Where-Object { $_.Benchmark -and $_.Benchmark.Framework -cnotin $script:export.Frameworks.Key } | ForEach-Object Id) | Should -BeNullOrEmpty
@@ -753,7 +756,7 @@ Describe 'Docs export' {
 
     It 'Gives the level of every CIS test, which the generated title shows as (L1) or (L2)' {
         $cis = @($script:export.Tests | Where-Object { $_.Id -like 'CIS.*' })
-        $cis.Count | Should -Be 148
+        $cis.Count | Should -Be 149
         @($cis | Where-Object { $_.Benchmark.Level -cnotmatch '^L[12]$' } | ForEach-Object Id) | Should -BeNullOrEmpty
         $generator = Get-Content -LiteralPath (Join-Path $script:repoRoot 'website/scripts/generate-test-docs.mjs') -Raw
         $generator | Should -Match 'test\.Benchmark\?\.Level' -Because 'the title prefix comes from Benchmark'

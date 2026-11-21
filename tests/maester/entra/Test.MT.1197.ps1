@@ -64,7 +64,16 @@
             Write-Verbose "Unable to resolve memberOf source groups: $($_.Exception.Message)"
         }
     }
-    $CaReferences = @(Get-MtDynamicGroupCaReference -GroupId $AffectedGroups.Group.id)
+    # The Conditional Access references only add context. When the policies can't be read, for example
+    # because the connection lacks the permission to read them, the affected groups are still reported.
+    $CaReferences = @()
+    $CaReadError = $null
+    try {
+        $CaReferences = @(Get-MtDynamicGroupCaReference -GroupId $AffectedGroups.Group.id)
+    } catch {
+        $CaReadError = $_
+        Write-Verbose "Unable to read the Conditional Access policies: $($_.Exception.Message)"
+    }
     $RetirementDate = [datetime]'2026-11-03'
     $Today = (Get-Date).ToUniversalTime().Date
     if ($Today -lt $RetirementDate) {
@@ -92,14 +101,21 @@
                 } else {
                     "``$Id`` (unresolved)"
                 }
-            }) -join '<br>'
+            }) -join '; '
         if (!$SourceLinks) { $SourceLinks = 'None parsed' }
-        $CaText = Get-MtDynamicGroupCaReferenceMarkdown `
-            -Reference $CaReferences -GroupId $Group.id
-        $SingleLineRule = $Group.membershipRule -replace "`r?`n", ' '
-        $Rule = [System.Net.WebUtility]::HtmlEncode($SingleLineRule) -replace '\|', '&#124;'
+        $CaText = 'Not available'
+        if (-not $CaReadError) {
+            $CaText = Get-MtDynamicGroupCaReferenceMarkdown `
+                -Reference $CaReferences -GroupId $Group.id
+        }
+        $Rule = ConvertTo-MtMarkdownCodeSpan -Text $Group.membershipRule -TableCell
         $Result += "`n| $GroupLink | $SourceLinks | $($Group.membershipRuleProcessingState) | "
-        $Result += "$(@($Group.assignedLicenses).Count) | $CaText | <code>$Rule</code> |"
+        $Result += "$(@($Group.assignedLicenses).Count) | $CaText | $Rule |"
+    }
+    if ($CaReadError) {
+        $CaMessage = $CaReadError.Exception.Message -replace "`r?`n", ' '
+        $Result += "`n`nThe Conditional Access policies could not be read, so the CA references are not " +
+            "shown: $([System.Net.WebUtility]::HtmlEncode($CaMessage))"
     }
     Add-MtTestResultDetail -Result $Result
     return $false

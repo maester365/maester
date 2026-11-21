@@ -1,7 +1,10 @@
+import { decodeGzipBase64 } from "@/lib/gzipBase64"
+
 const reportDataElementId = "maester-report-data"
 
 export async function loadReportData(): Promise<unknown> {
-  const embedded = document.getElementById(reportDataElementId)?.textContent?.trim()
+  const element = document.getElementById(reportDataElementId)
+  const embedded = element?.textContent?.trim()
 
   if (import.meta.env.DEV) {
     // ?sample=2x loads a Maester 2.x result, to check that the report still renders one.
@@ -26,6 +29,12 @@ export async function loadReportData(): Promise<unknown> {
 
   if (!embedded) {
     throw new Error("Report data was not embedded in the generated HTML file")
+  }
+
+  // Get-MtHtmlReport writes the results gzip-compressed and Base64-encoded. The website's demo report holds
+  // them as the template's placeholder statement, `const testResults={...}`.
+  if (element?.dataset.encoding === "gzip+base64") {
+    return JSON.parse(await decodeGzipBase64(embedded)) as unknown
   }
 
   const json = embedded.replace(/^(?:const|let|var)\s+\w+\s*=\s*/, "")

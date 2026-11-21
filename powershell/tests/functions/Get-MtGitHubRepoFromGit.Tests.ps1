@@ -1,4 +1,4 @@
-Describe 'Get-MtGitHubRepoFromGit' {
+﻿Describe 'Get-MtGitHubRepoFromGit' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
     }

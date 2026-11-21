@@ -1,4 +1,4 @@
-# Service registry (Maester 3.0 design, section 6). [MaesterTest(Service = ...)] values are validated
+﻿# Service registry (Maester 3.0 design, section 6). [MaesterTest(Service = ...)] values are validated
 # against these names. Every service a test lists must be connected for the test to run.
 #
 #   Probe            Test-MtConnection -Service value used to detect the connection

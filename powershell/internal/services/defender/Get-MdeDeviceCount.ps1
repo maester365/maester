@@ -1,4 +1,4 @@
-function Get-MdeDeviceCount {
+﻿function Get-MdeDeviceCount {
     <#
     .SYNOPSIS
         Counts how many devices are protected by Microsoft Defender for Endpoint

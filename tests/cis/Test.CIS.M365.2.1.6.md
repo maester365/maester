@@ -1,4 +1,4 @@
-﻿2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators
+2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators
 
 In Microsoft 365 organizations with mailboxes in Exchange Online or standalone Exchange Online Protection (EOP) organizations without Exchange Online mailboxes, email messages are automatically protected against spam (junk email) by EOP. Configure Exchange Online Spam Policies to copy emails and notify someone when a sender in the organization has been blocked for sending spam emails.
 

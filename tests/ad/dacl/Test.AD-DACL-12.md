@@ -1,4 +1,4 @@
-﻿Extended rights are most useful when you can see which specific `ObjectType` values are being delegated. Grouping ACEs by GUID reveals whether permissions are narrowly targeted or broadly applied.
+Extended rights are most useful when you can see which specific `ObjectType` values are being delegated. Grouping ACEs by GUID reveals whether permissions are narrowly targeted or broadly applied.
 
 - **GUID-Level Visibility**: Highlights which extended-right object types occur most often.
 - **Delegation Review**: Helps correlate control-access permissions with documented administration patterns.

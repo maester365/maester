@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../../lib/Maester.Engine.dll" -Force
     $script:schema = Import-PowerShellDataFile -Path "$PSScriptRoot/../../../assets/MaesterTestSchema.psd1"
     $script:repoRoot = (Resolve-Path "$PSScriptRoot/../../../..").Path

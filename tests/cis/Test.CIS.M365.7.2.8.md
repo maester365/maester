@@ -1,4 +1,4 @@
-﻿When external sharing is turned on, every user who can share SharePoint and OneDrive content can also share it with people outside the organization. If an account is compromised, the attacker gets the same right and can send files to an outside address.
+When external sharing is turned on, every user who can share SharePoint and OneDrive content can also share it with people outside the organization. If an account is compromised, the attacker gets the same right and can send files to an outside address.
 
 Limiting external sharing to members of specific security groups means only the people in those groups can share with external users. Other users can still work with their files and sites, but they cannot share them externally until they are added to a group. The members must also be allowed to invite guests in the Microsoft Entra external collaboration settings.
 

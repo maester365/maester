@@ -1,4 +1,4 @@
-function Resolve-MtNativePlan {
+﻿function Resolve-MtNativePlan {
     <#
     .SYNOPSIS
     Decides, for every native test, whether it runs and if not why (design stages 5 and 6).
@@ -210,7 +210,7 @@ function Resolve-MtNativePlan {
         # Parameter binding.
         $values = if ($setting -and $setting.PSObject.Properties['Parameters']) { $setting.Parameters } else { $null }
         $override = if ($ParameterOverride.ContainsKey($t.Id)) { $ParameterOverride[$t.Id] } else { $null }
-        $binding = ConvertTo-MtTestParameter -Test $t -ConfigValue $values -Override $override
+        $binding = ConvertTo-MtTestParameter -Test $t -ConfigValue $values -Override $override -GlobalSetting $RunConfig.GlobalSettings
         $row.EffectiveParameters = $binding.Effective
         if ($binding.Error) {
             & $set 'Error' 'InvalidConfiguration' $binding.Error
@@ -332,12 +332,10 @@ function Test-MtApplicability {
     }
 
     if ($Enforce.License -and @($Test.License).Count -gt 0 -and $TenantContext.Licenses.State -eq 'Known') {
-        if (-not (Test-MtLicenseRequirement -Requirement $Test.License -Licenses $TenantContext.Licenses)) {
-            $table = Get-MtLicenseTable
-            $firstToken = (@($Test.License)[0] -split '&')[0]
-            $legacy = if ($table.Tokens.ContainsKey($firstToken)) { $table.Tokens[$firstToken].LegacySkipCode } else { 'Custom' }
-            $detail = "This test requires one of these licences: $($Test.License -join ', ')."
-            return & $fail 'LicenseNotFound' $detail $legacy
+        $gap = Get-MtLicenseRequirementGap -Requirement $Test.License -Licenses $TenantContext.Licenses
+        if (-not ($gap | Where-Object { $_.Missing.Count -eq 0 })) {
+            $skip = Get-MtLicenseSkipReason -Gap $gap
+            return & $fail 'LicenseNotFound' $skip.Detail $skip.LegacySkipCode
         }
     }
     $null
@@ -355,25 +353,141 @@ function Test-MtLicenseRequirement {
         [Parameter(Mandatory)] [object] $Licenses
     )
 
+    [bool](Get-MtLicenseRequirementGap -Requirement $Requirement -Licenses $Licenses | Where-Object { $_.Missing.Count -eq 0 })
+}
+
+function Get-MtLicenseRequirementGap {
+    <#
+    .SYNOPSIS
+    Returns one row per element of a License list: its tokens and the tokens the tenant does not have.
+    An element is met when Missing is empty; the requirement is met when any element is.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [Parameter(Mandatory)] [string[]] $Requirement,
+        [Parameter(Mandatory)] [object] $Licenses
+    )
+
     $table = Get-MtLicenseTable
     $planNames = @($Licenses.ServicePlanNames)
     $planIds = @($Licenses.ServicePlanIds)
     $skuIds = @($Licenses.SkuIds)
     foreach ($element in $Requirement) {
-        $all = $true
-        foreach ($token in ($element -split '&' | ForEach-Object { $_.Trim() } | Where-Object { $_ })) {
-            $entry = $null
-            foreach ($key in $table.Tokens.Keys) { if ($key -eq $token) { $entry = $table.Tokens[$key] } }
-            $has = if ($entry) {
-                [bool](@($entry.ServicePlanIds) | Where-Object { $_ -in $planIds }) -or [bool](@($entry.SkuIds) | Where-Object { $_ -in $skuIds }) -or ($planNames -contains $token)
-            } else {
-                $planNames -contains $token
-            }
-            if (-not $has) { $all = $false; break }
-        }
-        if ($all) { return $true }
+        $tokens = @($element -split '&' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+        $missing = @(foreach ($token in $tokens) {
+                $entry = $null
+                foreach ($key in $table.Tokens.Keys) { if ($key -eq $token) { $entry = $table.Tokens[$key] } }
+                $has = if ($entry) {
+                    [bool](@($entry.ServicePlanIds) | Where-Object { $_ -in $planIds }) -or [bool](@($entry.SkuIds) | Where-Object { $_ -in $skuIds }) -or ($planNames -contains $token)
+                } else {
+                    $planNames -contains $token
+                }
+                if (-not $has) { $token }
+            })
+        [pscustomobject]@{ Element = $element; Tokens = $tokens; Missing = $missing }
     }
-    $false
+}
+
+function Get-MtLicenseSkipReason {
+    <#
+    .SYNOPSIS
+    Builds the skip message and the 2.x skip code for an unmet License, from Get-MtLicenseRequirementGap rows.
+    .DESCRIPTION
+    Licences are named by Microsoft's friendly name for the service plan (assets/MaesterServicePlanNames.json,
+    generated from Microsoft's licensing reference). The licence table's DisplayName overrides it for Maester's
+    grouping tokens, which accept more than one plan; a plan Microsoft does not list keeps its own name. One element reads "requires X and Y"; several read "requires X or Y",
+    or "requires one of: X; or Y and Z" when an element joins licences.
+
+    What the tenant lacks, kept to one short sentence:
+    - it has none of the licences named: "The tenant does not have it.", "... has neither." or "... has none of them.";
+    - one element, partly held: "The tenant does not have <the missing ones>.";
+    - several elements, some licence held: the closest element is described, "The tenant has <held> but not
+      <missing>.", since adding those is the shortest way to meet the requirement. The closest element is the one
+      with the fewest licences missing, then the most held, then the first.
+    The 2.x code is that of the first missing token of the closest element that has one, else 'Custom'.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [Parameter(Mandatory)] [object[]] $Gap
+    )
+
+    $table = Get-MtLicenseTable
+    $planNames = Get-MtServicePlanName
+    $entryOf = { param($token) foreach ($key in $table.Tokens.Keys) { if ($key -eq $token) { return $table.Tokens[$key] } } }
+    # The table's DisplayName overrides Microsoft's name for Maester's grouping tokens; every other token is a
+    # service plan and takes Microsoft's friendly name; a plan Microsoft does not list keeps its own name.
+    $namesOf = {
+        param([string[]] $Tokens)
+        foreach ($token in $Tokens) {
+            $entry = & $entryOf $token
+            if ($entry -and $entry.DisplayName) { $entry.DisplayName }
+            elseif ($planNames.ContainsKey($token)) { $planNames[$token] }
+            else { $token }
+        }
+    }
+    $join = {
+        param([string[]] $Names, [string] $Word)
+        if ($Names.Count -eq 1) { $Names[0] }
+        elseif ($Names.Count -eq 2) { "$($Names[0]) $Word $($Names[1])" }
+        else { ($Names[0..($Names.Count - 2)] -join ', ') + ", $Word $($Names[-1])" }
+    }
+
+    $elements = [System.Collections.Generic.List[string[]]]::new()
+    foreach ($row in $Gap) { $elements.Add([string[]]@(& $namesOf $row.Tokens)) }
+    $joined = $false
+    foreach ($names in $elements) { if ($names.Count -gt 1) { $joined = $true } }
+    $required = if ($elements.Count -eq 1) {
+        & $join $elements[0] 'and'
+    } elseif (-not $joined) {
+        & $join @(foreach ($names in $elements) { $names[0] }) 'or'
+    } else {
+        'one of: ' + (@(foreach ($names in $elements) { & $join $names 'and' }) -join '; or ')
+    }
+
+    $allTokens = [System.Collections.Generic.HashSet[string]]::new()
+    $allMissing = [System.Collections.Generic.HashSet[string]]::new()
+    foreach ($row in $Gap) {
+        foreach ($token in $row.Tokens) { $null = $allTokens.Add($token) }
+        foreach ($token in $row.Missing) { $null = $allMissing.Add($token) }
+    }
+    $closest = $Gap | Sort-Object -Stable -Property { $_.Missing.Count }, { $_.Missing.Count - $_.Tokens.Count } | Select-Object -First 1
+    $missing = & $join @(& $namesOf $closest.Missing) 'and'
+    $held = @($closest.Tokens | Where-Object { $_ -notin $closest.Missing })
+    $lacks = if ($allMissing.Count -eq $allTokens.Count) {
+        if ($allTokens.Count -eq 1) { 'The tenant does not have it.' } elseif ($allTokens.Count -eq 2) { 'The tenant has neither.' } else { 'The tenant has none of them.' }
+    } elseif ($Gap.Count -gt 1 -and $held.Count -gt 0) {
+        "The tenant has $(& $join @(& $namesOf $held) 'and') but not $missing."
+    } else {
+        "The tenant does not have $missing."
+    }
+
+    $legacy = 'Custom'
+    foreach ($token in $closest.Missing) {
+        $entry = & $entryOf $token
+        if ($entry -and $entry.LegacySkipCode) { $legacy = $entry.LegacySkipCode; break }
+    }
+    [pscustomobject]@{ Detail = "This test requires $required. $lacks"; LegacySkipCode = $legacy }
+}
+
+function Get-MtServicePlanName {
+    <#
+    .SYNOPSIS
+    Returns Microsoft's friendly name for each service plan name (assets/MaesterServicePlanNames.json), as a
+    hashtable, whose keys are case-insensitive. Cached for the session.
+    #>
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+    param()
+    if (-not $script:__MtServicePlanNames) {
+        $names = @{}
+        $path = Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/MaesterServicePlanNames.json'
+        $data = Get-Content -Path $path -Raw | ConvertFrom-Json
+        foreach ($plan in $data.plans.PSObject.Properties) { $names[$plan.Name] = [string]$plan.Value }
+        $script:__MtServicePlanNames = $names
+    }
+    $script:__MtServicePlanNames
 }
 
 function Get-MtLicenseTable {
@@ -396,16 +510,20 @@ function ConvertTo-MtTestParameter {
     Validates parameter values from the config against a test's param() block (design appendix A.5).
 
     .DESCRIPTION
-    Returns Bound (a hashtable to splat), Effective (name, value, source and kind of every parameter) and
-    Error (a message, or $null). PowerShell's own binder is too lenient for this: it turns 90.5 into 90
-    and accepts abbreviated names, so the engine checks names and types itself.
+    Returns Bound (a hashtable to splat), Effective (name, value, source, kind and setting of every
+    parameter) and Error (a message, or $null). PowerShell's own binder is too lenient for this: it turns
+    90.5 into 90 and accepts abbreviated names, so the engine checks names and types itself.
+
+    The most specific value wins: the run's -Parameter value, then the test's TestSettings row, then the
+    GlobalSettings entry a parameter names with [MaesterParameter(Setting = ...)], then the default.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
     param(
         [Parameter(Mandatory)] [object] $Test,
         [Parameter()] [AllowNull()] [object] $ConfigValue,
-        [Parameter()] [AllowNull()] [object] $Override
+        [Parameter()] [AllowNull()] [object] $Override,
+        [Parameter()] [AllowNull()] [object] $GlobalSetting
     )
 
     $bound = @{}
@@ -434,13 +552,32 @@ function ConvertTo-MtTestParameter {
         $sources[$parameter.Name] = $item.Source
     }
 
+    # A parameter that neither the test's row nor the run sets takes its setting from GlobalSettings.
+    foreach ($parameter in @($Test.Parameters | Where-Object { $_.PSObject.Properties['Setting'] -and $_.Setting -and -not $_.EngineOwned })) {
+        if ($bound.ContainsKey($parameter.Name) -or $null -eq $GlobalSetting) { continue }
+        $hasSetting = if ($GlobalSetting -is [System.Collections.IDictionary]) { $GlobalSetting.Contains($parameter.Setting) } else { $null -ne $GlobalSetting.PSObject.Properties[$parameter.Setting] }
+        if (-not $hasSetting) { continue }
+        $value = if ($GlobalSetting -is [System.Collections.IDictionary]) { $GlobalSetting[$parameter.Setting] } else { $GlobalSetting.($parameter.Setting) }
+        if ($null -eq $value) { continue }
+        $converted = ConvertTo-MtParameterValue -Parameter $parameter -Value $value -Kinds $kinds
+        if ($converted.Error) { $errors.Add("Setting '$($parameter.Setting)' (parameter '$($parameter.Name)'): $($converted.Error)"); continue }
+        $bound[$parameter.Name] = $converted.Value
+        $sources[$parameter.Name] = 'Setting'
+    }
+
+    # Effective is what the results record. The value of a parameter bound to a sensitive setting is
+    # redacted there, wherever it came from; the test still receives the real value in Bound.
+    $settingRegistry = (Get-MtSettingRegistry).Settings
     $effective = foreach ($parameter in @($Test.Parameters | Where-Object { -not $_.EngineOwned })) {
         $hasValue = $bound.ContainsKey($parameter.Name)
+        $settingName = if ($parameter.PSObject.Properties['Setting']) { $parameter.Setting } else { $null }
+        $sensitive = $hasValue -and $settingName -and $settingRegistry.ContainsKey($settingName) -and $settingRegistry[$settingName].Sensitive
         [pscustomobject]@{
-            Name   = $parameter.Name
-            Value  = if ($hasValue) { $bound[$parameter.Name] } else { $parameter.Default }
-            Source = if ($hasValue) { $sources[$parameter.Name] } else { 'Default' }
-            Kind   = $parameter.Kind
+            Name    = $parameter.Name
+            Value   = if ($sensitive) { '[redacted]' } elseif ($hasValue) { $bound[$parameter.Name] } else { $parameter.Default }
+            Source  = if ($hasValue) { $sources[$parameter.Name] } else { 'Default' }
+            Kind    = $parameter.Kind
+            Setting = $settingName
         }
     }
 
@@ -497,6 +634,12 @@ function ConvertTo-MtParameterValue {
             $items = @(foreach ($v in @($Value)) { & $unwrap $v })
             if ($items | Where-Object { $_ -isnot [string] }) { return & $result $null 'expected a string or a list of strings.' }
             $converted = [string[]]$items
+        }
+        'object[]' {
+            # A list of objects, such as EmergencyAccessAccounts: { "Id": "...", "Type": "group" }.
+            $items = @(@($Value) | Where-Object { $null -ne $_ })
+            if ($items | Where-Object { $_ -isnot [System.Collections.IDictionary] -and $_ -isnot [System.Management.Automation.PSCustomObject] }) { return & $result $null 'expected a list of objects.' }
+            return & $result ([object[]]@(foreach ($item in $items) { if ($item -is [System.Collections.IDictionary]) { [pscustomobject]$item } else { $item } })) $null
         }
         default { return & $result $null "type '$($Parameter.Type)' cannot be set from the config." }
     }

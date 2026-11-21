@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Generates the ORCA classes and the ORCA native tests from the upstream ORCA module.
 
@@ -67,7 +67,9 @@ function Write-OrcaGeneratedContent {
     $cleanValue = $cleanValue -replace '(\r?\n)+$', ''
     # A CRLF checkout gives the templates CRLF while the generated lines are joined with LF: write one kind.
     if ($newLine -eq "`r`n") { $cleanValue = $cleanValue -replace '(?<!\r)\n', "`r`n" }
-    [System.IO.File]::WriteAllText($Path, "$cleanValue$newLine", [System.Text.UTF8Encoding]::new($false))
+    # PowerShell files are UTF-8 with a byte order mark (see the contributing guide); Markdown has none.
+    $bom = [System.IO.Path]::GetExtension($Path) -in '.ps1', '.psm1', '.psd1'
+    [System.IO.File]::WriteAllText($Path, "$cleanValue$newLine", [System.Text.UTF8Encoding]::new($bom))
 }
 
 # Upstream ORCA calls [ORCAConfigLevel]::Informational from SetResult and from checks such as

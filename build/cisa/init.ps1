@@ -1,4 +1,4 @@
-# Script used to initialize the CISA Entra test docs
+﻿# Script used to initialize the CISA Entra test docs
 
 gci *.md|%{$x=$_.Name;"";$x;gc $x}|?{$_ -match "(?<cmdlet>Test-MtCisa.*.md)" -or $_ -match ".*(?<url>https.*baselines.*)\)"}|%{$Matches['control'];$Matches['cmdlet'];$Matches['url']}|clip
 $x=@"

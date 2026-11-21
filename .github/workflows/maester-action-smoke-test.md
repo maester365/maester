@@ -122,7 +122,9 @@ In the demo tenant:
    permissions. These are the default read-only scopes returned by
    `Get-MtGraphScope`:
 
+   - `AccessReview.Read.All`
    - `AuditLog.Read.All`
+   - `DeviceManagementApps.Read.All`
    - `DeviceManagementConfiguration.Read.All`
    - `DeviceManagementManagedDevices.Read.All`
    - `DeviceManagementRBAC.Read.All`
@@ -131,6 +133,7 @@ In the demo tenant:
    - `DirectoryRecommendations.Read.All`
    - `EntitlementManagement.Read.All`
    - `IdentityRiskEvent.Read.All`
+   - `NetworkAccess.Read.All`
    - `OnPremDirectorySynchronization.Read.All`
    - `OrgSettings-AppsAndServices.Read.All`
    - `OrgSettings-Forms.Read.All`
@@ -141,8 +144,8 @@ In the demo tenant:
    - `RoleEligibilitySchedule.Read.Directory`
    - `RoleManagement.Read.All`
    - `RoleManagementAlert.Read.Directory`
-   - `SecurityIdentitiesSensors.Read.All`
    - `SecurityIdentitiesHealth.Read.All`
+   - `SecurityIdentitiesSensors.Read.All`
    - `SharePointTenantSettings.Read.All`
    - `ThreatHunting.Read.All`
    - `UserAuthenticationMethod.Read.All`

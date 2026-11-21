@@ -1,0 +1,16 @@
+{
+  "Id": "DISA",
+  "Name": "DISA STIGs",
+  "Source": "DISA",
+  "IdPattern": "^DISA\\.",
+  "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}",
+  "Upstream": {
+    "Name": "DISA Security Technical Implementation Guides",
+    "Url": "https://public.cyber.mil/stigs/"
+  },
+  "Frameworks": [
+    { "Key": "disa-stig-entra-id", "Version": "V1R2" },
+    { "Key": "disa-stig-intune-mdm", "Version": "V1R2" },
+    { "Key": "disa-stig-intune-desktop", "Version": "V1R1" }
+  ]
+}

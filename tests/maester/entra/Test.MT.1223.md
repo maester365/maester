@@ -1,4 +1,4 @@
-﻿Agent Identities should not have high-risk Microsoft Graph permissions.
+Agent Identities should not have high-risk Microsoft Graph permissions.
 
 Agent Identities can be granted Microsoft Graph application permissions and delegated permission
 scopes. Some permissions provide a path to privileged control of the tenant if an Agent Identity is

@@ -1,4 +1,4 @@
-﻿The Local Administrator Password Solution (LAPS) is a critical security tool that:
+The Local Administrator Password Solution (LAPS) is a critical security tool that:
 
 - **Manages local admin passwords**: Automatically rotates passwords on domain-joined computers
 - **Prevents lateral movement**: Eliminates shared local administrator passwords

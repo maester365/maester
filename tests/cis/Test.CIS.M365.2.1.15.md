@@ -1,4 +1,4 @@
-﻿The default outbound spam policy sets sensible recipient limits, restricts a user who reaches them, turns on outbound spam notifications and names a notification recipient.
+The default outbound spam policy sets sensible recipient limits, restricts a user who reaches them, turns on outbound spam notifications and names a notification recipient.
 
 A compromised mailbox is usually used to send phishing or spam to a large number of recipients. Recipient limits stop the burst early, and blocking the user, instead of only alerting, stops the abuse and protects your sending reputation.
 

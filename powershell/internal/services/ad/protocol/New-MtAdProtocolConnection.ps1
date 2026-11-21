@@ -1,4 +1,4 @@
-function New-MtAdProtocolConnection {
+﻿function New-MtAdProtocolConnection {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Internal connection factory that only creates an in-memory LDAP client object from cached session evidence.')]
     <#
     .SYNOPSIS

@@ -1,4 +1,4 @@
-﻿8.1.1 (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services
+8.1.1 (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services
 
 Microsoft Teams enables collaboration via file sharing. This file sharing is conducted within Teams, using SharePoint Online, by default; however, third-party cloud services are allowed as well.
 

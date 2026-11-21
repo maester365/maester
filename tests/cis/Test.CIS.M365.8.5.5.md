@@ -1,4 +1,4 @@
-﻿Meeting chat is open to everyone who is in the meeting. If anonymous users can use it, a person who has joined without signing in can post messages and links to all participants, which is a route for phishing and social engineering during a meeting.
+Meeting chat is open to everyone who is in the meeting. If anonymous users can use it, a person who has joined without signing in can post messages and links to all participants, which is a route for phishing and social engineering during a meeting.
 
 Limiting meeting chat to signed-in participants keeps the chat to people whose identity is known. Anonymous participants can still listen and watch the meeting.
 

@@ -1,0 +1,357 @@
+---
+// A framework by requirement: each section of the framework, each requirement with the checks that name it, and the
+// requirements no check covers yet. The level and show filters work in the browser.
+import { checks, frameworkOf, plural } from './data';
+
+interface Props {
+	framework: string;
+}
+const f = frameworkOf(Astro.props.framework)!;
+const byId = new Map(checks.map((t) => [t.id, t]));
+const sections = new Map<string, typeof f.requirements>();
+for (const r of f.requirements) {
+	for (const section of r.sections) {
+		if (!sections.has(section)) sections.set(section, []);
+		sections.get(section)!.push(r);
+	}
+}
+// The anchor of a requirement listed in several sections is on its first row.
+const anchored = new Set<string>();
+const anchor = (id: string) => (anchored.has(id) ? undefined : (anchored.add(id), `req-${id}`));
+const levels = [...new Set(f.requirements.map((r) => r.level).filter(Boolean))].sort();
+const command = f.suite ? `Invoke-Maester -Suite ${f.suite}` : '';
+---
+
+<mt-framework-view class="mt-fw not-content">
+	<div class="mt-fw__stats">
+		{
+			f.complete ? (
+				<p>
+					<b>{f.covered}</b> of {f.total} requirements have a Maester check. {f.total - f.covered > 0 && `${f.total - f.covered} have none yet: a place to contribute, or a requirement that cannot be checked from a tenant.`}
+				</p>
+			) : (
+				<p>
+					<b>{f.covered}</b> {f.key.startsWith('nist') ? 'controls' : 'requirements'} have a Maester check, with {plural(f.checks, 'check')} in all. Only those are listed.
+				</p>
+			)
+		}
+		{f.complete && <span class="mt-fw__track"><i style={`width: ${(f.covered / f.total) * 100}%`} /></span>}
+	</div>
+
+	{
+		command && (
+			<div class="mt-fw__cmd">
+				<span>Run these</span>
+				<code>{command}</code>
+			</div>
+		)
+	}
+
+	<div class="mt-fw__toolbar">
+		{
+			levels.length > 1 && (
+				<div class="mt-fw__seg" role="group" aria-label="Level">
+					<button type="button" data-level="" aria-pressed="true">
+						All levels
+					</button>
+					{levels.map((l) => (
+						<button type="button" data-level={l} aria-pressed="false">
+							{l}
+						</button>
+					))}
+				</div>
+			)
+		}
+		{
+			f.complete && (
+				<div class="mt-fw__seg" role="group" aria-label="Show">
+					<button type="button" data-show="" aria-pressed="true">
+						All
+					</button>
+					<button type="button" data-show="has" aria-pressed="false">
+						With a check
+					</button>
+					<button type="button" data-show="gap" aria-pressed="false">
+						No check yet
+					</button>
+				</div>
+			)
+		}
+	</div>
+
+	{
+		[...sections.entries()].map(([section, reqs]) => {
+			const covered = reqs.filter((r) => r.tests.length).length;
+			return (
+				<details class="mt-fw__sec" open={sections.size <= 12}>
+					<summary>
+						<b>{section}</b>
+						<span class="mt-fw__track mt-fw__track--thin">
+							<i style={`width: ${(covered / reqs.length) * 100}%`} />
+						</span>
+						<span class="mt-fw__num">
+							{covered} of {reqs.length}
+						</span>
+					</summary>
+					{reqs.map((r) => (
+						<div class="mt-fw__req" id={anchor(r.id)} data-level={r.level} data-has={r.tests.length ? 'has' : 'gap'}>
+							<span class="mt-fw__rid">{r.id}</span>
+							<span>{r.level && <span class="mt-fw__lvl">{r.level}</span>}</span>
+							<span class="mt-fw__tests">
+								{r.title && <span class="mt-fw__rtitle">{r.title}</span>}
+								{r.tests.length ? (
+									r.tests.map((id) => (
+										<a href={`/docs/tests/${id}`}>
+											{byId.get(id)?.title ?? id} <span class="mt-fw__tid">{id}</span>
+										</a>
+									))
+								) : (
+									<span class="mt-fw__gap">No Maester check yet</span>
+								)}
+							</span>
+							<span class:list={['mt-fw__status', r.tests.length ? 'mt-fw__status--has' : 'mt-fw__status--gap']}>{r.tests.length ? 'Has a check' : 'No check'}</span>
+						</div>
+					))}
+				</details>
+			);
+		})
+	}
+</mt-framework-view>
+
+<script>
+	class FrameworkView extends HTMLElement {
+		connectedCallback() {
+			let level = '';
+			let show = '';
+			// A link to one requirement (#req-<id>) opens its section and marks it.
+			// A malformed escape in the hash (#req-100%) is no target, not an error that stops the filters below.
+			let target: HTMLElement | null = null;
+			try {
+				target = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+			} catch {
+				target = null;
+			}
+			if (target?.classList.contains('mt-fw__req')) {
+				target.closest('details')?.setAttribute('open', '');
+				target.classList.add('mt-fw__req--target');
+				target.scrollIntoView({ block: 'center' });
+			}
+			const apply = () => {
+				for (const req of this.querySelectorAll<HTMLElement>('.mt-fw__req')) req.hidden = Boolean((level && req.dataset.level !== level) || (show && req.dataset.has !== show));
+				for (const sec of this.querySelectorAll<HTMLDetailsElement>('.mt-fw__sec')) {
+					const any = [...sec.querySelectorAll<HTMLElement>('.mt-fw__req')].some((r) => !r.hidden);
+					sec.hidden = !any;
+					if (show || level) sec.open = true;
+				}
+			};
+			for (const b of this.querySelectorAll<HTMLButtonElement>('[data-level]')) {
+				b.addEventListener('click', () => {
+					level = b.dataset.level!;
+					for (const x of this.querySelectorAll('[data-level]')) if (x instanceof HTMLButtonElement) x.setAttribute('aria-pressed', String(x === b));
+					apply();
+				});
+			}
+			for (const b of this.querySelectorAll<HTMLButtonElement>('[data-show]')) {
+				b.addEventListener('click', () => {
+					show = b.dataset.show!;
+					for (const x of this.querySelectorAll('[data-show]')) x.setAttribute('aria-pressed', String(x === b));
+					apply();
+				});
+			}
+		}
+	}
+	customElements.define('mt-framework-view', FrameworkView);
+</script>
+
+<style>
+	.mt-fw {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		font-size: 0.875rem;
+	}
+	.mt-fw__stats p {
+		margin: 0 0 0.5rem;
+		color: var(--sl-color-gray-2);
+	}
+	.mt-fw__stats b {
+		color: var(--sl-color-white);
+	}
+	.mt-fw__track {
+		display: block;
+		height: 8px;
+		border-radius: 4px;
+		background: var(--sl-color-gray-6);
+		overflow: hidden;
+	}
+	.mt-fw__track--thin {
+		height: 6px;
+	}
+	.mt-fw__track i {
+		display: block;
+		height: 100%;
+		background: #16a34a;
+	}
+	.mt-fw__cmd {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.9rem;
+		align-items: center;
+		padding: 0.7rem 1rem;
+		border: 1px solid var(--mt-code-line);
+		border-radius: 0.75rem;
+		background: var(--mt-code-bg);
+	}
+	.mt-fw__cmd span {
+		font-family: var(--sl-font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--mt-code-muted);
+	}
+	.mt-fw__cmd code {
+		background: none;
+		border: 0;
+		padding: 0;
+		color: var(--mt-code-ink);
+		font-size: 0.85rem;
+	}
+	.mt-fw__toolbar {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+	.mt-fw__seg {
+		display: inline-flex;
+		gap: 2px;
+		padding: 2px;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 9px;
+	}
+	.mt-fw__seg button {
+		border: 0;
+		border-radius: 7px;
+		padding: 0.3rem 0.65rem;
+		background: none;
+		font: inherit;
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-2);
+		cursor: pointer;
+	}
+	.mt-fw__seg button[aria-pressed='true'] {
+		background: var(--sl-color-white);
+		color: var(--sl-color-black);
+		font-weight: 600;
+	}
+	.mt-fw__sec {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 12px;
+		overflow: hidden;
+	}
+	.mt-fw__sec[hidden] {
+		display: none;
+	}
+	.mt-fw__sec summary {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) 12rem 5.5rem;
+		gap: 1rem;
+		align-items: center;
+		padding: 0.8rem 1rem;
+		cursor: pointer;
+		list-style: none;
+	}
+	.mt-fw__sec summary::-webkit-details-marker {
+		display: none;
+	}
+	.mt-fw__sec summary b {
+		color: var(--sl-color-white);
+	}
+	.mt-fw__num {
+		font-family: var(--sl-font-mono);
+		font-size: 0.78rem;
+		color: var(--sl-color-gray-3);
+		text-align: end;
+	}
+	.mt-fw__req {
+		display: grid;
+		grid-template-columns: 8rem 3.5rem minmax(0, 1fr) 7rem;
+		gap: 0.9rem;
+		align-items: start;
+		padding: 0.6rem 1rem;
+		border-top: 1px solid var(--sl-color-gray-6);
+	}
+	.mt-fw__req--target {
+		background: var(--sl-color-accent-low);
+	}
+	.mt-fw__req[hidden] {
+		display: none;
+	}
+	.mt-fw__rid {
+		font-family: var(--sl-font-mono);
+		font-size: 0.8rem;
+		font-weight: 500;
+		color: var(--sl-color-white);
+	}
+	.mt-fw__lvl {
+		display: inline-block;
+		padding: 0 0.35rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 5px;
+		font-family: var(--sl-font-mono);
+		font-size: 0.7rem;
+		color: var(--sl-color-gray-2);
+	}
+	.mt-fw__tests {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+		min-width: 0;
+	}
+	.mt-fw__tests a {
+		color: var(--sl-color-gray-1);
+		text-decoration: none;
+	}
+	.mt-fw__tests a:hover {
+		color: var(--sl-color-text-accent);
+	}
+	.mt-fw__rtitle {
+		color: var(--sl-color-gray-2);
+	}
+	.mt-fw__tid {
+		font-family: var(--sl-font-mono);
+		font-size: 0.72rem;
+		color: var(--sl-color-text-accent);
+	}
+	.mt-fw__gap {
+		color: var(--sl-color-gray-3);
+	}
+	.mt-fw__status {
+		justify-self: end;
+		padding: 0.1rem 0.5rem;
+		border-radius: 6px;
+		font-size: 0.72rem;
+		font-weight: 600;
+	}
+	.mt-fw__status--has {
+		background: #dcfce7;
+		color: #15803d;
+	}
+	.mt-fw__status--gap {
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-gray-2);
+	}
+	@media (max-width: 40rem) {
+		.mt-fw__req {
+			grid-template-columns: 1fr auto;
+		}
+		.mt-fw__tests {
+			grid-column: 1 / -1;
+		}
+		.mt-fw__sec summary {
+			grid-template-columns: 1fr auto;
+		}
+		.mt-fw__sec summary .mt-fw__track {
+			display: none;
+		}
+	}
+</style>

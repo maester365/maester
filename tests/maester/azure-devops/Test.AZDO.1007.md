@@ -1,4 +1,4 @@
-﻿Access to Azure DevOps **should be** a controlled process managed by the IAM team or the appropriate Azure DevOps administrator roles.
+Access to Azure DevOps **should be** a controlled process managed by the IAM team or the appropriate Azure DevOps administrator roles.
 
 Rationale: By default, all administrators can invite new users to their Azure DevOps organization. Disabling this policy prevents Team and Project Administrators from inviting new users.
 Project Collection Administrators (PCAs) can still add new users to the organization regardless of the policy status. Additionally, if a user is already a member of the organization, Project and Team Administrators can add that user to specific projects.

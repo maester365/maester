@@ -1,4 +1,4 @@
-﻿Azure DevOps supports up to 150,000 tag definitions per organization or collection.
+Azure DevOps supports up to 150,000 tag definitions per organization or collection.
 
 Rationale: Tags are useful for categorizing and querying work items, but an excessive number of unique tags can degrade performance and make management difficult. Hitting the limit may prevent users from creating new tags and could cause UI slowdowns.
 

@@ -1,4 +1,4 @@
-function Test-MtBuiltInPackCode {
+﻿function Test-MtBuiltInPackCode {
     <#
     .SYNOPSIS
     Returns $true when Code is the code of a pack that ships with Maester and Path is inside that pack.

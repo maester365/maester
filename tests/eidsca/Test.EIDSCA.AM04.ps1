@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAM04 {
+﻿function Test-MtCheckEidscaAM04 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Included users/groups of number matching for push notifications is 'all_users'

@@ -1,4 +1,4 @@
-﻿At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe).
+At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe).
 
 Rationale: Malicious attachments often take the form of click-to-run files. Blocking a list of common executable files helps mitigate the risk of adversarial exploitation.
 

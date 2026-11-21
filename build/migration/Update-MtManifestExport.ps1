@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Sets FunctionsToExport in powershell/Maester.psd1 to the functions in powershell/public.
 
@@ -16,5 +16,5 @@ $names = @(Get-ChildItem -Path (Join-Path $repoRoot 'powershell/public') -Recurs
 $text = [System.IO.File]::ReadAllText($manifest)
 $list = ($names | ForEach-Object { "        '$_'" }) -join ",`n"
 $updated = [regex]::Replace($text, '(?s)    FunctionsToExport    = @\(.*?\n    \)', "    FunctionsToExport    = @(`n$list`n    )")
-[System.IO.File]::WriteAllText($manifest, $updated, [System.Text.UTF8Encoding]::new($false))
+[System.IO.File]::WriteAllText($manifest, $updated, [System.Text.UTF8Encoding]::new($true))
 Write-Information "FunctionsToExport: $($names.Count) functions." -InformationAction Continue

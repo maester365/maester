@@ -1,4 +1,4 @@
-function Resolve-MtPackLockPath {
+﻿function Resolve-MtPackLockPath {
     <#
     .SYNOPSIS
     Works out which maester-config.json and maester-packs.lock.json a pack command uses (Maester Packs design, section 5.2).

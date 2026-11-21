@@ -1,0 +1,138 @@
+{
+  "$comment": "Kept by hand. Maester's additions to the Zero Trust Workshop plan: Maester tests that measure a workshop task (merged with Microsoft's mapping, never replacing it), a note per task, and tasks the workshop does not have. See build/zero-trust-workshop/README.md.",
+  "Tasks": {
+    "RMI_001": {
+      "Tests": [
+        "MT.1003",
+        "MT.1004",
+        "MT.1036",
+        "MT.1038",
+        "MT.1066",
+        "MT.1184"
+      ],
+      "Note": "Maester also checks that the policy set has no gaps: All apps and all users are covered, exclusions fall back to another policy, and no policy references deleted objects."
+    },
+    "RMI_006": {
+      "Tests": [
+        "MT.1001",
+        "MT.1014",
+        "MT.1015"
+      ]
+    },
+    "RMI_007": {
+      "Tests": [
+        "MT.1049"
+      ]
+    },
+    "RMI_008": {
+      "Tests": [
+        "MT.1016"
+      ]
+    },
+    "RMI_142": {
+      "Tests": [
+        "MT.1009",
+        "MT.1010",
+        "MT.1033",
+        "MT.1052"
+      ]
+    },
+    "RMI_034": {
+      "Tests": [
+        "MT.1011"
+      ]
+    },
+    "RMI_150": {
+      "Tests": [
+        "MT.1005",
+        "MT.1034",
+        "MT.1191"
+      ],
+      "Note": "The workshop asks for the accounts. Maester also checks they're excluded from every Conditional Access policy and never blocked."
+    },
+    "RMI_072": {
+      "Tests": [
+        "MT.1006"
+      ]
+    },
+    "RMI_064": {
+      "Tests": [
+        "MT.1027",
+        "MT.1050",
+        "MT.1051"
+      ]
+    },
+    "RMI_070": {
+      "Tests": [
+        "MT.1198",
+        "MT.1199",
+        "MT.1226"
+      ]
+    },
+    "RMI_063": {
+      "Tests": [
+        "MT.1030",
+        "MT.1031"
+      ]
+    },
+    "RMI_061": {
+      "Tests": [
+        "MT.1032"
+      ]
+    },
+    "RMI_062": {
+      "Tests": [
+        "MT.1026"
+      ]
+    },
+    "RMI_081": {
+      "Tests": [
+        "MT.1025",
+        "MT.1028"
+      ]
+    },
+    "RMI_065": {
+      "Tests": [
+        "MT.1055",
+        "MT.1069",
+        "MT.1070",
+        "MT.1075",
+        "MT.1186"
+      ]
+    },
+    "RMI_110": {
+      "Tests": [
+        "MT.1106",
+        "MT.1107",
+        "MT.1108",
+        "MT.1109",
+        "MT.1110"
+      ]
+    }
+  },
+  "ExtraTasks": [
+    {
+      "Pillar": "identity",
+      "Id": "MAE_ENTRA_SYNC",
+      "Name": "Harden Microsoft Entra Connect sync",
+      "AreaId": "Operations",
+      "Swimlane": "SecOps",
+      "Phase": "Then",
+      "Priority": "P1",
+      "Effort": "Low",
+      "UserImpact": "Low",
+      "License": "Entra-Free",
+      "Dependencies": [
+        "RMI_036"
+      ],
+      "Tests": [
+        "MT.1020",
+        "MT.1073",
+        "MT.1084",
+        "MT.1147",
+        "MT.1183"
+      ],
+      "Doc": "## Overview\n\nThe sync server and its accounts can take over cloud identities if they're misconfigured. Block soft and hard matching, turn off seamless single sign-on where you no longer need it, keep the krbtgt_AzureAD account out of sync, and turn off the temporary bypass for onPremisesObjectIdentifier updates. Conditional Access policies should exclude the directory synchronization accounts so sync keeps running.\n\nThis task isn't in the Zero Trust Workshop. Maester adds it because these settings are a common route from on-premises to the cloud.\n\n## Reference\n\n* [Microsoft Entra Connect: Sync service features](https://learn.microsoft.com/entra/identity/hybrid/connect/how-to-connect-syncservice-features)\n* [Harden your Microsoft Entra Connect server](https://learn.microsoft.com/entra/identity/hybrid/connect/how-to-connect-security-hardening)"
+    }
+  ]
+}

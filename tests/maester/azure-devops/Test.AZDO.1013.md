@@ -1,4 +1,4 @@
-﻿Azure DevOps organization owner **should not** be assigned to a regular user.
+Azure DevOps organization owner **should not** be assigned to a regular user.
 
 Rationale: Owner has full administrative control over the organization, including the ability to manage users, projects, and settings. They can also configure security policies, access levels, and billing information. Ensure that the owner is aware of their responsibilities and has the necessary permissions to effectively manage the organization.
 

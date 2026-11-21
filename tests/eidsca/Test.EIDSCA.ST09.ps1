@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaST09 {
+﻿function Test-MtCheckEidscaST09 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to have access to groups content is 'True'

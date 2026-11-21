@@ -1,4 +1,4 @@
-﻿Organization base permissions grant members no repository access or read access only.
+Organization base permissions grant members no repository access or read access only.
 
 Base permissions apply across organization repositories. Keeping them at **None** or **Read** prevents the default from giving every member permission to change code. Members who contribute changes may need explicit repository, team, or role assignments after the default is reduced.
 

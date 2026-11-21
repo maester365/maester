@@ -4,7 +4,7 @@
   --sponsor-pink-soft: rgba(191, 57, 137, 0.1);
   max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem 1.25rem 4rem;
+  padding: 0.5rem 1.25rem 4rem;
 }
 
 [data-theme="dark"] .page {
@@ -16,7 +16,7 @@
 .hero {
   text-align: center;
   max-width: 760px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2.25rem;
 }
 
 .hero h1 {
@@ -37,16 +37,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 72px;
-  height: 72px;
-  margin-bottom: 1rem;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 0.6rem;
   border-radius: 50%;
   background: var(--sponsor-pink-soft);
 }
 
 .heroHeart svg {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   fill: var(--sponsor-pink);
   animation: beat 1.6s ease-in-out infinite;
 }
@@ -68,7 +68,17 @@
 
 .section h2 {
   font-size: 1.5rem;
+  margin-top: 0;
   margin-bottom: 0.25rem;
+}
+
+/* The first section's heading, drawn above the page body. */
+.sectionHead {
+  margin-bottom: 0;
+}
+
+.sectionHead .sectionSub {
+  margin-top: 0;
 }
 
 .sectionSub {
@@ -317,8 +327,6 @@
 
 .thanks {
   flex: 0 0 280px;
-  /* Level with the top of the first row of cards: below the heading and line of the first section. */
-  margin-top: calc(1.5rem * var(--ifm-heading-line-height) + 0.25rem + 1rem * var(--ifm-line-height-base) + 1.25rem);
   position: sticky;
   top: calc(var(--ifm-navbar-height) + 1rem);
   max-height: calc(100vh - var(--ifm-navbar-height) - 2rem);
@@ -335,7 +343,7 @@
 .thanks h2 {
   font-size: 1.05rem;
   white-space: nowrap;
-  margin-bottom: 0.4rem;
+  margin-bottom: 1rem;
 }
 
 .thanks h2 svg {
@@ -346,10 +354,19 @@
   fill: var(--sponsor-pink);
 }
 
-.thanksSub {
-  font-size: 0.82rem;
-  color: var(--ifm-color-emphasis-700);
-  margin-bottom: 1rem;
+/* Under the company logos: where an organisation asks about sponsoring. */
+.becomeSponsor {
+  display: block;
+  margin-top: 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* The line between the companies and the people who sponsor on GitHub. */
+.becomeSponsor:not(:last-child) {
+  margin-bottom: 1.1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
 }
 
 /* The featured sponsors: their logos, first and full width. */
@@ -362,11 +379,6 @@
   padding: 0;
 }
 
-.featured:not(:last-child) {
-  margin-bottom: 1.1rem;
-  padding-bottom: 1.1rem;
-  border-bottom: 1px solid var(--ifm-color-emphasis-200);
-}
 
 .featured a {
   display: flex;

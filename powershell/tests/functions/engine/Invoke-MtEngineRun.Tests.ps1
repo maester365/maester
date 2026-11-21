@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     # Load only the engine DLL so these tests also run on a machine without Maester's dependencies
     # (the build-engine workflow runs them on every OS straight after checkout).
     Import-Module "$PSScriptRoot/../../../lib/Maester.Engine.dll" -Force
@@ -39,7 +39,7 @@ BeforeAll {
         }
         function Test-Private { [CmdletBinding()] param() (Get-PrivateValue) -eq 'module-private' }
         function Test-Parameter { [CmdletBinding()] param([int] $Threshold) $Threshold -eq 5 }
-        function Test-CurrentTest { [CmdletBinding()] param() [Maester.Engine.MtSession]::GetCurrentTest() }
+        function Test-CurrentTest { [CmdletBinding()] [OutputType([string])] param() [Maester.Engine.MtSession]::GetCurrentTest() }
         function Test-ErrorPreference { [CmdletBinding()] param() Write-Error 'soft'; $true }
         function Test-Attribute {
             [MaesterTest(Id = 'FIXTURE.1', Title = 'Attribute', Tag = 'a', LongRunning, Service = ('Graph', 'Exchange'))]

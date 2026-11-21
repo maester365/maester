@@ -1,4 +1,4 @@
-# Validates that every AD built-in test declares Permission attributes
+﻿# Validates that every AD built-in test declares Permission attributes
 # and that the engine parses them without errors.
 # The engine (Read-MtNativeTest) validates service registration, kind correctness,
 # and Service-attribute alignment per PR #2500.

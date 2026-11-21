@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAP01 {
+﻿function Test-MtCheckEidscaAP01 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Enabled Self service password reset for administrators is 'false'

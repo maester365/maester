@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** Android compliance policy requires a strong device password.
+Ensure at least one **assigned** Android compliance policy requires a strong device password.
 
 The device password is what stands between someone holding the phone and everything on it: corporate mail, Teams conversations, and the Microsoft Authenticator app, which is the second factor for the signed-in user. A phone with no password hands all of that to whoever picks it up, and a stolen phone is the most ordinary way a mobile device is lost to someone else.
 

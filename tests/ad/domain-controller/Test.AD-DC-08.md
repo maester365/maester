@@ -1,4 +1,4 @@
-﻿Understanding the operating system distribution across your domain controllers helps with:
+Understanding the operating system distribution across your domain controllers helps with:
 
 - **Security compliance**: Identifying DCs on unsupported OS versions
 - **Patch management**: Planning update cycles across different OS versions

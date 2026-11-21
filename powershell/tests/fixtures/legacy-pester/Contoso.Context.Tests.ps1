@@ -1,4 +1,4 @@
-# Legacy Pester fixture: Context blocks inside a Describe, each with their own tags.
+﻿# Legacy Pester fixture: Context blocks inside a Describe, each with their own tags.
 # 2.x drops the Describe tags from the result row of a test inside a Context.
 Describe "Contoso Exchange" -Tag "Contoso", "EXO" {
     Context "Mail flow" -Tag "MailFlow" {

@@ -1,4 +1,4 @@
-﻿Existing Git repositories **should be** enrolled in the GitHub Code Security plan.
+Existing Git repositories **should be** enrolled in the GitHub Code Security plan.
 
 Rationale: Turning on automatic enablement only affects repositories created from that point forward. Every repository that already existed stays unenrolled until it is explicitly onboarded, so an organization can show a correctly configured plan while none of its actual code is scanned. This check assesses real coverage rather than intent.
 

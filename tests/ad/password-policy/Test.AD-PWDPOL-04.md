@@ -1,4 +1,4 @@
-﻿Password complexity requirements are a fundamental security control that helps prevent weak passwords:
+Password complexity requirements are a fundamental security control that helps prevent weak passwords:
 
 * **Prevents common passwords**: Complexity requirements block easily guessable passwords like "password123" or "companyname2024"
 * **Increases entropy**: Character diversity increases the search space for brute-force attacks

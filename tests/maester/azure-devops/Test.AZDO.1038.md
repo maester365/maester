@@ -1,4 +1,4 @@
-﻿Extensions **should not be** allowed to access resources on the local network.
+Extensions **should not be** allowed to access resources on the local network.
 
 Rationale: Allowing extensions to make requests to local network resources (loopback addresses like 127.0.0.1 or private IP ranges) increases the risk of server-side request forgery (SSRF) attacks. This policy should be disabled unless your extensions specifically require local network access.
 

@@ -1,4 +1,4 @@
-﻿Understanding the rate of group membership changes provides insights into:
+Understanding the rate of group membership changes provides insights into:
 
 - **Operational tempo**: How frequently group memberships change
 - **Security monitoring**: Baseline for detecting anomalous activity

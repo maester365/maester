@@ -1,4 +1,4 @@
-﻿8.5.3 (L1) Ensure only people in my org can bypass the lobby
+8.5.3 (L1) Ensure only people in my org can bypass the lobby
 
 This policy setting controls who can join a meeting directly and who must wait in the lobby until they're admitted by an organizer, co-organizer, or presenter of the meeting.
 

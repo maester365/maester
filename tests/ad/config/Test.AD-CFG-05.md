@@ -1,4 +1,4 @@
-﻿**Recycle Bin enabled paths** indicate which naming contexts/partitions have AD’s Recycle Bin functionality turned on. This matters because the Recycle Bin is a major control for limiting damage from:
+**Recycle Bin enabled paths** indicate which naming contexts/partitions have AD’s Recycle Bin functionality turned on. This matters because the Recycle Bin is a major control for limiting damage from:
 
 - **Accidental deletions** (including bulk removal mistakes)
 - **Insider misuse** where deletion is used to cover tracks

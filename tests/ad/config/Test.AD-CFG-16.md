@@ -1,4 +1,4 @@
-﻿Trusted root CAs act as the trust anchors for an entire PKI trust chain. If an attacker (or a misconfiguration) introduces an unauthorized trusted root CA, they may be able to construct certificates that validate through the trust chain, enabling broad compromise of authentication, TLS validation, and signed trust decisions.
+Trusted root CAs act as the trust anchors for an entire PKI trust chain. If an attacker (or a misconfiguration) introduces an unauthorized trusted root CA, they may be able to construct certificates that validate through the trust chain, enabling broad compromise of authentication, TLS validation, and signed trust decisions.
 
 #### Control Type
 

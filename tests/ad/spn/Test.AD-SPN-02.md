@@ -1,4 +1,4 @@
-﻿Understanding the distribution of SPN service classes across your computer infrastructure provides valuable security insights:
+Understanding the distribution of SPN service classes across your computer infrastructure provides valuable security insights:
 
 - **Service inventory**: See what services are deployed across your environment
 - **Risk assessment**: Identify high-value targets (like database services with SPNs)

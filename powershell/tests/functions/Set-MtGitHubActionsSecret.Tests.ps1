@@ -1,4 +1,4 @@
-Describe 'Set-MtGitHubActionsSecret' {
+﻿Describe 'Set-MtGitHubActionsSecret' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
     }

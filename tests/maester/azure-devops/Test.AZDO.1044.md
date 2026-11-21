@@ -1,4 +1,4 @@
-﻿Repositories with the GitHub Code Security plan enabled **should** have dependency alerts and CodeQL alerts turned on.
+Repositories with the GitHub Code Security plan enabled **should** have dependency alerts and CodeQL alerts turned on.
 
 Rationale: The Code Security plan is what grants access to dependency scanning and code scanning, but the individual scanning features still have to be turned on. A repository that is enrolled in the plan with both features off is billed for Code Security while producing no findings, which reads as a clean security posture when nothing has actually been scanned.
 

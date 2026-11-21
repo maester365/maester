@@ -1,4 +1,4 @@
-﻿The KRBTGT account is a service account that should never have interactive logons. It exists solely for the KDC service to use internally for Kerberos ticket operations. Any logon activity for this account may indicate:
+The KRBTGT account is a service account that should never have interactive logons. It exists solely for the KDC service to use internally for Kerberos ticket operations. Any logon activity for this account may indicate:
 
 **Security Concerns:**
 - **Suspicious Activity**: Interactive logons suggest potential compromise or misuse

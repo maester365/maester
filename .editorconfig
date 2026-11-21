@@ -1,0 +1,16 @@
+# Editors that read EditorConfig (https://editorconfig.org) apply these settings.
+# The full conventions are in website/docs/contributing.md ("PowerShell styling guidelines").
+root = true
+
+# PowerShell files are UTF-8 with a byte order mark, indented with four spaces, with no trailing whitespace and
+# one final newline. powershell/tests/general/FileEncoding.Tests.ps1 checks the byte order mark.
+[*.{ps1,psm1,psd1}]
+charset = utf-8-bom
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Markdown, including each test's Test.<ID>.md guide, is UTF-8 without a byte order mark.
+[*.{md,mdx}]
+charset = utf-8

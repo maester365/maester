@@ -1,4 +1,4 @@
-function Get-MtAffectedObjectFromMarkdown {
+﻿function Get-MtAffectedObjectFromMarkdown {
     <#
     .SYNOPSIS
     Extracts object records from test result markdown by matching known portal deep-link patterns.
@@ -41,6 +41,11 @@ function Get-MtAffectedObjectFromMarkdown {
             @{ System = 'EntraID'; Type = 'User'; Regex = "UserProfileMenuBlade/~/\w+/userId/($guid)" }
             @{ System = 'EntraID'; Type = 'Group'; Regex = "GroupDetailsMenuBlade/~/\w+/groupId/($guid)" }
             @{ System = 'EntraID'; Type = 'Device'; Regex = "DeviceDetailsMenuBlade/~/\w+/objectId/($guid)" }
+            @{ System = 'EntraID'; Type = 'AgentIdentity'; Regex = "AgentIdentity\.MenuView/~/\w+/objectId/($guid)" }
+            # By appId the link opens the blueprint (an application); by objectId, its service principal.
+            @{ System = 'EntraID'; Type = 'AgentIdentityBlueprint'; Regex = "AgentBlueprintDetails\.MenuView/~/\w+/appId/($guid)" }
+            @{ System = 'EntraID'; Type = 'AgentIdentityBlueprintPrincipal'; Regex = "AgentBlueprintDetails\.MenuView/~/\w+/objectId/($guid)" }
+            @{ System = 'Intune'; Type = 'ConfigurationPolicy'; Regex = "Microsoft_Intune_Workflows/PolicySummaryBlade/policyId/($guid)" }
             @{ System = 'EntraID'; Type = 'AccessPackageCatalog'; Regex = "Microsoft_Azure_ELMAdmin/CatalogBlade/catalogId/($guid)" }
             @{ System = 'EntraID'; Type = 'AccessPackage'; Regex = "EntitlementMenuBlade/~/overview/entitlementId/($guid)" }
             @{ System = 'EntraID'; Type = 'PimAlert'; Regex = "Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/([^/)\s]+)" }
@@ -63,7 +68,10 @@ function Get-MtAffectedObjectFromMarkdown {
         # by a link title (`[name](url "title")`).
         $linkPattern = '\[(?<name>(?:[^\[\]]|\[[^\[\]]*\])+)\]\((?<url>https://[^)\s]+)(?:\s+"[^"]*")?\)|(?<url>https://[^\s)\]]+)'
         # Markdown backslash escapes (\( \_ \* ...) that result markdown adds around display names.
-        $markdownEscape = '\\([\\`*_{}\[\]()#+\-.!|<>])'
+        # Must stay a superset of what Get-MtSafeMarkdown escapes, or a name keeps a literal
+        # backslash on the affected-objects page. `:` and `@` were added there for GFM autolink
+        # literals; `~` has been escaped by the helper for longer and was missing here too.
+        $markdownEscape = '\\([\\`*_{}\[\]()#+\-.!|<>~:@])'
 
         foreach ($link in [regex]::Matches($Markdown, $linkPattern)) {
             $url = $link.Groups['url'].Value

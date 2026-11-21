@@ -28,7 +28,7 @@
         ImplementationCost = 'Low',
         Mitre = 'T1534',
         Control = ('cis-m365:2.1.3', 'nist-800-53-r5:SI-4(5)'),
-        Service = ('ExchangeOnline', 'SecurityCompliance'),
+        Service = 'ExchangeOnline',
         Author = 'NZLostboy',
         Contributor = ('thomas-s-schmidt', 'Mynster9361')
     )]

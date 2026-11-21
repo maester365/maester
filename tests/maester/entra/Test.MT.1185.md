@@ -1,4 +1,4 @@
-﻿## Description
+## Description
 
 Checks if the legacy MSOnline (MSOL) PowerShell module is blocked from authenticating to the tenant.
 

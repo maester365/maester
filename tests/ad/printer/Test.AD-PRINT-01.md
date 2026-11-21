@@ -1,4 +1,4 @@
-﻿Published printers in Active Directory provide visibility into your organization's printing infrastructure. While printers themselves may not seem like a security concern, they present several security considerations:
+Published printers in Active Directory provide visibility into your organization's printing infrastructure. While printers themselves may not seem like a security concern, they present several security considerations:
 
 - **Information disclosure**: Printer names and locations may reveal organizational structure
 - **Access control**: Published printers may be accessible to unintended users

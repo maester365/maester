@@ -1,4 +1,4 @@
-﻿Using public IP addresses internally can cause:
+Using public IP addresses internally can cause:
 
 - **Routing conflicts**: If public IPs are also used on the internet
 - **Security risks**: Internal resources may be exposed

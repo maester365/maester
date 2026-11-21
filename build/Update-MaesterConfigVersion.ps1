@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Stamps the ModuleVersion and ConfigVersion fields at the top of a
     maester-config.json file.

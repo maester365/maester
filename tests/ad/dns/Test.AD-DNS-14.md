@@ -1,4 +1,4 @@
-﻿Empty DNS zones (zones with no resource records) may indicate:
+Empty DNS zones (zones with no resource records) may indicate:
 
 - **Incomplete configuration**: Zones created but never populated
 - **Abandoned infrastructure**: Services that were planned but never deployed

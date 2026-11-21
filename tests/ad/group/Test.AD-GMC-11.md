@@ -1,4 +1,4 @@
-﻿Understanding which privileged accounts have access is fundamental to Active Directory security:
+Understanding which privileged accounts have access is fundamental to Active Directory security:
 
 - **Identity management**: Know who has administrative access
 - **Over-privilege detection**: Identify accounts with excessive permissions

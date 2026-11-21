@@ -1,4 +1,4 @@
-﻿Exchange Online rejects Direct Send submissions: unauthenticated messages sent to your tenant where the envelope sender (MAIL FROM) domain is one of your accepted domains and no eligible inbound connector matches the message.
+Exchange Online rejects Direct Send submissions: unauthenticated messages sent to your tenant where the envelope sender (MAIL FROM) domain is one of your accepted domains and no eligible inbound connector matches the message.
 
 Direct Send lets a device or application send mail to your tenant, from an address in your own domain, without signing in. Attackers use the same path to send phishing that looks like internal mail. When `RejectDirectSend` is turned on, Exchange Online rejects these messages instead of delivering them. It does not reject every anonymous message that shows an internal sender address. For example, a message can use an external envelope sender and still show one of your addresses in the From header. Anti-spoofing controls such as SPF, DKIM, DMARC and spoof intelligence are still needed for those messages.
 

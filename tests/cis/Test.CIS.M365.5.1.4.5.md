@@ -1,4 +1,4 @@
-﻿5.1.4.5 (L1) Ensure Local Administrator Password Solution is enabled
+5.1.4.5 (L1) Ensure Local Administrator Password Solution is enabled
 
 Local Administrator Password Solution (LAPS) is the management of local account passwords on Windows devices. LAPS provides a solution to securely manage and retrieve the built-in local admin password. With cloud version of LAPS, customers can enable storing and rotation of local admin passwords for both Microsoft Entra and Microsoft Entra hybrid join devices.
 

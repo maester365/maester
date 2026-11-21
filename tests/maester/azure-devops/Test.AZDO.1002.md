@@ -1,4 +1,4 @@
-﻿Auditing **should be** enabled.
+Auditing **should be** enabled.
 
 Rationale: Keeping track of activities within your Azure DevOps environment is crucial for security and compliance. Auditing helps you monitor and log these activities, providing transparency and accountability.
 

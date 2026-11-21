@@ -1,4 +1,4 @@
-function Get-MtGitHubAppDeviceToken {
+﻿function Get-MtGitHubAppDeviceToken {
     <#
     .SYNOPSIS
     Gets a GitHub App user access token using OAuth device flow.

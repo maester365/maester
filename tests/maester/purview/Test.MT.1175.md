@@ -1,4 +1,4 @@
-﻿Ensure a Microsoft Purview Data Loss Prevention (DLP) policy is configured for the **Microsoft 365 Copilot** location, so Copilot is blocked from summarising or surfacing files containing sensitive information types or labelled content the requesting user has access to but should not have AI summarise.
+Ensure a Microsoft Purview Data Loss Prevention (DLP) policy is configured for the **Microsoft 365 Copilot** location, so Copilot is blocked from summarising or surfacing files containing sensitive information types or labelled content the requesting user has access to but should not have AI summarise.
 
 Microsoft 365 Copilot acts on every file, message and meeting that the requesting user can read. Without a DLP policy targeting the Copilot location, Copilot can:
 

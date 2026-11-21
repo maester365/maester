@@ -7,6 +7,7 @@ export const ICON_BASE = import.meta.env.DEV ? "/report-icons/v1" : "https://mae
 export const PRODUCT_ICONS: Record<string, string> = {
   entra: "entra.svg", defender: "defender.svg", intune: "intune.svg", sharepoint: "sharepoint.svg", teams: "teams.svg", azure: "azure.svg",
   "azure-devops": "azure-devops.svg", "copilot-studio": "copilot-studio.svg", purview: "purview.svg", exchange: "exchange.png", "microsoft-365": "microsoft-365.svg",
+  fabric: "fabric.svg", github: "github.svg", ad: "ad.svg",
 }
 
 // Which icon stands for each feature of the taxonomy (powershell/assets/MaesterTaxonomy.psd1), by

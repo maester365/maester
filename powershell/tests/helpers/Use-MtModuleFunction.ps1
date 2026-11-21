@@ -1,4 +1,4 @@
-function Use-MtModuleFunction {
+﻿function Use-MtModuleFunction {
     <#
     .SYNOPSIS
     Makes Maester module functions that are not exported callable from a unit test.

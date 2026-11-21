@@ -1,4 +1,4 @@
-function Test-MtFixtureFrameworkFxr1 {
+﻿function Test-MtFixtureFrameworkFxr1 {
     <#
     .SYNOPSIS
     Framework fixture: its Control names requirement R1 of fx-related, whose file has Related references that are not controls.

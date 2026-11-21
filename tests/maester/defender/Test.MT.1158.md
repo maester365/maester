@@ -1,4 +1,4 @@
-﻿Checks that a scheduled scan day is configured in the assigned Microsoft Defender Antivirus policies.
+Checks that a scheduled scan day is configured in the assigned Microsoft Defender Antivirus policies.
 
 An irregular scan schedule may miss persistent threats on managed devices, allowing malware to remain undetected for extended periods.
 

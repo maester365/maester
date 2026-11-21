@@ -1,4 +1,4 @@
-function Write-MtOlderVersionWarning {
+﻿function Write-MtOlderVersionWarning {
     <#
     .SYNOPSIS
     Warns once per session when a Maester version older than 3.0 is installed next to this one.

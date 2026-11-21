@@ -1,4 +1,4 @@
-﻿2.1.9 (L1) Ensure that DKIM is enabled for all Exchange Online Domains
+2.1.9 (L1) Ensure that DKIM is enabled for all Exchange Online Domains
 
 DKIM is one of the trio of Authentication methods (SPF, DKIM and DMARC) that help prevent attackers from sending messages that look like they come from your domain. DKIM lets an organization add a digital signature to outbound email messages in the message header. When DKIM is configured, the organization authorizes it's domain to associate, or sign, its name to an email message using cryptographic authentication. Email systems that get email from this domain can use a digital signature to help verify whether incoming email is legitimate. Use of DKIM in addition to SPF and DMARC to help prevent malicious actors using spoofing techniques from sending messages that look like they are coming from your domain.
 

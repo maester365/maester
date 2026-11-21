@@ -1,4 +1,4 @@
-function Test-MtFixtureFrameworkFxs1 {
+﻿function Test-MtFixtureFrameworkFxs1 {
     <#
     .SYNOPSIS
     Framework fixture: its Control names requirement R1 of fx-same, which its own suite and the suite beside it both declare.

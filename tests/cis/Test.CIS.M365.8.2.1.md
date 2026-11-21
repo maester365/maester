@@ -1,4 +1,4 @@
-﻿Federation lets users in other Microsoft 365 and Teams organizations find and message people in your tenant. If every known external domain is allowed, anyone with a tenant in those domains can start chats with your users. That is a common route for phishing and social engineering, because the sender looks like a normal business contact.
+Federation lets users in other Microsoft 365 and Teams organizations find and message people in your tenant. If every known external domain is allowed, anyone with a tenant in those domains can start chats with your users. That is a common route for phishing and social engineering, because the sender looks like a normal business contact.
 
 Restricting external domains means only the partner domains you choose can communicate with your users. Turning federation off removes the path completely.
 

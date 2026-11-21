@@ -1,4 +1,4 @@
-function Test-MtGraphNotFoundError {
+﻿function Test-MtGraphNotFoundError {
     <#
     .SYNOPSIS
     Internal: Returns whether a Microsoft Graph ErrorRecord is a 404 Not Found.

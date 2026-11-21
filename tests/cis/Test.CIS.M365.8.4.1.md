@@ -1,4 +1,4 @@
-﻿8.4.1 (L1) Ensure app permission policies are configured
+8.4.1 (L1) Ensure app permission policies are configured
 
 This policy setting controls which class of apps are available for users to install.
 

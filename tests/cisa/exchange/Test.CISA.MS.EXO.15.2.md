@@ -1,4 +1,4 @@
-﻿Direct download links SHOULD be scanned for malware.
+Direct download links SHOULD be scanned for malware.
 
 Rationale: URLs in emails may direct users to download and run malware. Scanning direct download links in real-time for known malware and blocking access can prevent users from infecting their devices.
 

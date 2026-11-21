@@ -1,4 +1,4 @@
-﻿Detailed record distribution across zones helps identify:
+Detailed record distribution across zones helps identify:
 
 - **High-traffic zones**: Zones with many records may be critical infrastructure
 - **Underutilized zones**: Zones with few records may be candidates for consolidation

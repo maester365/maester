@@ -1,4 +1,4 @@
-﻿Spam confidence level (SCL) SHOULD NOT be set to -1 in mail transport rules with specific domains
+Spam confidence level (SCL) SHOULD NOT be set to -1 in mail transport rules with specific domains
 
 Rationale: Allow-listing domains in transport rules bypasses regular malware and phishing scanning, which can enable an attacker to launch attacks against your users from a safe haven domain.
 

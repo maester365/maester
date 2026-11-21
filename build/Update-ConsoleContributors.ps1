@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Writes the list of people for the Featured contributor panel of the console dashboard.
 

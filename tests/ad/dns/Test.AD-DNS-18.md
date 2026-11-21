@@ -1,4 +1,4 @@
-﻿Understanding how many distinct networks have reverse lookup zones helps:
+Understanding how many distinct networks have reverse lookup zones helps:
 
 - **Network coverage assessment**: Ensure all internal networks have reverse DNS
 - **IP space management**: Understand which networks are configured for reverse resolution

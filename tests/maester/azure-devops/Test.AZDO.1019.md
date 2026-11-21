@@ -1,4 +1,4 @@
-﻿Users should not be able to skip stages defined by the pipeline author.
+Users should not be able to skip stages defined by the pipeline author.
 
 Rationale: Users should not be able to select stages to skip from the Queue Pipeline panel.
 

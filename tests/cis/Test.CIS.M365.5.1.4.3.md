@@ -1,4 +1,4 @@
-﻿5.1.4.3 (L1) Ensure the GA role is not added as a local administrator during Entra join
+5.1.4.3 (L1) Ensure the GA role is not added as a local administrator during Entra join
 
 This setting controls whether the Global Administrator role is automatically added to the local administrators group on a device during the Microsoft Entra join process.
 

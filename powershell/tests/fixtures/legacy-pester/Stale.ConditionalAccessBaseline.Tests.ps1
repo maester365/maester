@@ -1,4 +1,4 @@
-# Legacy Pester fixture: a stale copy of a 2.x built-in wrapper, as left in a user's folder
+﻿# Legacy Pester fixture: a stale copy of a 2.x built-in wrapper, as left in a user's folder
 # by an old Install-MaesterTests. Its ID is a current built-in ID, so 3.0 supersedes it
 # (not executed, no row, one warning). Calls a built-in function.
 Describe "Maester/Entra" -Tag "Maester", "CA" {

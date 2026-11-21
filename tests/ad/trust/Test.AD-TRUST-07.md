@@ -1,4 +1,4 @@
-﻿Identifying specific stale trusts enables targeted remediation:
+Identifying specific stale trusts enables targeted remediation:
 
 - **Prioritization**: Focus cleanup efforts on the oldest, most likely unused trusts
 - **Investigation**: Specific target domains can be investigated for existence and need
@@ -46,7 +46,7 @@ Get-ADTrust -Filter {Target -eq "<TrustName>"} -Properties *
 
 #### How the Test Works
 
-This test identifies trusts where `LastValidated` is older than `StaleThresholdDays` (default 60) and displays:
+This test identifies trusts where `LastValidated` is older than `MaximumValidationAgeDays` (default 60) and displays:
 
 - Target domain name
 - Trust direction

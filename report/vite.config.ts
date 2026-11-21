@@ -21,5 +21,7 @@ export default defineConfig(({ command }) => ({
   server: {
     port: 5173,
     open: true,
+    // The dev samples read the Zero Trust Assessment pack's plan files from packs/ (src/lib/sampleZeroTrust.ts).
+    fs: { allow: [".", "../packs/zero-trust-assessment"] },
   },
 }))

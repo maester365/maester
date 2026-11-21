@@ -1,4 +1,4 @@
-﻿8.2.3 (L1) Ensure external Teams users cannot initiate conversations
+8.2.3 (L1) Ensure external Teams users cannot initiate conversations
 
 This setting prevents external users who are not managed by an organization from initiating contact with users in the protected organization. The recommended state is to uncheck **External users with Teams accounts not managed by an organization can contact users in my organization**.
 

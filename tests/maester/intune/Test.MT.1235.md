@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** Android compliance policy requires device threat protection.
+Ensure at least one **assigned** Android compliance policy requires device threat protection.
 
 Microsoft Defender for Endpoint on Android, and the other mobile threat defense connectors Intune supports, report what they find on a device: a malicious app, phishing web traffic, root, an unsafe network. Intune compliance policy consumes that verdict through **Require the device to be at or under the device threat level**, so a phone the service considers at risk is marked non-compliant and can then be blocked by Conditional Access.
 

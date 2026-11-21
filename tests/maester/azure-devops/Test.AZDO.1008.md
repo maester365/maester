@@ -1,4 +1,4 @@
-﻿Request access to Azure DevOps by e-mail notifications to administrators **should be** disabled.
+Request access to Azure DevOps by e-mail notifications to administrators **should be** disabled.
 
 Rationale: Access control to Azure DevOps is to be a controlled process where access is granted and tracked.
 

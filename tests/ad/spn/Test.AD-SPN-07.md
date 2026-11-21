@@ -1,4 +1,4 @@
-﻿Understanding the service classes of SPNs on user accounts helps security teams:
+Understanding the service classes of SPNs on user accounts helps security teams:
 
 - **Identify service types**: Know what services are running under user credentials
 - **Assess risk**: Some service classes (like MSSQLSvc) are higher-value targets
