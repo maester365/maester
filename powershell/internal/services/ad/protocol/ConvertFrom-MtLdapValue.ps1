@@ -162,7 +162,7 @@
 
     if ($Value -is [byte[]]) {
         switch ($normalizedAttributeName) {
-            { $_ -in @('objectsid', 'sidhistory', 'securityidentifier') } {
+            { $_ -in @('objectsid', 'sidhistory', 'securityidentifier', 'ms-ds-creatorsid') } {
                 try {
                     return New-Object System.Security.Principal.SecurityIdentifier -ArgumentList $Value, 0
                 }
@@ -206,7 +206,7 @@
     }
 
     if ($Value -is [System.Security.Principal.SecurityIdentifier]) {
-        if ($normalizedAttributeName -in @('objectsid', 'sidhistory', 'securityidentifier')) {
+        if ($normalizedAttributeName -in @('objectsid', 'sidhistory', 'securityidentifier', 'ms-ds-creatorsid')) {
             return $Value
         }
 

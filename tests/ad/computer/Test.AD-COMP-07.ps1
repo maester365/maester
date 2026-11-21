@@ -17,7 +17,7 @@
     The test result includes the count of distinct OUs with computers.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerOUCount
+    https://maester.dev/docs/tests/AD-COMP-07
     #>
     [MaesterTest(
         Id = 'AD-COMP-07',
@@ -42,10 +42,7 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
 
     # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
+    if ($null -eq $adState -or $null -eq $adState.Computers) { throw 'Computer inventory is required to review containers.' }
 
     $computers = $adState.Computers
 
@@ -56,7 +53,7 @@
     $computerContainers = $enabledComputers | ForEach-Object {
         $dn = $_.DistinguishedName
         # Extract the container by removing the CN=ComputerName prefix
-        if ($dn -match '^CN=[^,]+,(.+)$') {
+        if ($dn -match '^CN=(?:\\.|[^,\\])+,(.+)$') {
             $matches[1]
         }
     } | Select-Object -Unique
@@ -92,7 +89,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory computer objects. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

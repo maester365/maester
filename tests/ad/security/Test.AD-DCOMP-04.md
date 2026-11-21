@@ -36,14 +36,15 @@
 
 This test analyzes computer objects in Active Directory and:
 - Counts distinct operating systems
-- Shows distribution percentages
-- Identifies computers without OS data
+- Shows distribution percentages using all collected computers, including domain controllers, as the denominator
+- Includes an **Unknown OS** row in the **Operating Systems in Use** table for absent, empty, or whitespace-only OS values; these do not increase the distinct operating system count
+
+OS service pack and patch state are not available in the current collector. This inventory does not determine whether an operating system is supported or patched.
 
 #### Related Tests
 
-- `Test-MtAdComputerOperatingSystemDetails` - Detailed OS and service pack information
-- `Test-MtAdComputerStaleEnabledCount` - Identifies stale computer accounts
-- `Test-MtAdDcOperatingSystemDetails` - Domain Controller OS distribution
+- [AD-DCOMP-06 — No enabled computers should be stale beyond the configured threshold](https://maester.dev/docs/tests/AD-DCOMP-06): Identifies enabled computer accounts with old or missing logon data for lifecycle review alongside this OS inventory.
+- [AD-DC-08 — DC operating system details should be retrievable](https://maester.dev/docs/tests/AD-DC-08): Provides OS details specifically for domain controllers, whereas this check inventories computers across the domain.
 
 <!--- Results --->
 %TestResult%

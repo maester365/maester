@@ -157,7 +157,7 @@ Describe 'AD-DCOMP-06: Stale enabled computers' {
         }
     }
 
-    It 'Returns Investigate when stale enabled computers exist' {
+    It 'Returns a false Boolean with Investigate when stale enabled computers exist' {
         InModuleScope Maester {
             Mock Get-MtADDomainState -ModuleName Maester {
                 return [ordered]@{
@@ -172,8 +172,10 @@ Describe 'AD-DCOMP-06: Stale enabled computers' {
                 }
             }
 
-            $result = Test-MtAdComputerStaleEnabledCount
-            $result | Should -Be $null
+            Mock Add-MtTestResultDetail -ModuleName Maester { }
+            $result = Test-MtAdComputerStaleEnabledCount -MaximumInactiveDays 180
+            $result | Should -BeFalse
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Investigate }
         }
     }
 }

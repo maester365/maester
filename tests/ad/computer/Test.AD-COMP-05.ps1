@@ -18,7 +18,7 @@
     The test result includes the count of computers with SID History.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerSidHistoryCount
+    https://maester.dev/docs/tests/AD-COMP-05
     #>
     [MaesterTest(
         Id = 'AD-COMP-05',
@@ -43,10 +43,7 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
 
     # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
+    if ($null -eq $adState -or $null -eq $adState.Computers) { throw 'Computer inventory is required to review SID history.' }
 
     $computers = $adState.Computers
 
@@ -60,10 +57,10 @@
     $totalCount = ($computers | Measure-Object).Count
 
     # Test passes if we successfully retrieved computer data
-    $testResult = $totalCount -gt 0
+    $testResult = $sidHistoryCount -eq 0
 
     # Generate markdown results
-    if ($testResult) {
+    if ($totalCount -gt 0) {
         $percentage = if ($totalCount -gt 0) {
             [Math]::Round(($sidHistoryCount / $totalCount) * 100, 2)
         } else {
@@ -82,7 +79,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory computer objects. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

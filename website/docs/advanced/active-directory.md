@@ -129,18 +129,18 @@ A standard **authenticated user** (Domain User) can read most LDAP attributes on
 |---|---|---|
 | AD-GPO-01 through AD-GPO-05, AD-GPOL-01 through AD-GPOL-06, AD-GPOREP-01 through AD-GPOREP-20, AD-GPOS-01 through AD-GPOS-09 | `ActiveDirectory:File:SYSVOL:Read` | Reading files from the `\\domain\SYSVOL` share. While Authenticated Users typically receive read access to SYSVOL, this is filesystem access separate from LDAP and may be restricted in hardened environments. |
 
-**Summary:** 80 of 270 AD tests (30%) require privileges beyond a standard authenticated user. The remaining 190 tests can run with standard Domain User LDAP read access.
+**Summary:** 80 of 264 AD tests (30%) require privileges beyond a standard authenticated user. The remaining 184 tests can run with standard Domain User LDAP read access.
 
 ## Category Summary
 
 | Category | Tests | Required permissions |
 |---|---|---|
 | `cfg` | AD-CFG-01 through AD-CFG-24 | `ActiveDirectory:Ldap:Configuration/*:ReadProperty` |
-| `comp` | AD-COMP-01 through AD-COMP-10 | `ActiveDirectory:Ldap:computer:ReadProperty` |
+| `comp` | AD-COMP-01, AD-COMP-03 through AD-COMP-08 | `ActiveDirectory:Ldap:computer:ReadProperty`; COMP-04 also needs `ActiveDirectory:Ldap:nTDSDSA:ReadProperty` |
 | `dacl` | AD-DACL-01 through AD-DACL-18 | `ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl` |
 | `dc` | AD-DC-01 through AD-DC-08 | `ActiveDirectory:Ldap:nTDSDSA:ReadProperty`; AD-DC-02 through AD-DC-04 also need `ActiveDirectory:Cim:root\Microsoft\Windows\SMB:MSFT_SmbServerConfiguration:Read` and `ActiveDirectory:Remoting:Microsoft.PowerShell` |
 | `dcd` | AD-DCD-01 through AD-DCD-04 | `ActiveDirectory:Ldap:nTDSDSA:ReadProperty` |
-| `dcomp` | AD-DCOMP-01 through AD-DCOMP-09 | `ActiveDirectory:Ldap:computer:ReadProperty` |
+| `dcomp` | AD-DCOMP-01, AD-DCOMP-03, AD-DCOMP-04, AD-DCOMP-06 through AD-DCOMP-08 | `ActiveDirectory:Ldap:computer:ReadProperty`; DCOMP-01/03 also read `nTDSDSA` and the three managed service account classes |
 | `dfsr` | AD-DFSR-01 | `ActiveDirectory:Ldap:domainDNS.distinguishedName:ReadProperty` |
 | `dns` | AD-DNS-01 through AD-DNS-19 | `ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_Zone:Read`, `ActiveDirectory:Remoting:Microsoft.PowerShell` |
 | `dom` | AD-DOM-01 through AD-DOM-08 | `ActiveDirectory:Ldap:domainDNS:ReadProperty` |

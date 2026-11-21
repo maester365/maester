@@ -1,4 +1,6 @@
-- Unconstrained delegation is one of the most dangerous configurations in Active Directory. When enabled on a computer, it allows services on that computer to impersonate authenticated users to ANY service on ANY computer in the domain.
+Unconstrained delegation on non-domain-controller computers or managed service accounts exposes users' Kerberos tickets. This check fails when a non-DC computer, sMSA, gMSA or dMSA has the `TrustedForDelegation` flag. Managed accounts are reported separately; the device percentage still uses only non-DC computers as its denominator.
+
+Only the collected DC server inventory establishes DC identity: `serverReference` DN, or DNS fallback when that reference is unavailable. Primary groups 516 and 521 alone never exclude a computer. Unexpected DC primary-group claims are counted for review by [AD-COMP-04 — Enabled computers should use standard primary groups](https://maester.dev/docs/tests/AD-COMP-04), which flags non-DC computers claiming a DC primary group.
 
 **Security Risks:**
 - **Complete Impersonation**: Attackers can impersonate any user who authenticates to the computer
@@ -29,15 +31,15 @@
 
 #### How the Test Works
 
-This test counts computers with the `TrustedForDelegation` flag enabled and categorizes them by:
-- Domain Controllers vs. non-DC computers
-- Total count and percentage
+This test counts accounts with the `TrustedForDelegation` flag enabled and reports:
+- Verified domain controllers separately from non-DC computers
+- Managed service accounts separately, without double-counting them as devices
+- The percentage of non-DC computers with unconstrained delegation, using only that device population as the denominator
 
 #### Related Tests
 
-- `Test-MtAdComputerNonDcUnconstrainedDelegationCount` - Focuses on non-DC computers (critical risk)
-- `Test-MtAdComputerNonDcConstrainedDelegationCount` - Reviews constrained delegation
-- `Test-MtAdUserDelegationConfiguredCount` - Reviews user account delegation
+- [AD-DCOMP-03 — Non-DC computer and managed account constrained delegation should be investigated](https://maester.dev/docs/tests/AD-DCOMP-03): Reviews constrained delegation indicators on non-DC computers and managed accounts, distinct from this check of unconstrained delegation.
+- [AD-USER-28 — User delegation configured count should be investigated](https://maester.dev/docs/tests/AD-USER-28): Reviews delegation settings on user accounts, which this computer and managed-account check does not cover.
 
 #### Related links
 

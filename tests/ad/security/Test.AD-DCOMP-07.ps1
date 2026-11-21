@@ -20,7 +20,7 @@
     Returns $true if computer data is accessible.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerDnsHostNameCount
+    https://maester.dev/docs/tests/AD-DCOMP-07
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-07',
@@ -43,9 +43,8 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
     Write-Verbose "Retrieved AD state"
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Computers) {
+        throw 'Computer inventory is required to review DNS host names.'
     }
     Write-Verbose "Filtering/counting computer dns host name count"
 
@@ -78,7 +77,9 @@
         $result += "| --- | --- |" + "`n"
 
         foreach ($comp in $computersWithoutDns | Select-Object -First 10) {
-            $result += "| $($comp.Name) | $($comp.operatingSystem) |" + "`n"
+            $name = [string]$comp.Name -replace '\|', '\|' -replace '[\r\n]', ' '
+            $os = [string]$comp.OperatingSystem -replace '\|', '\|' -replace '[\r\n]', ' '
+            $result += "| $name | $os |`n"
         }
 
         if ($withoutDnsCount -gt 10) {

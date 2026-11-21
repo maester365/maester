@@ -16,7 +16,7 @@
     The test result includes the average computers per OU and distribution details.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerPerOUAverage
+    https://maester.dev/docs/tests/AD-COMP-08
     #>
     [MaesterTest(
         Id = 'AD-COMP-08',
@@ -41,10 +41,7 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
 
     # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
+    if ($null -eq $adState -or $null -eq $adState.Computers) { throw 'Computer inventory is required to review container distribution.' }
 
     $computers = $adState.Computers
 
@@ -55,7 +52,7 @@
     $computersByContainer = $enabledComputers | Group-Object -Property {
         $dn = $_.DistinguishedName
         # Extract the container by removing the CN=ComputerName prefix
-        if ($dn -match '^CN=[^,]+,(.+)$') {
+        if ($dn -match '^CN=(?:\\.|[^,\\])+,(.+)$') {
             $matches[1]
         }
     }
@@ -99,11 +96,13 @@
 
         if ($distinctOUCount -gt 0) {
             $result += "**Top 5 Containers by Computer Count:**" + "`n" + "`n"
+            $result += "| Container | Computer Count |`n| --- | --- |`n"
             $computersByContainer |
                 Sort-Object -Property Count -Descending |
                 Select-Object -First 5 |
                 ForEach-Object {
-                    $result += "| $($_.Name) | $($_.Count) |" + "`n"
+                    $name = [string]$_.Name -replace '\|', '\|' -replace '[\r\n]', ' '
+                    $result += "| $name | $($_.Count) |" + "`n"
                 }
         }
 
@@ -113,7 +112,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory computer objects. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

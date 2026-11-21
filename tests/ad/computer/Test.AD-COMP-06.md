@@ -1,6 +1,6 @@
 Computers located in the default `CN=Computers` container represent a security and management concern:
 
-- **No Group Policy inheritance**: The Computers container is not an OU, so it doesn't support Group Policy inheritance
+- **Limited Group Policy targeting**: The Computers container is not an OU, so GPOs cannot be linked directly to it; applicable domain- and site-linked GPOs can still apply
 - **Management gaps**: Computers in the default container may not receive security policies, software updates, or configurations
 - **Provisioning issues**: Indicates the domain join process hasn't been customized or automated provisioning is failing
 - **Shadow IT**: May represent unauthorized systems joined to the domain
@@ -21,12 +21,12 @@ Computers located in the default `CN=Computers` container represent a security a
 
 #### How the Test Works
 
-This test identifies enabled computer accounts where the Distinguished Name contains `CN=Computers,` indicating they are in the default Computers container rather than a proper organizational unit.
+This test fails when an enabled computer is an immediate child of the domain's default `CN=Computers` container. Escaped commas in computer names are handled, and an OU named Computers is not treated as the default container.
 
 #### Related Tests
 
-- `Test-MtAdComputerOUCount` - Shows the distribution of computers across OUs
-- `Test-MtAdComputerPerOUAverage` - Analyzes OU structure effectiveness
+- [AD-COMP-07 — Computer OU count should be retrievable](https://maester.dev/docs/tests/AD-COMP-07): Counts containers with enabled computers, giving broader context for this check of the default container.
+- [AD-COMP-08 — Computer per OU average should be retrievable](https://maester.dev/docs/tests/AD-COMP-08): Shows computer distribution across containers and complements this check for computers in the default container.
 
 <!--- Results --->
 %TestResult%

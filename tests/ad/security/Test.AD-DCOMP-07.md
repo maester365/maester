@@ -43,9 +43,8 @@ This test counts computers with and without the `dNSHostName` attribute populate
 
 #### Related Tests
 
-- `Test-MtAdComputerDnsZoneCount` - DNS zone distribution
-- `Test-MtAdComputerDnsZoneDetails` - Detailed DNS zone analysis
-- `Test-MtAdComputerSpnSetCount` - SPN configuration check
+- [AD-DCOMP-08 — Computer DNS zone count should be investigated](https://maester.dev/docs/tests/AD-DCOMP-08): Groups computer host names by DNS suffix, adding zone-level context to this check's host-name coverage count.
+- [AD-SPN-01 — Computer SPN service class count should be retrievable](https://maester.dev/docs/tests/AD-SPN-01): Counts computer SPN service classes, providing a complementary view of service identities rather than checking the same DNS host-name setting.
 
 <!--- Results --->
 %TestResult%

@@ -8,9 +8,9 @@
     compromised and reactivated by attackers. This test identifies enabled
     computers that have not authenticated to the domain for the configured threshold or more.
 
-    Because nearly every domain has at least one stale enabled computer, this
-    test returns an Investigate result (rather than Pass/Fail) so the count
-    and details are surfaced for review without causing a failing audit.
+    An enabled computer with no recorded logon or a last logon before the threshold
+    is flagged for review. The result is Investigate when such computers exist;
+    a clean inventory returns Passed.
 
     Security Risk:
     - Stale enabled accounts can be reactivated and used for lateral movement
@@ -24,7 +24,7 @@
     Returns the count of stale enabled computers and lists details for review.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerStaleEnabledCount
+    https://maester.dev/docs/tests/AD-DCOMP-06
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-06',
@@ -53,17 +53,12 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
     Write-Verbose "Retrieved AD state"
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
+    if ($null -eq $adState) { throw 'Computer inventory is required to assess stale accounts.' }
     Write-Verbose "Filtering/counting computer stale enabled count"
 
     $computers = $adState.Computers
-    if ($null -eq $computers) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
+    if ($null -eq $computers) { throw 'Computer inventory is required to assess stale accounts.' }
+    if (@($computers).Count -eq 0) { throw 'Computer inventory is empty; stale accounts cannot be assessed.' }
     $staleThreshold = (Get-Date).AddDays(-$MaximumInactiveDays)
 
     # Find enabled computers that haven't logged on for the configured threshold or more.
@@ -105,7 +100,9 @@
         $sortedStale = $staleEnabledComputers | Sort-Object -Property lastLogonDate | Select-Object -First 10
         foreach ($comp in $sortedStale) {
             $lastLogon = if ($comp.lastLogonDate) { $comp.lastLogonDate.ToString('yyyy-MM-dd') } else { 'Never' }
-            $result += "| $($comp.Name) | $lastLogon | $($comp.operatingSystem) |" + "`n"
+            $name = [string]$comp.Name -replace '\|', '\|' -replace '[\r\n]', ' '
+            $os = [string]$comp.OperatingSystem -replace '\|', '\|' -replace '[\r\n]', ' '
+            $result += "| $name | $lastLogon | $os |" + "`n"
         }
 
         if ($staleCount -gt 10) {
@@ -126,6 +123,6 @@
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
         Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
-        return $null
+        return $false
     }
 }

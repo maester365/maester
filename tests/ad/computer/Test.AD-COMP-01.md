@@ -24,8 +24,8 @@ The test returns informational results to help you assess the scope of disabled 
 
 #### Related Tests
 
-- `Test-MtAdComputerDormantCount` - Identifies enabled computers that haven't logged on recently
-- `Test-MtAdComputerInDefaultContainer` - Finds computers in the default container (another hygiene indicator)
+- [AD-DCOMP-06 — No enabled computers should be stale beyond the configured threshold](https://maester.dev/docs/tests/AD-DCOMP-06): Complements this disabled-account count by identifying enabled computer accounts that have not logged on recently.
+- [AD-COMP-06 — Enabled computers should be moved out of the default Computers container](https://maester.dev/docs/tests/AD-COMP-06): Adds context on computer-account hygiene by identifying enabled computers left in the default container.
 
 <!--- Results --->
 %TestResult%
