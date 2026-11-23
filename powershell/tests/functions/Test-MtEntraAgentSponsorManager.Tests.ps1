@@ -1,0 +1,133 @@
+﻿BeforeAll {
+    Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+    . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+    # Check functions that became native tests are not exported.
+    Use-MtModuleFunction -Name Test-MtEntraAgentSponsorManager
+}
+
+Describe 'MT.1286: Test-MtEntraAgentSponsorManager' -Tag 'Unit' {
+    BeforeAll {
+        # Graph errors name the status, not its number: "Response status code does not indicate success: NotFound (Not Found)."
+        function Get-HttpError ([int]$StatusCode) {
+            $response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]$StatusCode)
+            [Microsoft.PowerShell.Commands.HttpResponseException]::new("Response status code does not indicate success: $([System.Net.HttpStatusCode]$StatusCode) ($($response.ReasonPhrase)).", $response)
+        }
+    }
+
+    BeforeEach {
+        $script:TestResult = $null
+        $script:SkippedBecause = $null
+
+        Mock -ModuleName Maester Add-MtTestResultDetail {
+            param($Result, $SkippedBecause)
+
+            $script:TestResult = $Result
+            $script:SkippedBecause = $SkippedBecause
+        }
+
+        # One object of each kind, all sponsored by the same user.
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{ id = 'agent-1'; displayName = 'Invoice agent' }
+        } -ParameterFilter { $RelativeUri -eq 'servicePrincipals/microsoft.graph.agentIdentity' }
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{ id = 'principal-1'; displayName = 'Invoice blueprint' }
+        } -ParameterFilter { $RelativeUri -eq 'servicePrincipals/microsoft.graph.agentIdentityBlueprintPrincipal' }
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{ id = 'blueprint-1'; displayName = 'Invoice blueprint' }
+        } -ParameterFilter { $RelativeUri -eq 'applications/microsoft.graph.agentIdentityBlueprint' }
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{
+                '@odata.type'     = '#microsoft.graph.user'
+                id                = 'sponsor-1'
+                displayName       = 'Ada Sponsor'
+                userPrincipalName = 'ada@contoso.com'
+                accountEnabled    = $true
+            }
+        } -ParameterFilter { $RelativeUri -like '*/sponsors' }
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{ id = 'manager-1'; displayName = 'Grace Manager'; accountEnabled = $true }
+        } -ParameterFilter { $RelativeUri -like 'users/*/manager' }
+    }
+
+    It 'passes when every user sponsor has an enabled manager, reading each manager once' {
+        Test-MtEntraAgentSponsorManager | Should -BeTrue
+
+        $script:TestResult | Should -Match 'All 3 user sponsorship'
+        Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 1 -ParameterFilter { $RelativeUri -eq 'users/sponsor-1/manager' }
+    }
+
+    It 'reports a user sponsor without a manager' {
+        # Graph answers 404 for the manager of a user who has none, and Invoke-MtGraphRequest throws it.
+        Mock -ModuleName Maester Invoke-MtGraphRequest { throw (Get-HttpError 404) } -ParameterFilter { $RelativeUri -like 'users/*/manager' }
+
+        Test-MtEntraAgentSponsorManager | Should -BeFalse
+
+        $script:TestResult | Should -Match 'Found 3 of 3 user sponsorship'
+        # Get-MtSafeMarkdown escapes the parentheses and the @ of the sponsor column.
+        $script:TestResult | Should -Match '\| Agent identity \| Invoice agent \| Ada Sponsor \\\(ada\\@contoso\.com\\\) \| No manager\. \|'
+        $script:TestResult | Should -Match '\| Agent blueprint \| Invoice blueprint \|'
+    }
+
+    It 'reports a user sponsor whose manager is a disabled account' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{ id = 'manager-1'; displayName = 'Grace Manager'; accountEnabled = $false }
+        } -ParameterFilter { $RelativeUri -like 'users/*/manager' }
+
+        Test-MtEntraAgentSponsorManager | Should -BeFalse
+
+        $script:TestResult | Should -Match 'Manager Grace Manager is a disabled account\.'
+    }
+
+    It 'reports a user sponsor whose manager has no account state, such as a contact' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{ '@odata.type' = '#microsoft.graph.orgContact'; id = 'contact-1'; displayName = 'Grace Contact' }
+        } -ParameterFilter { $RelativeUri -like 'users/*/manager' }
+
+        Test-MtEntraAgentSponsorManager | Should -BeFalse
+
+        $script:TestResult | Should -Match 'Cannot confirm that manager Grace Contact is an enabled account\.'
+    }
+
+    It 'does not evaluate group sponsors, and skips as not applicable when no object has a user sponsor' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{ '@odata.type' = '#microsoft.graph.group'; id = 'group-1'; displayName = 'Agent sponsors' }
+        } -ParameterFilter { $RelativeUri -like '*/sponsors' }
+
+        Test-MtEntraAgentSponsorManager | Should -BeNullOrEmpty
+
+        $script:SkippedBecause | Should -Be 'NotApplicable'
+        $script:TestResult | Should -Match 'user sponsor'
+        Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 0 -ParameterFilter { $RelativeUri -like 'users/*/manager' }
+    }
+
+    It 'reports only the sponsor without a manager when another sponsor of the same object has one' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{ '@odata.type' = '#microsoft.graph.user'; id = 'sponsor-1'; displayName = 'Ada Sponsor'; userPrincipalName = 'ada@contoso.com'; accountEnabled = $true }
+            [pscustomobject]@{ '@odata.type' = '#microsoft.graph.user'; id = 'sponsor-2'; displayName = 'Alan Sponsor'; userPrincipalName = 'alan@contoso.com'; accountEnabled = $true }
+        } -ParameterFilter { $RelativeUri -like '*/sponsors' }
+        Mock -ModuleName Maester Invoke-MtGraphRequest { throw (Get-HttpError 404) } -ParameterFilter { $RelativeUri -eq 'users/sponsor-2/manager' }
+
+        Test-MtEntraAgentSponsorManager | Should -BeFalse
+
+        $script:TestResult | Should -Match 'Found 3 of 6 user sponsorship'
+        $script:TestResult | Should -Not -Match 'Ada Sponsor'
+        $script:TestResult | Should -Match 'Alan Sponsor'
+    }
+
+    It 'is skipped as not authorized when Graph answers 403' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest { throw (Get-HttpError 403) } -ParameterFilter { $RelativeUri -eq 'servicePrincipals/microsoft.graph.agentIdentity' }
+
+        Test-MtEntraAgentSponsorManager | Should -BeNullOrEmpty
+
+        $script:SkippedBecause | Should -Be 'NotAuthorized'
+    }
+
+    It 'leaves any other error to the engine, without reading it as a missing manager' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest { throw (Get-HttpError 500) } -ParameterFilter { $RelativeUri -like 'users/*/manager' }
+
+        { Test-MtEntraAgentSponsorManager } | Should -Throw -ExpectedMessage '*InternalServerError*'
+
+        $script:TestResult | Should -BeNullOrEmpty
+        $script:SkippedBecause | Should -BeNullOrEmpty
+    }
+}
