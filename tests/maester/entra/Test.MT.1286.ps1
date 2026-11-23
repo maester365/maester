@@ -10,7 +10,7 @@
 
     This check reads the sponsors of agent identities, Agent Identity Blueprints and Blueprint
     Principals, and reports every user sponsor that has no manager, or whose manager is not
-    confirmed as an enabled account. Group and service principal sponsors have no manager and
+    confirmed as an enabled account. Sponsors that are not users, such as groups, have no manager and
     are not evaluated.
 
     A manager that is set but no longer the right successor still resolves, so the transfer goes
@@ -86,7 +86,7 @@
                 )
 
                 foreach ($Sponsor in $Sponsors) {
-                    # Groups and service principals can be sponsors, but have no manager.
+                    # Only user sponsors have a manager; groups and any other sponsor type are skipped.
                     if ([string]$Sponsor.'@odata.type' -ne '#microsoft.graph.user') { continue }
                     $SponsorId = [string]$Sponsor.id
                     if ([string]::IsNullOrWhiteSpace($SponsorId)) { continue }
