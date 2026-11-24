@@ -25,7 +25,7 @@ Describe 'Native built-in tests' {
             $byPath
         }
         $script:files = foreach ($p in $paths) {
-            [pscustomobject]@{ Name = Split-Path $p -Leaf; Function = Get-TestFunction -Path $p; Test = $tests[$p] }
+            [pscustomobject]@{ Name = Split-Path $p -Leaf; Path = $p; Function = Get-TestFunction -Path $p; Test = $tests[$p] }
         }
     }
 
@@ -97,6 +97,17 @@ Describe 'Native built-in tests' {
                 }, $true) | ForEach-Object { "$($f.Name): $($_.Left.Extent.Text)" }
         }
         @($problems) | Should -BeNullOrEmpty -Because 'tests can run in parallel; keep state in the session cache helpers'
+    }
+
+    It 'Do not repeat the title as a heading in their documentation' {
+        # The report already shows the Title above the documentation, so a leading heading shows it twice.
+        $problems = foreach ($f in $script:files) {
+            $md = [System.IO.Path]::ChangeExtension($f.Path, '.md')
+            if (-not (Test-Path $md)) { continue }
+            $firstLine = Get-Content -Path $md | Where-Object { $_.Trim() } | Select-Object -First 1
+            if ($firstLine -match '^ {0,3}#\s') { "$(Split-Path $md -Leaf): $firstLine" }
+        }
+        @($problems) | Should -BeNullOrEmpty -Because 'the report shows the Title above the documentation'
     }
 
     It 'Declare Platform when they use Windows-only commands' {
