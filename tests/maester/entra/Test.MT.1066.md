@@ -1,5 +1,3 @@
-# Conditional Access policies should not reference non-existent users, groups, or roles
-
 This test checks if there are any Conditional Access policies that reference non-existent users, groups, or roles.
 
 This usually happens when a user, group, or role is deleted but is still referenced in a Conditional Access policy.
