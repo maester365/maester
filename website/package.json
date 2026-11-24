@@ -18,10 +18,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "7.3.6",
-    "@astrojs/react": "^7.1.4",
-    "@astrojs/sitemap": "^3.7.4",
-    "@astrojs/starlight": "0.42.10",
+    "@astrojs/markdown-remark": "7.3.10",
+    "@astrojs/react": "^7.1.9",
+    "@astrojs/sitemap": "^3.7.6",
+    "@astrojs/starlight": "0.43.1",
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource/geist-mono": "^5.3.0",
     "@hyperframes/core": "^0.9.19",
@@ -32,7 +32,7 @@
     "@iconify-json/mdi": "^1.2.0",
     "@iconify-json/vscode-icons": "^1.2.96",
     "@iconify/utils": "^3.1.7",
-    "astro": "7.4.7",
+    "astro": "7.4.13",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "gsap": "^3.15.1",
