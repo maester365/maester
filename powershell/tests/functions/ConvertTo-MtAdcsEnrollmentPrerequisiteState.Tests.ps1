@@ -145,12 +145,19 @@ Describe 'Published AD CS enrollment prerequisite evidence' {
         $config.CertificateTemplates[0].PSObject.Properties.Remove('msPKI-RA-Signature')
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'PrerequisitesNotSatisfied'
     }
-    It 'uses the real LDAP converter for byte-backed flag and signature values' {
+    It 'decodes byte-backed LDAP fields with <SignatureCount> required signatures' -ForEach @(
+        @{ SignatureCount = 1; Disposition = 'PrerequisitesNotSatisfied' },
+        @{ SignatureCount = 0; Disposition = 'PotentiallyEligible' }
+    ) {
         $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates[0].'msPKI-Certificate-Name-Flag' = [Text.Encoding]::UTF8.GetBytes('1')
         $config.CertificateTemplates[0].'msPKI-Enrollment-Flag' = [Text.Encoding]::UTF8.GetBytes('0')
-        $config.CertificateTemplates[0].'msPKI-RA-Signature' = [Text.Encoding]::UTF8.GetBytes('1')
-        (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'PrerequisitesNotSatisfied'
+        $config.CertificateTemplates[0].'msPKI-RA-Signature' = [Text.Encoding]::UTF8.GetBytes([string]$SignatureCount)
+        $template = (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0]
+        $template.EnrolleeSuppliesSubject | Should -BeTrue
+        $template.ManagerApprovalRequired | Should -BeFalse
+        $template.AuthorizedSignaturesRequired | Should -Be $SignatureCount
+        $template.Disposition | Should -Be $Disposition
     }
     It 'treats malformed, negative or multivalued signature evidence as unknown' {
         foreach ($bad in @('invalid', -1, @('0', '1'))) {
