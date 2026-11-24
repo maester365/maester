@@ -105,7 +105,7 @@ Describe 'Native built-in tests' {
             $md = [System.IO.Path]::ChangeExtension($f.Path, '.md')
             if (-not (Test-Path $md)) { continue }
             $firstLine = Get-Content -Path $md | Where-Object { $_.Trim() } | Select-Object -First 1
-            if ($firstLine -match '^#\s') { "$(Split-Path $md -Leaf): $firstLine" }
+            if ($firstLine -match '^ {0,3}#\s') { "$(Split-Path $md -Leaf): $firstLine" }
         }
         @($problems) | Should -BeNullOrEmpty -Because 'the report shows the Title above the documentation'
     }
