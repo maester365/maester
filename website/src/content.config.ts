@@ -49,4 +49,41 @@ export const collections = {
 				draft: z.boolean().default(false),
 			}),
 	}),
+	// The Maester world tour, in website/events: one YAML file per talk, workshop or meetup, at /events. People add
+	// theirs with the event issue form (the event-submissions workflow writes the file) or a pull request.
+	events: defineCollection({
+		loader: glob({ pattern: '*.{yml,yaml}', base: './events' }),
+		schema: z
+			.object({
+				title: z.string().min(3).max(160),
+				event: z.string().min(2).max(120),
+				start: z.coerce.date(),
+				end: z.coerce.date().optional(),
+				time: z.string().max(60).optional(),
+				format: z.enum(['talk', 'workshop', 'meetup', 'webinar', 'livestream', 'podcast']),
+				attendance: z.enum(['in-person', 'online', 'hybrid']),
+				city: z.string().max(80).optional(),
+				country: z.string().max(60).optional(),
+				language: z.string().max(40).default('English'),
+				speakers: z
+					.object({
+						name: z.string().min(2).max(80),
+						github: z
+							.string()
+							.regex(/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/)
+							.optional(),
+					})
+					.array()
+					.min(1)
+					.max(8),
+				url: z.string().url().startsWith('https://'),
+				recording: z.string().url().startsWith('https://').optional(),
+				slides: z.string().url().startsWith('https://').optional(),
+				summary: z.string().max(400).optional(),
+				// The issue the event came from, when the event form made it.
+				issue: z.number().int().optional(),
+			})
+			.refine((e) => !e.end || e.end >= e.start, { message: 'end must not be before start', path: ['end'] })
+			.refine((e) => e.attendance === 'online' || (e.city && e.country), { message: 'an in-person or hybrid event needs a city and country', path: ['city'] }),
+	}),
 };

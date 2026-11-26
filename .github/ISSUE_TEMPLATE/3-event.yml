@@ -1,0 +1,143 @@
+name: Add an event to the Maester world tour
+description: Speaking about Maester at a conference, meetup, webinar or livestream? List it on maester.dev/events.
+title: "🌍 Event: "
+labels:
+  - event
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for spreading the word! Once a maintainer approves this issue, your event appears on [maester.dev/events](https://maester.dev/events), in the Maester calendar and, if it is within the next six weeks, in the maester.news newsletter.
+
+        Everything you enter here is public. Dates are `YYYY-MM-DD`.
+
+  - type: input
+    id: title
+    attributes:
+      label: Session title
+      placeholder: Testing Entra ID with Maester
+    validations:
+      required: true
+
+  - type: input
+    id: event
+    attributes:
+      label: Event name
+      description: The conference, user group, webinar series or channel.
+      placeholder: Nordic Virtual Summit 2027
+    validations:
+      required: true
+
+  - type: input
+    id: start
+    attributes:
+      label: Date
+      description: The day of your session, or the first day of the event. YYYY-MM-DD.
+      placeholder: "2027-03-16"
+    validations:
+      required: true
+
+  - type: input
+    id: end
+    attributes:
+      label: Last day
+      description: Only for an event that runs several days. YYYY-MM-DD.
+      placeholder: "2027-03-18"
+
+  - type: input
+    id: time
+    attributes:
+      label: Time and time zone
+      placeholder: 14:00 CET
+
+  - type: dropdown
+    id: format
+    attributes:
+      label: Format
+      options:
+        - Talk
+        - Workshop
+        - Meetup
+        - Webinar
+        - Livestream
+        - Podcast
+    validations:
+      required: true
+
+  - type: dropdown
+    id: attendance
+    attributes:
+      label: Where can people join?
+      options:
+        - In person
+        - Online
+        - Hybrid (in person and online)
+    validations:
+      required: true
+
+  - type: input
+    id: city
+    attributes:
+      label: City
+      description: Leave empty for an online-only event.
+      placeholder: Oslo
+
+  - type: input
+    id: country
+    attributes:
+      label: Country
+      description: Leave empty for an online-only event.
+      placeholder: Norway
+
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      placeholder: English
+
+  - type: textarea
+    id: speakers
+    attributes:
+      label: Speakers
+      description: One per line. Add a GitHub username in brackets to show your avatar.
+      placeholder: |
+        Ada Lovelace (ada)
+        Grace Hopper
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Event or registration link
+      description: An https link where people can find the session or sign up.
+      placeholder: https://
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One or two sentences on what people will learn (400 characters at most).
+
+  - type: input
+    id: recording
+    attributes:
+      label: Recording link
+      description: Optional. You can add it later by commenting on this issue.
+      placeholder: https://
+
+  - type: input
+    id: slides
+    attributes:
+      label: Slides link
+      placeholder: https://
+
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Listing
+      options:
+        - label: The speakers agree to this event being listed publicly on maester.dev and in the maester.news newsletter.
+          required: true

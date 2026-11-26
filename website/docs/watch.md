@@ -4,6 +4,8 @@ title: Watch Maester videos
 
 This page lists a collection of videos and tutorials on Maester. If you have a video or tutorial that you would like to share, please edit this page using the link below and submit a pull request.
 
+Looking for a talk near you, or speaking about Maester yourself? See the [Maester world tour](/events) for upcoming and past events, and add yours.
+
 ## Introduction to Maester
 
 This video is from the [PowerShell + DevOps Global Summit 2024](https://www.powershellsummit.org/) where we launched Maester in March 2024.

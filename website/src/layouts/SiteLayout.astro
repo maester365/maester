@@ -25,7 +25,7 @@ const canonical = pagePath === '/' ? 'https://maester.dev/' : new URL(pagePath, 
 const fullTitle = pagePath === '/' ? title : `${title} | Maester`;
 // A page's own image when it passes one; otherwise its card (scripts/og-images.mjs renders it after the build). The
 // home page's card is the site's own; the pages kept out of search share it.
-const section = pagePath.startsWith('/blog') ? 'Blog' : pagePath.startsWith('/contributors') ? 'Contributors' : pagePath === '/sponsor' ? 'Sponsor' : pagePath === '/pricing' ? 'Pricing' : undefined;
+const section = pagePath.startsWith('/blog') ? 'Blog' : pagePath.startsWith('/contributors') ? 'Contributors' : pagePath === '/sponsor' ? 'Sponsor' : pagePath === '/pricing' ? 'Pricing' : pagePath === '/events' ? 'Community' : undefined;
 const card = pagePath === '/' ? { ...defaultCard, path: 'index' } : noindex ? defaultCard : { path: cardPath(pagePath), label: section, title, description };
 const ogImage = image ? new URL(image, Astro.site).href : cardUrl(card);
 ---
@@ -114,6 +114,7 @@ const ogImage = image ? new URL(image, Astro.site).href : cardUrl(card);
 					<h2>Community</h2>
 					<a href="https://discord.maester.dev">Discord</a>
 					<a href="/contributors">Contributors</a>
+					<a href="/events">World tour</a>
 					<a href="/sponsor">Sponsor</a>
 					<a href="/manifesto">Manifesto</a>
 					<a href="https://twitter.com/maester365">X / Twitter</a>

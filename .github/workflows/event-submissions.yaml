@@ -1,0 +1,138 @@
+# The Maester world tour (maester.dev/events): turns an event issue, from the "Add an event" form
+# (.github/ISSUE_TEMPLATE/3-event.yml), into a file in website/events and opens a pull request for it.
+#
+# - When someone opens or edits an event issue, it checks the answers and comments with anything to fix.
+# - When a maintainer adds the "event: approved" label, it writes the file and opens (or updates) the pull request
+#   automation/event-<issue>. Merging it publishes the event; the pull request closes the issue.
+#
+# Only people with triage access can add labels, so approving stays with maintainers. The issue body is untrusted:
+# it reaches the script only as an environment variable, never in a shell command, and the script checks every value
+# and writes them as quoted strings. The workflow runs the script from main, never from a pull request.
+# Setup: the maester-bot app secrets (MAESTER_BOT_APP_ID, MAESTER_BOT_PRIVATE_KEY), as for blog-cards.yaml.
+name: Event submissions
+
+on:
+  issues:
+    types: [opened, edited, labeled]
+
+permissions: {}
+
+concurrency:
+  group: event-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Check the event form
+    if: >-
+      (github.event.action == 'opened' || github.event.action == 'edited') &&
+      contains(github.event.issue.labels.*.name, 'event') &&
+      !contains(github.event.issue.labels.*.name, 'event: approved')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: website/scripts/events
+
+      - name: Check the answers
+        id: check
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          EVENT_ERRORS_FILE: ${{ runner.temp }}/event-errors.md
+        run: node website/scripts/events/issue-to-event.mjs --check
+
+      - name: Ask for changes
+        if: failure() && steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+          ERRORS: ${{ runner.temp }}/event-errors.md
+        run: |
+          {
+            echo "Thanks for adding your event! A few answers need a change before it can go on the tour:"
+            echo
+            cat "$ERRORS"
+            echo
+            echo "Edit the issue to fix them and this check runs again."
+          } > comment.md
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file comment.md
+
+  publish:
+    name: Open a pull request for the event
+    if: github.event.action == 'labeled' && github.event.label.name == 'event: approved'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      # The maester-bot app, not GITHUB_TOKEN, so that the pull request it opens runs the checks of the repository.
+      - name: Generate maester-bot app token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: Write the event file
+        id: event
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          EVENT_ERRORS_FILE: ${{ runner.temp }}/event-errors.md
+        run: node website/scripts/events/issue-to-event.mjs
+
+      - name: Create pull request
+        id: pr
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: automation/event-${{ github.event.issue.number }}
+          delete-branch: true
+          commit-message: "Add event: ${{ steps.event.outputs.title }}"
+          title: "Add event: ${{ steps.event.outputs.title }} (${{ steps.event.outputs.event }})"
+          labels: event
+          body: |
+            Adds an event to the [Maester world tour](https://maester.dev/events), from the event form.
+
+            Closes #${{ github.event.issue.number }}
+          add-paths: |
+            website/events/**
+
+      - name: Tell the submitter
+        if: steps.pr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+          PR: ${{ steps.pr.outputs.pull-request-number }}
+        run: gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body "Approved, thank you! #$PR adds your event to maester.dev/events. It goes live when it is merged."
+
+      - name: Report a problem
+        if: failure() && steps.event.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+          ERRORS: ${{ runner.temp }}/event-errors.md
+        run: |
+          {
+            echo "This event couldn't be added yet:"
+            echo
+            cat "$ERRORS"
+            echo
+            echo "Edit the issue to fix them, then a maintainer can remove and add the \`event: approved\` label again."
+          } > comment.md
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file comment.md

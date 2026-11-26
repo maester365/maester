@@ -1,0 +1,509 @@
+---
+// The Maester world tour: talks, workshops and meetups about Maester (website/events, one YAML file each). Anyone
+// adds theirs with the event issue form; a maintainer approves it and the event-submissions workflow opens the pull
+// request. The same events feed the calendar (/events.ics) and the newsletter's "Upcoming events" (/events/newsletter.md).
+import SiteLayout from '../layouts/SiteLayout.astro';
+import {
+	SUBMIT_URL,
+	attendanceLabels,
+	dateRange,
+	formatLabels,
+	getEvents,
+	monthKey,
+	placeOf,
+	splitEvents,
+	tourStats,
+	type TourEvent,
+} from '../lib/events';
+
+const events = await getEvents();
+const { upcoming, past } = splitEvents(events);
+const stats = tourStats(events);
+const months = Map.groupBy(upcoming, (e: TourEvent) => monthKey(e.data.start));
+const day = (d: Date) => d.toLocaleDateString('en-GB', { timeZone: 'UTC', day: 'numeric' });
+const mon = (d: Date) => d.toLocaleDateString('en-GB', { timeZone: 'UTC', month: 'short' });
+const year = (d: Date) => d.getUTCFullYear();
+const webcal = 'webcal://maester.dev/events.ics';
+const googleCal = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`;
+---
+
+<SiteLayout
+	title="Maester world tour"
+	description="Talks, workshops and meetups about Maester around the world. Find one near you, subscribe to the calendar, or add your own event."
+	wide
+	jsonLd={{
+		'@context': 'https://schema.org',
+		'@graph': upcoming.map((e) => ({
+			'@type': 'Event',
+			name: e.data.title,
+			startDate: e.data.start.toISOString().slice(0, 10),
+			endDate: (e.data.end ?? e.data.start).toISOString().slice(0, 10),
+			eventAttendanceMode:
+				e.data.attendance === 'online'
+					? 'https://schema.org/OnlineEventAttendanceMode'
+					: e.data.attendance === 'hybrid'
+						? 'https://schema.org/MixedEventAttendanceMode'
+						: 'https://schema.org/OfflineEventAttendanceMode',
+			location:
+				e.data.attendance === 'online'
+					? { '@type': 'VirtualLocation', url: e.data.url }
+					: { '@type': 'Place', name: e.data.event, address: [e.data.city, e.data.country].filter(Boolean).join(', ') },
+			performer: e.data.speakers.map((s) => ({ '@type': 'Person', name: s.name })),
+			url: e.data.url,
+			description: e.data.summary,
+		})),
+	}}
+>
+	<header class="tour-head">
+		<p class="eyebrow">Community</p>
+		<h1>Maester world tour</h1>
+		<p class="lede">
+			Talks, workshops and meetups about Maester, given by the people who use it. Find one near you, catch up on a
+			recording, or tell us where you're speaking next.
+		</p>
+		<div class="tour-head__actions">
+			<a class="site-btn site-btn--primary" href={SUBMIT_URL}>Add your event</a>
+			<a class="site-btn site-btn--ghost" href={webcal}>Subscribe to the calendar</a>
+			<a class="tour-head__link" href={googleCal}>Add to Google Calendar</a>
+		</div>
+		<dl class="tour-stats">
+			<div><dt>Stops</dt><dd>{stats.events}</dd></div>
+			<div><dt>Countries</dt><dd>{stats.countries}</dd></div>
+			<div><dt>Speakers</dt><dd>{stats.speakers}</dd></div>
+			<div><dt>Coming up</dt><dd>{upcoming.length}</dd></div>
+		</dl>
+	</header>
+
+	<section aria-labelledby="upcoming">
+		<h2 id="upcoming" class="tour-section">Upcoming</h2>
+		{
+			upcoming.length === 0 && (
+				<div class="tour-empty">
+					<p>
+						<strong>The next stop isn't booked yet.</strong> Speaking about Maester at a conference, user group or
+						livestream? Add it and it shows here, in the calendar and in the maester.news newsletter.
+					</p>
+					<a class="site-btn site-btn--ghost" href={SUBMIT_URL}>
+						Add your event
+					</a>
+				</div>
+			)
+		}
+		{
+			[...months].map(([month, list]) => (
+				<div class="tour-month">
+					<h3>{month}</h3>
+					<ol class="tour-list">
+						{list.map((e) => (
+							<li class="tour-card" id={e.id}>
+								<div class="tour-card__date" aria-hidden="true">
+									<span class="tour-card__day">{day(e.data.start)}</span>
+									<span class="tour-card__mon">{mon(e.data.start)}</span>
+								</div>
+								<div class="tour-card__body">
+									<p class="tour-card__tags">
+										<span class="pill">{formatLabels[e.data.format]}</span>
+										<span class:list={['pill', `pill--${e.data.attendance}`]}>{attendanceLabels[e.data.attendance]}</span>
+										{e.data.language !== 'English' && <span class="pill">{e.data.language}</span>}
+									</p>
+									<h4>{e.data.title}</h4>
+									<p class="tour-card__event">{e.data.event}</p>
+									<p class="tour-card__meta">
+										<span>{dateRange(e)}</span>
+										{e.data.time && <span>{e.data.time}</span>}
+										<span>{placeOf(e)}</span>
+									</p>
+									{e.data.summary && <p class="tour-card__summary">{e.data.summary}</p>}
+									<ul class="speakers" aria-label="Speakers">
+										{e.data.speakers.map((s) => (
+											<li>
+												{s.github ? (
+													<a href={`https://github.com/${s.github}`}>
+														<img src={`https://github.com/${s.github}.png?size=64`} alt="" width="24" height="24" loading="lazy" />
+														{s.name}
+													</a>
+												) : (
+													<span>
+														<span class="speakers__initial" aria-hidden="true">
+															{s.name.charAt(0)}
+														</span>
+														{s.name}
+													</span>
+												)}
+											</li>
+										))}
+									</ul>
+									<p class="tour-card__actions">
+										<a class="site-btn site-btn--ghost" href={e.data.url}>
+											Event page ↗
+										</a>
+										<a class="tour-card__cal" href={`/events/${e.id}.ics`} download>
+											Add to calendar
+										</a>
+									</p>
+								</div>
+							</li>
+						))}
+					</ol>
+				</div>
+			))
+		}
+	</section>
+
+	{
+		past.length > 0 && (
+			<section aria-labelledby="past">
+				<h2 id="past" class="tour-section">
+					Past stops
+				</h2>
+				<ol class="tour-past">
+					{past.map((e) => (
+						<li id={e.id}>
+							<span class="tour-past__date">
+								{mon(e.data.start)} {year(e.data.start)}
+							</span>
+							<span class="tour-past__what">
+								<a href={e.data.url}>{e.data.title}</a>
+								<span class="tour-past__sub">
+									{e.data.event} · {placeOf(e)} · {e.data.speakers.map((s) => s.name).join(', ')}
+								</span>
+							</span>
+							<span class="tour-past__links">
+								{e.data.recording && <a href={e.data.recording}>Recording</a>}
+								{e.data.slides && <a href={e.data.slides}>Slides</a>}
+							</span>
+						</li>
+					))}
+				</ol>
+			</section>
+		)
+	}
+
+	<section class="tour-join" aria-labelledby="join">
+		<div>
+			<p class="eyebrow">Speaking about Maester?</p>
+			<h2 id="join">Put your event on the tour</h2>
+			<ol>
+				<li>Fill in the <a href={SUBMIT_URL}>event form</a> on GitHub: the session, the date, where and who.</li>
+				<li>A maintainer checks it, usually within a few days, and it goes up on this page and in the calendar.</li>
+				<li>Events in the next six weeks are featured in the <a href="https://maester.news">maester.news</a> newsletter.</li>
+			</ol>
+			<p class="tour-join__note">
+				Need slides? Start from the <a href="https://github.com/maester365/content-hub">Maester content hub</a>. After
+				the event, add the recording to your issue or open a pull request on its file in{' '}
+				<a href="https://github.com/maester365/maester/tree/main/website/events"><code>website/events</code></a>.
+			</p>
+		</div>
+		<a class="site-btn site-btn--primary" href={SUBMIT_URL}>Add your event</a>
+	</section>
+</SiteLayout>
+
+<style>
+	.eyebrow {
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+		margin: 0;
+	}
+	.tour-head {
+		margin: 1rem 0 2.5rem;
+	}
+	.tour-head h1 {
+		font-size: clamp(2.2rem, 6vw, 3.4rem);
+		letter-spacing: -0.03em;
+		line-height: 1.05;
+		margin: 0.4rem 0 0.75rem;
+	}
+	.lede {
+		max-width: 40rem;
+		font-size: 1.1rem;
+		color: var(--sl-color-gray-2);
+		margin: 0 0 1.5rem;
+	}
+	.tour-head__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem 1rem;
+		align-items: center;
+	}
+	.tour-head__link,
+	.tour-card__cal {
+		font-size: 0.875rem;
+		color: var(--sl-color-gray-2);
+	}
+	.tour-stats {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1px;
+		max-width: 36rem;
+		margin: 2rem 0 0;
+		border: 1px solid var(--mt-line);
+		border-radius: var(--mt-radius);
+		background: var(--mt-line);
+		overflow: hidden;
+	}
+	.tour-stats div {
+		background: var(--mt-canvas);
+		padding: 0.75rem 1rem;
+	}
+	.tour-stats dt {
+		font-size: 0.75rem;
+		color: var(--sl-color-gray-3);
+	}
+	.tour-stats dd {
+		margin: 0;
+		font-size: 1.6rem;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		font-variant-numeric: tabular-nums;
+	}
+	@media (max-width: 34rem) {
+		.tour-stats {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	.tour-section {
+		font-size: 1.5rem;
+		letter-spacing: -0.02em;
+		margin: 2.5rem 0 1rem;
+	}
+	.tour-month h3 {
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--sl-color-gray-3);
+		margin: 1.5rem 0 0.75rem;
+	}
+	.tour-list,
+	.tour-past {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.tour-list {
+		display: grid;
+		gap: 1rem;
+	}
+	.tour-card {
+		display: grid;
+		grid-template-columns: 4.5rem minmax(0, 1fr);
+		gap: 1.25rem;
+		border: 1px solid var(--mt-line);
+		border-radius: 16px;
+		background: var(--mt-canvas);
+		padding: 1.25rem;
+		scroll-margin-top: 5rem;
+	}
+	.tour-card:target {
+		border-color: var(--mt-ember);
+	}
+	.tour-card__date {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		align-self: start;
+		aspect-ratio: 1;
+		border-radius: 12px;
+		background: var(--mt-surface);
+		border: 1px solid var(--mt-line);
+	}
+	.tour-card__day {
+		font-size: 1.6rem;
+		font-weight: 700;
+		line-height: 1;
+	}
+	.tour-card__mon {
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--mt-ember);
+		margin-top: 0.2rem;
+	}
+	.tour-card__body > * {
+		margin: 0;
+	}
+	.tour-card__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-bottom: 0.5rem;
+	}
+	.pill {
+		font-size: 0.72rem;
+		font-weight: 600;
+		padding: 0.15rem 0.55rem;
+		border-radius: 999px;
+		border: 1px solid var(--mt-line);
+		color: var(--sl-color-gray-2);
+	}
+	.pill--online,
+	.pill--hybrid {
+		border-color: var(--mt-new-soft);
+		background: var(--mt-new-soft);
+		color: var(--mt-new-ink);
+	}
+	.tour-card h4 {
+		font-size: 1.2rem;
+		letter-spacing: -0.01em;
+		line-height: 1.3;
+	}
+	.tour-card__event {
+		color: var(--sl-color-gray-2);
+		margin-top: 0.15rem;
+	}
+	.tour-card__meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1rem;
+		font-size: 0.875rem;
+		color: var(--sl-color-gray-3);
+		margin-top: 0.5rem;
+	}
+	.tour-card__summary {
+		margin-top: 0.75rem;
+		color: var(--sl-color-gray-2);
+		max-width: 46rem;
+	}
+	.speakers {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1rem;
+		list-style: none;
+		padding: 0;
+		margin-top: 0.85rem;
+	}
+	.speakers a,
+	.speakers li > span {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-size: 0.875rem;
+		color: var(--sl-color-white);
+		text-decoration: none;
+	}
+	.speakers img,
+	.speakers__initial {
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+	}
+	.speakers__initial {
+		display: inline-grid;
+		place-items: center;
+		font-size: 0.7rem;
+		font-weight: 700;
+		background: var(--mt-surface);
+		border: 1px solid var(--mt-line);
+	}
+	.tour-card__actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem 1rem;
+		margin-top: 1rem;
+	}
+	.tour-empty {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		border: 1px dashed var(--mt-line);
+		border-radius: 16px;
+		padding: 1.25rem 1.5rem;
+	}
+	.tour-empty p {
+		margin: 0;
+		max-width: 44rem;
+		color: var(--sl-color-gray-2);
+	}
+	.tour-empty strong {
+		color: var(--sl-color-white);
+	}
+	.tour-past li {
+		display: grid;
+		grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+		gap: 1rem;
+		align-items: baseline;
+		padding: 0.85rem 0;
+		border-top: 1px solid var(--mt-line);
+		scroll-margin-top: 5rem;
+	}
+	.tour-past__date {
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-3);
+		font-variant-numeric: tabular-nums;
+	}
+	.tour-past__what a {
+		font-weight: 600;
+		color: var(--sl-color-white);
+	}
+	.tour-past__sub {
+		display: block;
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-3);
+	}
+	.tour-past__links {
+		display: flex;
+		gap: 0.75rem;
+		font-size: 0.875rem;
+	}
+	@media (max-width: 40rem) {
+		.tour-card {
+			grid-template-columns: 1fr;
+			gap: 0.75rem;
+		}
+		.tour-card__date {
+			flex-direction: row;
+			gap: 0.4rem;
+			aspect-ratio: auto;
+			justify-self: start;
+			padding: 0.3rem 0.7rem;
+		}
+		.tour-card__day {
+			font-size: 1rem;
+		}
+		.tour-card__mon {
+			margin-top: 0;
+		}
+		.tour-past li {
+			grid-template-columns: 1fr;
+			gap: 0.25rem;
+		}
+	}
+	.tour-join {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 2rem;
+		align-items: flex-end;
+		justify-content: space-between;
+		border: 1px solid var(--mt-line);
+		border-radius: 20px;
+		background: var(--mt-canvas);
+		padding: clamp(1.5rem, 4vw, 2.5rem);
+		margin-top: 3.5rem;
+	}
+	.tour-join > div {
+		max-width: 44rem;
+	}
+	.tour-join h2 {
+		font-size: 1.75rem;
+		letter-spacing: -0.02em;
+		margin: 0.25rem 0 0.75rem;
+	}
+	.tour-join ol {
+		margin: 0 0 1rem;
+		padding-left: 1.2rem;
+		color: var(--sl-color-gray-2);
+	}
+	.tour-join li + li {
+		margin-top: 0.35rem;
+	}
+	.tour-join__note {
+		font-size: 0.875rem;
+		color: var(--sl-color-gray-3);
+		margin: 0;
+	}
+</style>

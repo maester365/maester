@@ -124,7 +124,7 @@ export default defineConfig({
 									],
 								},
 								{ label: 'Write your own tests', items: [{ autogenerate: { directory: 'docs/writing-tests' } }, { label: 'Test builder', link: '/test-builder' }] },
-								{ label: 'Community', items: ['docs/watch', 'docs/community-projects', 'docs/contributing', 'docs/agents-and-skills', 'docs/faq'] },
+								{ label: 'Community', items: [{ label: 'Maester world tour', link: '/events' }, 'docs/watch', 'docs/community-projects', 'docs/contributing', 'docs/agents-and-skills', 'docs/faq'] },
 							],
 						},
 						{
