@@ -1,0 +1,15 @@
+title: "Introducing Maester: your Microsoft 365 test automation framework"
+event: PowerShell + DevOps Global Summit 2024
+start: 2024-04-08
+end: 2024-04-11
+format: talk
+attendance: in-person
+city: Bellevue, WA
+country: United States
+speakers:
+  - name: Merill Fernando
+    github: merill
+url: https://www.powershellsummit.org/
+recording: https://www.youtube.com/watch?v=xfs02tjSU24
+slides: https://github.com/maester365/content-hub/raw/refs/heads/main/slides/introduction-to-maester.pptx
+summary: Where Maester was launched to the world.

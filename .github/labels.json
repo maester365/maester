@@ -47,6 +47,8 @@
     { "family": "flag", "name": "attribute-review-override", "color": "ba0019", "description": "A maintainer accepts the test's attributes despite the attribute review", "appliesTo": ["pr"] },
     { "family": "flag", "name": "good first issue", "color": "7057ff", "description": "Good for newcomers", "appliesTo": ["issue"] },
     { "family": "flag", "name": "help wanted", "color": "008672", "description": "Maintainers would welcome a contribution", "appliesTo": ["issue", "discussion"] },
+    { "family": "event", "name": "event", "color": "1d76db", "description": "An event for the Maester world tour (maester.dev/events), from the event form", "appliesTo": ["pr", "issue"] },
+    { "family": "event", "name": "event: approved", "color": "0e8a16", "description": "A maintainer approved the event; the event-submissions workflow opens its pull request", "appliesTo": ["issue"] },
     { "family": "resolution", "name": "duplicate", "color": "cfd3d7", "description": "Already reported elsewhere; link the original when closing", "appliesTo": ["pr", "issue", "discussion"] },
     { "family": "resolution", "name": "superseded", "color": "cfd3d7", "description": "Replaced by another pull request; link it when closing", "appliesTo": ["pr"] },
     { "family": "resolution", "name": "wontfix", "color": "ffffff", "description": "This will not be worked on", "appliesTo": ["pr", "issue", "discussion"] },
