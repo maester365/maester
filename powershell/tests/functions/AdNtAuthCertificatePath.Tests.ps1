@@ -341,13 +341,14 @@ Describe 'AD-PKI-13 native engine outcomes' {
         $row.ReasonCode | Should -Be TestError
     }
     It 'escapes certificate-controlled Markdown and HTML in the result table' {
-        $unsafe = New-PathTestCertificate -Name 'CA|<b>unsafe</b>' -Issuer $script:root
+        $certificate = New-PathTestCertificate -Name 'CA [a](ref) ![b](logo) _name_ https://ca.test | <b>x</b>' -Issuer $script:root
         try {
-            $script:pathConfiguration.NtAuthCertificates[0].cACertificate = $unsafe.RawData
+            $script:pathConfiguration.NtAuthCertificates[0].cACertificate = $certificate.RawData
             $row = Invoke-MtTest -Id AD-PKI-13 -Config $script:pathRunConfig
             $row.Result.ToString() | Should -Be Passed
             $row.ResultDetail.TestResult | Should -Not -Match '<b>'
-            $row.ResultDetail.TestResult | Should -BeLike '*CA&#124;&lt;b&gt;unsafe&lt;/b&gt;*'
-        } finally { $unsafe.Dispose() }
+            $escapedSubject = 'CA \[a\]\(ref\) \!\[b\]\(logo\) \_name\_ https\://ca.test &#124; &lt;b&gt;x&lt;/b&gt;'
+            $row.ResultDetail.TestResult | Should -Match ([regex]::Escape($escapedSubject))
+        } finally { $certificate.Dispose() }
     }
 }

@@ -4,5 +4,6 @@
     param($Value)
 
     if ($null -eq $Value -or [string]::IsNullOrWhiteSpace([string]$Value)) { return '—' }
-    return [System.Net.WebUtility]::HtmlEncode(([string]$Value -replace '\r\n|\r|\n', ' ')).Replace('|', '&#124;')
+    $text = [System.Net.WebUtility]::HtmlEncode([string]$Value).Replace('|', '&#124;')
+    Get-MtSafeMarkdown -Text $text
 }
